@@ -6,20 +6,19 @@ function startGame() {
 }
 
 function selectPlayerPet() {
-  // alert("Player's pet selected")
-  const hipodoge = document.querySelector('#hipodoge')
-  const capipepo = document.querySelector('#capipepo')
-  const ratigueya = document.querySelector('#ratigueya')
-
-  if (hipodoge.checked) {
-    alert("Player's pet selected: Hipodoge")
-  } else if (capipepo.checked) {
-    alert("Player's pet selected: Capipepo")
-  } else if (ratigueya.checked) {
-    alert("Player's pet selected: Ratigueya")
-  } else {
-    alert('Please select a pet')
+  const petOptions = document.querySelectorAll('input[name="pet"]')
+  let selectedPet = null
+  for (const pet of petOptions) {
+    if (pet.checked) {
+      selectedPet = document.querySelector(`label[for="${pet.id}"]`).textContent
+      break
+    }
   }
+  alert(
+    selectedPet
+      ? `Player's pet selected: ${selectedPet}`
+      : 'Please select a pet'
+  )
 }
 
 startGame()
