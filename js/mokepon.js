@@ -68,13 +68,29 @@ function selectPlayerPetAttack() {
 function selectEnemyPetAttack(attacks) {
   const randomIndex = getRandomNumber(0, attacks.length - 1)
   enemyPetAttack = attacks[randomIndex].textContent
-  createCombatResultMessage()
+  combat()
 }
 
-function createCombatResultMessage() {
+function combat() {
+  const combatRules = {
+    'Fire🔥': 'Grass🌱', // Fire beats Grass
+    'Water💧': 'Fire🔥', // Water beats Fire
+    'Grass🌱': 'Water💧' // Grass beats Water
+  }
+
+  if (playerPetAttack === enemyPetAttack) {
+    createCombatResultMessage('It was a tie!🫱🏼‍🫲🏼')
+  } else if (combatRules[playerPetAttack] === enemyPetAttack) {
+    createCombatResultMessage('You win!🏆')
+  } else {
+    createCombatResultMessage('You lose!☹️')
+  }
+}
+
+function createCombatResultMessage(combatResult) {
   const resultMessagesSection = document.querySelector('#result-messages')
   const resultMessage = document.createElement('p')
-  resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()}. PENDING...`
+  resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()} - ${combatResult}`
   resultMessagesSection.appendChild(resultMessage)
 }
 
