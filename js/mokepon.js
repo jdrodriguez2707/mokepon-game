@@ -1,7 +1,10 @@
 'use strict'
 
-// Check if the event listener of the attacks has been added to avoid adding it multiple times
+// Flag to check if the event listener of the attacks has been added
 let attackBtnEventListenerAdded = false
+
+let playerPetAttack = ''
+let enemyPetAttack = ''
 
 function startGame() {
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
@@ -10,20 +13,22 @@ function startGame() {
 
 function selectPlayerPet() {
   const petOptions = document.querySelectorAll('input[name="pet"]')
-  let selectedPet = null
+  let selectedPlayerPet = null
   // span to display player's pet name
   const playerPetSpan = document.querySelector('#player-pet-name')
 
   for (const pet of petOptions) {
     if (pet.checked) {
       // get the text content of the label associated with the selected pet
-      selectedPet = document.querySelector(`label[for="${pet.id}"]`).textContent
+      selectedPlayerPet = document.querySelector(
+        `label[for="${pet.id}"]`
+      ).textContent
       break
     }
   }
 
-  if (selectedPet) {
-    playerPetSpan.textContent = selectedPet
+  if (selectedPlayerPet) {
+    playerPetSpan.textContent = selectedPlayerPet
     selectEnemyPet()
   } else {
     alert('Please select a pet')
@@ -33,12 +38,13 @@ function selectPlayerPet() {
 function selectEnemyPet() {
   const pets = document.querySelectorAll('label')
   const randomIndex = getRandomNumber(0, pets.length - 1)
-  const enemyPet = pets[randomIndex].textContent
+  const selectedEnemyPet = pets[randomIndex].textContent
 
   // span to display enemy's pet name
   const enemyPetSpan = document.querySelector('#enemy-pet-name')
-  enemyPetSpan.textContent = enemyPet
+  enemyPetSpan.textContent = selectedEnemyPet
 
+  // Check if the event listener of the attacks has been added to avoid adding it multiple times
   if (!attackBtnEventListenerAdded) {
     selectPlayerPetAttack()
     attackBtnEventListenerAdded = true
@@ -53,7 +59,7 @@ function selectPlayerPetAttack() {
   const attacks = document.querySelectorAll('#select-attack button')
   for (const attack of attacks) {
     attack.addEventListener('click', () => {
-      alert(`You selected ${attack.textContent}`)
+      playerPetAttack = attack.textContent
       selectEnemyPetAttack(attacks)
     })
   }
@@ -61,7 +67,15 @@ function selectPlayerPetAttack() {
 
 function selectEnemyPetAttack(attacks) {
   const randomIndex = getRandomNumber(0, attacks.length - 1)
-  alert(`Enemy selected ${attacks[randomIndex].textContent}`)
+  enemyPetAttack = attacks[randomIndex].textContent
+  createCombatResultMessage()
+}
+
+function createCombatResultMessage() {
+  const resultMessagesSection = document.querySelector('#result-messages')
+  const resultMessage = document.createElement('p')
+  resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()}. PENDING...`
+  resultMessagesSection.appendChild(resultMessage)
 }
 
 startGame()
