@@ -1,5 +1,8 @@
 'use strict'
 
+// Check if the event listener of the attacks has been added to avoid adding it multiple times
+let attackBtnEventListenerAdded = false
+
 function startGame() {
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
@@ -36,7 +39,10 @@ function selectEnemyPet() {
   const enemyPetSpan = document.querySelector('#enemy-pet-name')
   enemyPetSpan.textContent = enemyPet
 
-  selectPlayerPetAttack()
+  if (!attackBtnEventListenerAdded) {
+    selectPlayerPetAttack()
+    attackBtnEventListenerAdded = true
+  }
 }
 
 function getRandomNumber(min, max) {
@@ -47,9 +53,15 @@ function selectPlayerPetAttack() {
   const attacks = document.querySelectorAll('#select-attack button')
   for (const attack of attacks) {
     attack.addEventListener('click', () => {
-      alert(attack.textContent)
+      alert(`You selected ${attack.textContent}`)
+      selectEnemyPetAttack(attacks)
     })
   }
+}
+
+function selectEnemyPetAttack(attacks) {
+  const randomIndex = getRandomNumber(0, attacks.length - 1)
+  alert(`Enemy selected ${attacks[randomIndex].textContent}`)
 }
 
 startGame()
