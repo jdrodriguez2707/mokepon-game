@@ -35,10 +35,21 @@ function selectEnemyPet() {
   // span to display enemy's pet name
   const enemyPetSpan = document.querySelector('#enemy-pet-name')
   enemyPetSpan.textContent = enemyPet
+
+  selectPlayerPetAttack()
 }
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function selectPlayerPetAttack() {
+  const attacks = document.querySelectorAll('#select-attack button')
+  for (const attack of attacks) {
+    attack.addEventListener('click', () => {
+      alert(attack.textContent)
+    })
+  }
 }
 
 startGame()
