@@ -18,9 +18,27 @@ function selectPlayerPet() {
       break
     }
   }
-  selectedPet
-    ? (playerPetSpan.textContent = selectedPet)
-    : alert('Please select a pet')
+
+  if (selectedPet) {
+    playerPetSpan.textContent = selectedPet
+    selectEnemyPet()
+  } else {
+    alert('Please select a pet')
+  }
+}
+
+function selectEnemyPet() {
+  const pets = document.querySelectorAll('label')
+  const randomIndex = getRandomNumber(0, pets.length - 1)
+  const enemyPet = pets[randomIndex].textContent
+
+  // span to display enemy's pet name
+  const enemyPetSpan = document.querySelector('#enemy-pet-name')
+  enemyPetSpan.textContent = enemyPet
+}
+
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 startGame()
