@@ -5,6 +5,8 @@ let attackBtnEventListenerAdded = false
 
 let playerPetAttack = ''
 let enemyPetAttack = ''
+let playerPetLives = 3
+let enemyPetLives = 3
 
 function startGame() {
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
@@ -15,7 +17,7 @@ function selectPlayerPet() {
   const petOptions = document.querySelectorAll('input[name="pet"]')
   let selectedPlayerPet = null
   // span to display player's pet name
-  const playerPetSpan = document.querySelector('#player-pet-name')
+  const playerPetNameSpan = document.querySelector('#player-pet-name')
 
   for (const pet of petOptions) {
     if (pet.checked) {
@@ -28,7 +30,7 @@ function selectPlayerPet() {
   }
 
   if (selectedPlayerPet) {
-    playerPetSpan.textContent = selectedPlayerPet
+    playerPetNameSpan.textContent = selectedPlayerPet
     selectEnemyPet()
   } else {
     alert('Please select a pet')
@@ -41,8 +43,8 @@ function selectEnemyPet() {
   const selectedEnemyPet = pets[randomIndex].textContent
 
   // span to display enemy's pet name
-  const enemyPetSpan = document.querySelector('#enemy-pet-name')
-  enemyPetSpan.textContent = selectedEnemyPet
+  const enemyPetNameSpan = document.querySelector('#enemy-pet-name')
+  enemyPetNameSpan.textContent = selectedEnemyPet
 
   // Check if the event listener of the attacks has been added to avoid adding it multiple times
   if (!attackBtnEventListenerAdded) {
@@ -82,8 +84,12 @@ function combat() {
     createCombatResultMessage('It was a tie!🫱🏼‍🫲🏼')
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
     createCombatResultMessage('You win!🏆')
+    enemyPetLives--
+    updatePetLives()
   } else {
     createCombatResultMessage('You lose!☹️')
+    playerPetLives--
+    updatePetLives()
   }
 }
 
@@ -92,6 +98,14 @@ function createCombatResultMessage(combatResult) {
   const resultMessage = document.createElement('p')
   resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()} - ${combatResult}`
   resultMessagesSection.appendChild(resultMessage)
+}
+
+function updatePetLives() {
+  const playerPetLivesSpan = document.querySelector('#player-pet-lives')
+  const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
+
+  playerPetLivesSpan.textContent = playerPetLives
+  enemyPetLivesSpan.textContent = enemyPetLives
 }
 
 startGame()
