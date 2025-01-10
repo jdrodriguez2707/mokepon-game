@@ -8,6 +8,10 @@ let enemyPetAttack = ''
 let playerPetLives = 3
 let enemyPetLives = 3
 
+// Cached DOM elements
+const attacks = document.querySelectorAll('#select-attack button')
+const resultMessagesSection = document.querySelector('#result-messages')
+
 function startGame() {
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
@@ -61,16 +65,15 @@ function getRandomNumber(min, max) {
 }
 
 function selectPlayerPetAttack() {
-  const attacks = document.querySelectorAll('#select-attack button')
   for (const attack of attacks) {
     attack.addEventListener('click', () => {
       playerPetAttack = attack.textContent
-      selectEnemyPetAttack(attacks)
+      selectEnemyPetAttack()
     })
   }
 }
 
-function selectEnemyPetAttack(attacks) {
+function selectEnemyPetAttack() {
   const randomIndex = getRandomNumber(0, attacks.length - 1)
   enemyPetAttack = attacks[randomIndex].textContent
   combat()
@@ -99,7 +102,6 @@ function combat() {
 }
 
 function createCombatResultMessage(combatResult) {
-  const resultMessagesSection = document.querySelector('#result-messages')
   const resultMessage = document.createElement('p')
   resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()} - ${combatResult}`
   resultMessagesSection.appendChild(resultMessage)
@@ -124,21 +126,13 @@ function checkLives() {
 }
 
 function createFinalMessage(finalMessage) {
-  const resultMessagesSection = document.querySelector('#result-messages')
   const resultMessage = document.createElement('p')
   resultMessage.textContent = finalMessage
   resultMessagesSection.appendChild(resultMessage)
 }
 
 function endGame() {
-  // Disable the pet options and the select pet button to avoid selecting a pet again
-  const petOptions = document.querySelectorAll('input[name="pet"]')
-  const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
-  petOptions.forEach(pet => (pet.disabled = true))
-  btnSelectPlayerPet.disabled = true
-
   // Disable the attack buttons to avoid attacking again
-  const attacks = document.querySelectorAll('#select-attack button')
   attacks.forEach(attack => (attack.disabled = true))
 }
 
