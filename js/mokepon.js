@@ -91,6 +91,8 @@ function combat() {
     playerPetLives--
     updatePetLives()
   }
+
+  checkLives()
 }
 
 function createCombatResultMessage(combatResult) {
@@ -106,6 +108,21 @@ function updatePetLives() {
 
   playerPetLivesSpan.textContent = playerPetLives
   enemyPetLivesSpan.textContent = enemyPetLives
+}
+
+function checkLives() {
+  if (playerPetLives === 0) {
+    createFinalMessage('You lost the game☹️')
+  } else if (enemyPetLives === 0) {
+    createFinalMessage('You won the game!🎉')
+  }
+}
+
+function createFinalMessage(finalMessage) {
+  const resultMessagesSection = document.querySelector('#result-messages')
+  const resultMessage = document.createElement('p')
+  resultMessage.textContent = finalMessage
+  resultMessagesSection.appendChild(resultMessage)
 }
 
 startGame()
