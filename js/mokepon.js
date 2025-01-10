@@ -9,10 +9,17 @@ let playerPetLives = 3
 let enemyPetLives = 3
 
 // Cached DOM elements
+const selectPetSection = document.querySelector('#select-pet')
+const selectAttackSection = document.querySelector('#select-attack')
 const attacks = document.querySelectorAll('#select-attack button')
 const resultMessagesSection = document.querySelector('#result-messages')
+const restartSection = document.querySelector('#restart')
 
 function startGame() {
+  // Hide the attack and restart sections at the beginning to avoid distracting the player
+  selectAttackSection.style.display = 'none'
+  restartSection.style.display = 'none'
+
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
 
@@ -58,6 +65,9 @@ function selectEnemyPet() {
     selectPlayerPetAttack()
     attackBtnEventListenerAdded = true
   }
+
+  selectAttackSection.style.display = 'block'
+  selectPetSection.style.display = 'none'
 }
 
 function getRandomNumber(min, max) {
@@ -134,6 +144,9 @@ function createFinalMessage(finalMessage) {
 function endGame() {
   // Disable the attack buttons to avoid attacking again
   attacks.forEach(attack => (attack.disabled = true))
+
+  // Show the restart section
+  restartSection.style.display = 'block'
 }
 
 function restartGame() {
