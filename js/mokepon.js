@@ -119,6 +119,8 @@ function checkLives() {
   } else if (enemyPetLives === 0) {
     createFinalMessage('You won the game!🎉')
   }
+
+  if (playerPetLives === 0 || enemyPetLives === 0) endGame()
 }
 
 function createFinalMessage(finalMessage) {
@@ -126,6 +128,18 @@ function createFinalMessage(finalMessage) {
   const resultMessage = document.createElement('p')
   resultMessage.textContent = finalMessage
   resultMessagesSection.appendChild(resultMessage)
+}
+
+function endGame() {
+  // Disable the pet options and the select pet button to avoid selecting a pet again
+  const petOptions = document.querySelectorAll('input[name="pet"]')
+  const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
+  petOptions.forEach(pet => (pet.disabled = true))
+  btnSelectPlayerPet.disabled = true
+
+  // Disable the attack buttons to avoid attacking again
+  const attacks = document.querySelectorAll('#select-attack button')
+  attacks.forEach(attack => (attack.disabled = true))
 }
 
 function restartGame() {
