@@ -10,7 +10,12 @@ let enemyPetLives = 3
 
 // Cached DOM elements
 const selectPetSection = document.querySelector('#select-pet')
+const petOptions = document.querySelectorAll('input[name="pet"]')
 const selectAttackSection = document.querySelector('#select-attack')
+const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
+const enemyPetNameSpan = document.querySelector('#enemy-pet-name') // span to display enemy's pet name
+const playerPetLivesSpan = document.querySelector('#player-pet-lives')
+const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
 const attacks = document.querySelectorAll('#select-attack button')
 const resultMessagesSection = document.querySelector('#result-messages')
 const restartSection = document.querySelector('#restart')
@@ -22,16 +27,10 @@ function startGame() {
 
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
-
-  const btnRestartGame = document.querySelector('#btn-restart-game')
-  btnRestartGame.addEventListener('click', restartGame)
 }
 
 function selectPlayerPet() {
-  const petOptions = document.querySelectorAll('input[name="pet"]')
   let selectedPlayerPet = null
-  // span to display player's pet name
-  const playerPetNameSpan = document.querySelector('#player-pet-name')
 
   for (const pet of petOptions) {
     if (pet.checked) {
@@ -118,9 +117,6 @@ function createCombatResultMessage(combatResult) {
 }
 
 function updatePetLives() {
-  const playerPetLivesSpan = document.querySelector('#player-pet-lives')
-  const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
-
   playerPetLivesSpan.textContent = playerPetLives
   enemyPetLivesSpan.textContent = enemyPetLives
 }
@@ -147,11 +143,35 @@ function endGame() {
 
   // Show the restart section
   restartSection.style.display = 'block'
+
+  const btnRestartGame = document.querySelector('#btn-restart-game')
+  btnRestartGame.addEventListener('click', restartGame)
 }
 
 function restartGame() {
-  // TODO: Implement the restart game functionality without reloading the page
-  location.reload()
+  playerPetAttack = ''
+  enemyPetAttack = ''
+  playerPetLives = 3
+  enemyPetLives = 3
+
+  playerPetNameSpan.textContent = ''
+  enemyPetNameSpan.textContent = ''
+  playerPetLivesSpan.textContent = playerPetLives
+  enemyPetLivesSpan.textContent = enemyPetLives
+  resultMessagesSection.textContent = ''
+
+  for (const pet of petOptions) {
+    if (pet.checked) {
+      pet.checked = false
+      break
+    }
+  }
+
+  attacks.forEach(attack => (attack.disabled = false))
+
+  selectAttackSection.style.display = 'none'
+  selectPetSection.style.display = 'block'
+  restartSection.style.display = 'none'
 }
 
 startGame()
