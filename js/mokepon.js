@@ -11,6 +11,9 @@ let enemyPetLives = 3
 function startGame() {
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
+
+  const btnRestartGame = document.querySelector('#btn-restart-game')
+  btnRestartGame.addEventListener('click', restartGame)
 }
 
 function selectPlayerPet() {
@@ -123,6 +126,11 @@ function createFinalMessage(finalMessage) {
   const resultMessage = document.createElement('p')
   resultMessage.textContent = finalMessage
   resultMessagesSection.appendChild(resultMessage)
+}
+
+function restartGame() {
+  // TODO: Implement the restart game functionality without reloading the page
+  location.reload()
 }
 
 startGame()
