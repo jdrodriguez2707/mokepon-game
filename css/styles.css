@@ -1,6 +1,74 @@
+:root {
+  /* Colors */
+  --primary-color: #1f2041;
+  --secondary-color: #4b3f72;
+  --tertiary-color: #119da4;
+
+  /* Fonts */
+  --primary-font-family: 'Poppins', serif;
+  --secondary-font-family: 'Jersey 15', serif;
+  --primary-font-color: #fff;
+  --secondary-font-color: #ffc857;
+  --large-font-size: 5rem;
+  --medium-font-size: 2.2rem;
+  --small-font-size: 1.5rem;
+}
+
 body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: var(--primary-font-family);
+  background-color: var(--primary-color);
+}
+
+.game-title {
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: var(--secondary-font-family);
+  font-size: var(--large-font-size);
+  color: var(--secondary-font-color);
+}
+
+.select-pet-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.select-pet-title {
+  font-size: var(--medium-font-size);
+  color: #fff;
+}
+
+.pet-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 14px;
+  padding: 48px 52px;
+  border-radius: 12px;
+  width: 180px;
+  height: 100px;
+  background-color: var(--secondary-color);
+}
+
+.pet-card p {
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+}
+
+.select-pet-button {
+  margin-top: 12px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+  background-color: var(--tertiary-color);
+}
+
+.hidden {
+  display: none;
 }

@@ -4,24 +4,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mokepon Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jersey+15&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./css/reset.css" />
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="./js/mokepon.js" defer></script>
   </head>
   <body>
-    <h1>MOKEPON!🔥💧🌱</h1>
+    <h1 class="game-title">MOKEPON!🔥💧🌱</h1>
 
-    <section id="select-pet">
-      <h2>Select your pet:</h2>
+    <section class="select-pet-section" id="select-pet">
+      <h2 class="select-pet-title">Select your pet:</h2>
 
-      <input type="radio" id="hipodoge" name="pet" />
-      <label for="hipodoge">Hipodoge</label>
-      <input type="radio" id="capipepo" name="pet" />
-      <label for="capipepo">Capipepo</label>
-      <input type="radio" id="ratigueya" name="pet" />
-      <label for="ratigueya">Ratigueya</label>
+      <input class="hidden" type="radio" id="hipodoge" name="pet" />
+      <label class="pet-card" for="hipodoge">
+        <p>Hipodoge</p>
+        <img
+          src="./assets/images/mokepons_mokepon_hipodoge_attack.webp"
+          alt="Mokepon Hipodoge"
+        />
+      </label>
 
-      <button id="btn-select-pet">Select pet</button>
+      <input class="hidden" type="radio" id="capipepo" name="pet" />
+      <label class="pet-card" for="capipepo">
+        <p>Capipepo</p>
+        <img
+          src="./assets/images/mokepons_mokepon_capipepo_attack.webp"
+          alt="Mokepon Capipepo"
+        />
+      </label>
+
+      <input class="hidden" type="radio" id="ratigueya" name="pet" />
+      <label class="pet-card" for="ratigueya">
+        <p>Ratigueya</p>
+        <img
+          src="./assets/images/mokepons_mokepon_ratigueya_attack.webp"
+          alt="Mokepon Ratigueya"
+        />
+      </label>
+
+      <button class="select-pet-button" id="btn-select-pet">Select pet</button>
     </section>
 
     <section id="select-attack">
