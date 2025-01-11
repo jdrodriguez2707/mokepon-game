@@ -1,0 +1,68 @@
+*,
+*::after,
+*::before {
+  /* Include padding and border in size calculation. */
+  box-sizing: border-box;
+}
+
+* {
+  /* Reset margins of all elements. */
+  margin: 0;
+  /* Reset padding of all elements. */
+  padding: 0;
+}
+
+html {
+  /* Change the default font size of the html element to 10px for a more convenient calculation when using 'rem' to set the font size. */
+  font-size: 62.5%;
+}
+
+body {
+  /* Ensure that the body fills the entire viewport. */
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* Balance headings across multiple lines into an even block. */
+  text-wrap: balance;
+}
+
+p {
+  /* Prevent text orphans (single words on last line). */
+  text-wrap: pretty;
+}
+
+img,
+video,
+svg {
+  /* The element take up the entire available width of your container, which is useful for avoiding alignment issues */
+  display: block;
+  /* Ensure that the element's height is scaled proportionally to its width, maintaining the original aspect ratio  */
+  height: auto;
+  /* Prevent element from extending beyond the width of their container, which is useful for responsive designs. */
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
