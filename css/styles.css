@@ -52,6 +52,12 @@ body {
   width: 180px;
   height: 100px;
   background-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.pet-card:hover,
+input[type='radio']:checked + .pet-card {
+  outline: 2px solid var(--tertiary-color);
 }
 
 .pet-card p {
@@ -67,6 +73,11 @@ body {
   font-size: var(--small-font-size);
   color: var(--primary-font-color);
   background-color: var(--tertiary-color);
+  cursor: pointer;
+}
+
+.select-pet-button:hover {
+  outline: 2px solid var(--primary-font-color);
 }
 
 .hidden {
