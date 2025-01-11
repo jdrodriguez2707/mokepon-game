@@ -1,8 +1,5 @@
 'use strict'
 
-// Flag to check if the event listener of the attacks has been added
-let attackBtnEventListenerAdded = false
-
 let playerPetAttack = ''
 let enemyPetAttack = ''
 let playerPetLives = 3
@@ -27,6 +24,9 @@ function startGame() {
 
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
+
+  // Add event listeners to the attack buttons so the player can select an attack
+  addAttackEventListeners()
 }
 
 function selectPlayerPet() {
@@ -59,12 +59,6 @@ function selectEnemyPet() {
   const enemyPetNameSpan = document.querySelector('#enemy-pet-name')
   enemyPetNameSpan.textContent = selectedEnemyPet
 
-  // Check if the event listener of the attacks has been added to avoid adding it multiple times
-  if (!attackBtnEventListenerAdded) {
-    selectPlayerPetAttack()
-    attackBtnEventListenerAdded = true
-  }
-
   selectAttackSection.style.display = 'block'
   selectPetSection.style.display = 'none'
 }
@@ -73,7 +67,7 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function selectPlayerPetAttack() {
+function addAttackEventListeners() {
   for (const attack of attacks) {
     attack.addEventListener('click', () => {
       playerPetAttack = attack.textContent
@@ -141,11 +135,11 @@ function endGame() {
   // Disable the attack buttons to avoid attacking again
   attacks.forEach(attack => (attack.disabled = true))
 
-  // Show the restart section
-  restartSection.style.display = 'block'
-
   const btnRestartGame = document.querySelector('#btn-restart-game')
   btnRestartGame.addEventListener('click', restartGame)
+
+  // Show the restart section
+  restartSection.style.display = 'block'
 }
 
 function restartGame() {
