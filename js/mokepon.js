@@ -19,8 +19,8 @@ const restartSection = document.querySelector('#restart')
 
 function startGame() {
   // Hide the attack and restart sections at the beginning to avoid distracting the player
-  selectAttackSection.style.display = 'none'
-  restartSection.style.display = 'none'
+  selectAttackSection.classList.add('hidden')
+  restartSection.classList.add('hidden')
 
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
@@ -54,13 +54,10 @@ function selectEnemyPet() {
   const pets = document.querySelectorAll('label')
   const randomIndex = getRandomNumber(0, pets.length - 1)
   const selectedEnemyPet = pets[randomIndex].textContent
-
-  // span to display enemy's pet name
-  const enemyPetNameSpan = document.querySelector('#enemy-pet-name')
   enemyPetNameSpan.textContent = selectedEnemyPet
 
-  selectAttackSection.style.display = 'block'
-  selectPetSection.style.display = 'none'
+  selectAttackSection.classList.remove('hidden')
+  selectPetSection.classList.add('hidden')
 }
 
 function getRandomNumber(min, max) {
@@ -139,7 +136,7 @@ function endGame() {
   btnRestartGame.addEventListener('click', restartGame)
 
   // Show the restart section
-  restartSection.style.display = 'block'
+  restartSection.classList.remove('hidden')
 }
 
 function restartGame() {
@@ -163,9 +160,9 @@ function restartGame() {
 
   attacks.forEach(attack => (attack.disabled = false))
 
-  selectAttackSection.style.display = 'none'
-  selectPetSection.style.display = 'block'
-  restartSection.style.display = 'none'
+  selectPetSection.classList.remove('hidden')
+  selectAttackSection.classList.add('hidden')
+  restartSection.classList.add('hidden')
 }
 
 startGame()
