@@ -35,9 +35,9 @@ function selectPlayerPet() {
   for (const pet of petOptions) {
     if (pet.checked) {
       // get the text content of the label associated with the selected pet
-      selectedPlayerPet = document.querySelector(
-        `label[for="${pet.id}"]`
-      ).textContent
+      selectedPlayerPet = document
+        .querySelector(`label[for="${pet.id}"]`)
+        .textContent.trim()
       break
     }
   }
