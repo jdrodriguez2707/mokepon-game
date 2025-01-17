@@ -37,7 +37,7 @@ body {
   align-items: center;
 }
 
-.select-pet-title {
+.section-subtitle {
   font-size: var(--medium-font-size);
   color: #fff;
 }

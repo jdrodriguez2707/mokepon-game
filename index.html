@@ -18,7 +18,7 @@
     <h1 class="game-title">MOKEPON!🔥💧🌱</h1>
 
     <section class="select-pet-section" id="select-pet">
-      <h2 class="select-pet-title">Select your pet:</h2>
+      <h2 class="section-subtitle">Select your pet:</h2>
 
       <input class="hidden" type="radio" id="hipodoge" name="pet" />
       <label class="pet-card" for="hipodoge">
@@ -51,28 +51,40 @@
     </section>
 
     <section id="select-attack">
-      <h2>Select your attack:</h2>
-
-      <p>
-        Your pet <span id="player-pet-name"></span> has
-        <span id="player-pet-lives">3</span> lives
-      </p>
-      <p>
-        The enemy's pet <span id="enemy-pet-name"></span> has
-        <span id="enemy-pet-lives">3</span> lives
-      </p>
+      <h2 class="section-subtitle">Select your attack:</h2>
 
       <div>
         <button>Fire🔥</button>
         <button>Water💧</button>
         <button>Grass🌱</button>
       </div>
+
+      <div>
+        <!-- TODO: Render mokepon images from JS -->
+        <div>
+          <p id="player-pet-lives">
+            3
+            <!-- ❤️❤️❤️ -->
+          </p>
+          <p id="player-pet-name"></p>
+          <div id="player-attacks"></div>
+        </div>
+
+        <div>
+          <p id="enemy-pet-lives">
+            3
+            <!-- ❤️❤️❤️ -->
+          </p>
+          <p id="enemy-pet-name"></p>
+          <div id="enemy-attacks"></div>
+        </div>
+
+        <div id="result-messages"></div>
+      </div>
     </section>
 
-    <section id="result-messages"></section>
-
-    <section id="restart">
+    <dialog id="restart">
       <button id="btn-restart-game">Restart</button>
-    </section>
+    </dialog>
   </body>
 </html>
