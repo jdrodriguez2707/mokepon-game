@@ -110,9 +110,9 @@ input[type='radio']:checked + .pet-card {
   outline: 2px solid var(--tertiary-color);
 }
 
-.round-result {
+.combat-result {
   color: var(--secondary-font-color);
-  font-size: var(--medium-font-size);
+  font-size: var(--small-font-size);
   font-weight: bold;
   margin-top: 24px;
 }
@@ -133,7 +133,7 @@ input[type='radio']:checked + .pet-card {
 }
 
 .mokepon-image {
-  width: 100%;
+  width: 80%;
   max-width: 200px;
 }
 

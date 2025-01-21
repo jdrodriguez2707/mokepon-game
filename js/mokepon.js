@@ -87,7 +87,7 @@ function combat() {
   }
 
   if (playerPetAttack === enemyPetAttack) {
-    createCombatResultMessage('It was a tie!🫱🏼‍🫲🏼')
+    createCombatResultMessage("It's a tie!🫱🏼‍🫲🏼")
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
     createCombatResultMessage('You win!🏆')
     enemyPetLives--
@@ -102,9 +102,11 @@ function combat() {
 }
 
 function createCombatResultMessage(combatResult) {
-  const resultMessage = document.createElement('p')
-  resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()} - ${combatResult}`
-  resultMessagesSection.appendChild(resultMessage)
+  const resultParagraph = document.querySelector('#combat-result')
+  resultParagraph.textContent = combatResult
+  // const resultMessage = document.createElement('p')
+  // resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()} - ${combatResult}`
+  // resultMessagesSection.appendChild(resultMessage)
 }
 
 function updatePetLives() {
