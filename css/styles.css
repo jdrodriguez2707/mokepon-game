@@ -80,6 +80,50 @@ input[type='radio']:checked + .pet-card {
   outline: 2px solid var(--primary-font-color);
 }
 
+.select-attack-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.attack-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.attack-button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+  background-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.attack-button:hover {
+  outline: 2px solid var(--tertiary-color);
+}
+
+.player-info-container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 24px;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+  width: 100%;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .hidden {
   display: none;
 }

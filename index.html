@@ -50,18 +50,18 @@
       <button class="select-pet-button" id="btn-select-pet">Select pet</button>
     </section>
 
-    <section id="select-attack">
+    <section class="select-attack-section" id="select-attack">
       <h2 class="section-subtitle">Select your attack:</h2>
 
-      <div>
-        <button>Fire🔥</button>
-        <button>Water💧</button>
-        <button>Grass🌱</button>
+      <div class="attack-buttons-container">
+        <button class="attack-button">Fire🔥</button>
+        <button class="attack-button">Water💧</button>
+        <button class="attack-button">Grass🌱</button>
       </div>
 
-      <div>
+      <div class="player-info-container">
         <!-- TODO: Render mokepon images from JS -->
-        <div>
+        <div class="player-info">
           <p id="player-pet-lives">
             3
             <!-- ❤️❤️❤️ -->
@@ -70,7 +70,7 @@
           <div id="player-attacks"></div>
         </div>
 
-        <div>
+        <div class="player-info">
           <p id="enemy-pet-lives">
             3
             <!-- ❤️❤️❤️ -->
@@ -78,9 +78,9 @@
           <p id="enemy-pet-name"></p>
           <div id="enemy-attacks"></div>
         </div>
-
-        <div id="result-messages"></div>
       </div>
+
+      <div id="result-messages"></div>
     </section>
 
     <dialog id="restart">
