@@ -138,7 +138,10 @@ function createFinalMessage(finalMessage) {
 
 function endGame() {
   // Disable the attack buttons to avoid attacking again
-  attacks.forEach(attack => (attack.disabled = true))
+  attacks.forEach(attack => {
+    attack.disabled = true
+    attack.classList.add('disabled')
+  })
 
   const btnRestartGame = document.querySelector('#btn-restart-game')
   btnRestartGame.addEventListener('click', restartGame)

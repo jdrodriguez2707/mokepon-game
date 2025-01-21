@@ -75,10 +75,10 @@ input[type='radio']:checked + .pet-card {
   color: var(--primary-font-color);
   background-color: var(--tertiary-color);
   cursor: pointer;
-}
 
-.select-pet-button:hover {
-  outline: 2px solid var(--primary-font-color);
+  &:hover {
+    outline: 2px solid var(--secondary-color);
+  }
 }
 
 .select-attack-section {
@@ -104,10 +104,19 @@ input[type='radio']:checked + .pet-card {
   color: var(--primary-font-color);
   background-color: var(--secondary-color);
   cursor: pointer;
+
+  &:hover {
+    outline: 2px solid var(--tertiary-color);
+  }
 }
 
-.attack-button:hover {
-  outline: 2px solid var(--tertiary-color);
+.disabled {
+  cursor: no-drop;
+  opacity: 0.4;
+
+  &:hover {
+    outline: none;
+  }
 }
 
 .combat-result {
