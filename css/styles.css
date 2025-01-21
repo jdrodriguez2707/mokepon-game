@@ -17,8 +17,8 @@
 body {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  padding-top: 64px;
   font-family: var(--primary-font-family);
   background-color: var(--primary-color);
 }
@@ -38,6 +38,7 @@ body {
 }
 
 .section-subtitle {
+  text-align: center;
   font-size: var(--medium-font-size);
   color: #fff;
 }
@@ -109,6 +110,13 @@ input[type='radio']:checked + .pet-card {
   outline: 2px solid var(--tertiary-color);
 }
 
+.round-result {
+  color: var(--secondary-font-color);
+  font-size: var(--medium-font-size);
+  font-weight: bold;
+  margin-top: 24px;
+}
+
 .player-info-container {
   display: flex;
   justify-content: space-evenly;
@@ -122,6 +130,11 @@ input[type='radio']:checked + .pet-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.mokepon-image {
+  width: 100%;
+  max-width: 200px;
 }
 
 .hidden {
