@@ -110,8 +110,14 @@ function createCombatResultMessage(combatResult) {
 }
 
 function updatePetLives() {
-  playerPetLivesSpan.textContent = playerPetLives
-  enemyPetLivesSpan.textContent = enemyPetLives
+  playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
+  enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
+
+  if (playerPetLives === 0) {
+    playerPetLivesSpan.textContent = '😢'
+  } else if (enemyPetLives === 0) {
+    enemyPetLivesSpan.textContent = '😢'
+  }
 }
 
 function checkLives() {
