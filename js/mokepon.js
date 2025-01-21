@@ -104,9 +104,16 @@ function combat() {
 function createCombatResultMessage(combatResult) {
   const resultParagraph = document.querySelector('#combat-result')
   resultParagraph.textContent = combatResult
-  // const resultMessage = document.createElement('p')
-  // resultMessage.textContent = `Your pet attacked with ${playerPetAttack.toUpperCase()}. The enemy's pet attacked with ${enemyPetAttack.toUpperCase()} - ${combatResult}`
-  // resultMessagesSection.appendChild(resultMessage)
+
+  const playerAttackSection = document.querySelector('#player-attacks')
+  const playerAttackMessage = document.createElement('p')
+  playerAttackMessage.textContent = playerPetAttack
+  playerAttackSection.appendChild(playerAttackMessage)
+
+  const enemyAttackSection = document.querySelector('#enemy-attacks')
+  const enemyAttackMessage = document.createElement('p')
+  enemyAttackMessage.textContent = enemyPetAttack
+  enemyAttackSection.appendChild(enemyAttackMessage)
 }
 
 function updatePetLives() {

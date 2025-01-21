@@ -11,7 +11,7 @@
   --secondary-font-color: #ffc857;
   --large-font-size: 5rem;
   --medium-font-size: 2.2rem;
-  --small-font-size: 1.5rem;
+  --small-font-size: 1.8rem;
 }
 
 body {
@@ -48,7 +48,7 @@ body {
   justify-content: center;
   align-items: center;
   margin: 14px;
-  padding: 48px 52px;
+  padding: 48px 56px;
   border-radius: 12px;
   width: 180px;
   height: 100px;
@@ -97,7 +97,7 @@ input[type='radio']:checked + .pet-card {
 }
 
 .attack-button {
-  padding: 10px 14px;
+  padding: 10px 16px;
   border: none;
   border-radius: 12px;
   font-size: var(--small-font-size);
@@ -144,6 +144,14 @@ input[type='radio']:checked + .pet-card {
 .mokepon-image {
   width: 80%;
   max-width: 200px;
+}
+
+.pet-name {
+  font-weight: bold;
+}
+
+.attack-messages-section {
+  text-align: center;
 }
 
 .hidden {
