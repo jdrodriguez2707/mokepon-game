@@ -15,10 +15,9 @@
 }
 
 body {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 20% 1fr auto;
   align-items: center;
-  padding-top: 64px;
   font-family: var(--primary-font-family);
   background-color: var(--primary-color);
 }
@@ -29,6 +28,10 @@ body {
   font-family: var(--secondary-font-family);
   font-size: var(--large-font-size);
   color: var(--secondary-font-color);
+}
+
+.main-container {
+  align-self: start;
 }
 
 .select-pet-section {
@@ -56,6 +59,8 @@ body {
   margin: 14px;
   padding: 48px 56px;
   border-radius: 12px;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
   width: 180px;
   height: 100px;
   background-color: var(--secondary-color);
@@ -65,11 +70,6 @@ body {
 .pet-card:hover,
 input[type='radio']:checked + .pet-card {
   outline: 2px solid var(--tertiary-color);
-}
-
-.pet-card p {
-  font-size: var(--small-font-size);
-  color: var(--primary-font-color);
 }
 
 .select-pet-button {
@@ -92,6 +92,7 @@ input[type='radio']:checked + .pet-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
   width: 100%;
   max-width: 1200px;
 }
@@ -206,6 +207,17 @@ input[type='radio']:checked + .pet-card {
     background-color: var(--primary-color);
     color: var(--secondary-font-color);
   }
+}
+
+.footer-text {
+  text-align: center;
+  margin: 20px 0;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+}
+
+.footer-link {
+  color: var(--tertiary-color);
 }
 
 .hidden {

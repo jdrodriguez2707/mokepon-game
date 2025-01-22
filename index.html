@@ -15,77 +15,97 @@
     <script src="./js/mokepon.js" defer></script>
   </head>
   <body>
-    <h1 class="game-title">MOKEPON!</h1>
+    <header>
+      <h1 class="game-title">MOKEPON!</h1>
+    </header>
 
-    <section class="select-pet-section" id="select-pet">
-      <h2 class="section-subtitle">Select your pet:</h2>
+    <main class="main-container">
+      <section class="select-pet-section" id="select-pet">
+        <h2 class="section-subtitle">Select your pet:</h2>
 
-      <div class="pet-card-container">
-        <input class="hidden" type="radio" id="hipodoge" name="pet" />
-        <label class="pet-card" for="hipodoge">
-          <p>Hipodoge</p>
-          <img
-            src="./assets/images/mokepons_mokepon_hipodoge_attack.webp"
-            alt="Mokepon Hipodoge"
-          />
-        </label>
+        <div class="pet-card-container">
+          <input class="hidden" type="radio" id="hipodoge" name="pet" />
+          <label class="pet-card" for="hipodoge">
+            Hipodoge
+            <img
+              src="./assets/images/mokepons_mokepon_hipodoge_attack.webp"
+              alt="Mokepon Hipodoge"
+            />
+          </label>
 
-        <input class="hidden" type="radio" id="capipepo" name="pet" />
-        <label class="pet-card" for="capipepo">
-          <p>Capipepo</p>
-          <img
-            src="./assets/images/mokepons_mokepon_capipepo_attack.webp"
-            alt="Mokepon Capipepo"
-          />
-        </label>
+          <input class="hidden" type="radio" id="capipepo" name="pet" />
+          <label class="pet-card" for="capipepo">
+            Capipepo
+            <img
+              src="./assets/images/mokepons_mokepon_capipepo_attack.webp"
+              alt="Mokepon Capipepo"
+            />
+          </label>
 
-        <input class="hidden" type="radio" id="ratigueya" name="pet" />
-        <label class="pet-card" for="ratigueya">
-          <p>Ratigueya</p>
-          <img
-            src="./assets/images/mokepons_mokepon_ratigueya_attack.webp"
-            alt="Mokepon Ratigueya"
-          />
-        </label>
-      </div>
-
-      <button class="select-pet-button" id="btn-select-pet">Select pet</button>
-    </section>
-
-    <section class="select-attack-section" id="select-attack">
-      <h2 class="section-subtitle">Select your attack:</h2>
-
-      <div class="attack-buttons-container">
-        <button class="attack-button">Fire🔥</button>
-        <button class="attack-button">Water💧</button>
-        <button class="attack-button">Grass🌱</button>
-      </div>
-
-      <p id="combat-result" class="combat-result">Good luck! 😎</p>
-
-      <div class="player-info-container">
-        <div id="player-pet-info" class="player-info">
-          <div class="player-stats">
-            <p class="pet-lives" id="player-pet-lives">❤️❤️❤️</p>
-            <p class="pet-name" id="player-pet-name"></p>
-            <div class="attack-messages-section" id="player-attacks"></div>
-          </div>
+          <input class="hidden" type="radio" id="ratigueya" name="pet" />
+          <label class="pet-card" for="ratigueya">
+            Ratigueya
+            <img
+              src="./assets/images/mokepons_mokepon_ratigueya_attack.webp"
+              alt="Mokepon Ratigueya"
+            />
+          </label>
         </div>
 
-        <div id="enemy-pet-info" class="player-info">
-          <div class="enemy-stats">
-            <p class="pet-lives" id="enemy-pet-lives">❤️❤️❤️</p>
-            <p class="pet-name" id="enemy-pet-name"></p>
-            <div class="attack-messages-section" id="enemy-attacks"></div>
+        <button class="select-pet-button" id="btn-select-pet">
+          Select pet
+        </button>
+      </section>
+
+      <section class="select-attack-section" id="select-attack">
+        <h2 class="section-subtitle">Select your attack:</h2>
+
+        <div class="attack-buttons-container">
+          <button class="attack-button">Fire🔥</button>
+          <button class="attack-button">Water💧</button>
+          <button class="attack-button">Grass🌱</button>
+        </div>
+
+        <p id="combat-result" class="combat-result">Good luck! 😎</p>
+
+        <div class="player-info-container">
+          <div id="player-pet-info" class="player-info">
+            <div class="player-stats">
+              <p class="pet-lives" id="player-pet-lives">❤️❤️❤️</p>
+              <p class="pet-name" id="player-pet-name"></p>
+              <div class="attack-messages-section" id="player-attacks"></div>
+            </div>
+          </div>
+
+          <div id="enemy-pet-info" class="player-info">
+            <div class="enemy-stats">
+              <p class="pet-lives" id="enemy-pet-lives">❤️❤️❤️</p>
+              <p class="pet-name" id="enemy-pet-name"></p>
+              <div class="attack-messages-section" id="enemy-attacks"></div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
     <dialog class="result-modal" id="result-modal" open>
       <div id="game-result-container" class="game-result-container">
         <button class="restart-button" id="btn-restart-game">Restart</button>
       </div>
     </dialog>
+
+    <footer id="footer">
+      <p class="footer-text">
+        Made with ❤️ by
+        <a
+          class="footer-link"
+          href="https://github.com/jdrodriguez2707"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Johan Rodriguez
+        </a>
+      </p>
+    </footer>
   </body>
 </html>

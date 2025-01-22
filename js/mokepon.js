@@ -22,6 +22,7 @@ const combatResultParagraph = document.querySelector('#combat-result')
 const resultMessagesSection = document.querySelector('#result-messages')
 const resultModal = document.querySelector('#result-modal')
 const gameResultContainer = document.querySelector('#game-result-container')
+const footer = document.querySelector('footer')
 
 function startGame() {
   // Hide the attack and restart sections at the beginning to avoid distracting the player
@@ -75,6 +76,7 @@ function selectEnemyPet() {
 
   selectAttackSection.classList.remove('hidden')
   selectPetSection.classList.add('hidden')
+  footer.classList.add('hidden')
 }
 
 function getRandomNumber(min, max) {
@@ -194,6 +196,7 @@ function restartGame() {
   enemyAttackSection.textContent = ''
 
   selectPetSection.classList.remove('hidden')
+  footer.classList.remove('hidden')
   selectAttackSection.classList.add('hidden')
   gameResultContainer.lastChild.remove()
   resultModal.classList.add('hidden')
