@@ -19,6 +19,7 @@ const enemyAttackSection = document.querySelector('#enemy-attacks')
 const combatResultParagraph = document.querySelector('#combat-result')
 const resultMessagesSection = document.querySelector('#result-messages')
 const resultModal = document.querySelector('#result-modal')
+const gameResultContainer = document.querySelector('#game-result-container')
 
 function startGame() {
   // Hide the attack and restart sections at the beginning to avoid distracting the player
@@ -140,7 +141,7 @@ function checkLives() {
 function createFinalMessage(finalMessage) {
   const resultMessage = document.createElement('p')
   resultMessage.textContent = finalMessage
-  resultMessagesSection.appendChild(resultMessage)
+  gameResultContainer.appendChild(resultMessage)
 }
 
 function endGame() {
@@ -168,7 +169,6 @@ function restartGame() {
   playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
   enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
   combatResultParagraph.textContent = 'Good luck! 😎'
-  resultMessagesSection.textContent = ''
 
   for (const pet of petOptions) {
     if (pet.checked) {
@@ -187,6 +187,7 @@ function restartGame() {
 
   selectPetSection.classList.remove('hidden')
   selectAttackSection.classList.add('hidden')
+  gameResultContainer.lastChild.remove()
   resultModal.classList.add('hidden')
 }
 
