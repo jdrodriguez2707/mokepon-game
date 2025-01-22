@@ -98,9 +98,11 @@ input[type='radio']:checked + .pet-card {
 
 .attack-buttons-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 20px;
   margin-top: 12px;
+  padding: 0 10px;
 }
 
 .attack-button {
@@ -210,6 +212,12 @@ input[type='radio']:checked + .pet-card {
   display: none;
 }
 
+@media (width >= 440px) {
+  .game-title::after {
+    content: '🔥💧🌱';
+  }
+}
+
 @media (width >= 800px) {
   .pet-card-container {
     display: flex;
@@ -217,10 +225,6 @@ input[type='radio']:checked + .pet-card {
     justify-content: space-evenly;
     width: inherit;
     max-width: 1200px;
-  }
-
-  .attack-buttons-container {
-    flex-direction: row;
   }
 
   .mokepon-image {
