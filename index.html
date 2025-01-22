@@ -20,32 +20,34 @@
     <section class="select-pet-section" id="select-pet">
       <h2 class="section-subtitle">Select your pet:</h2>
 
-      <input class="hidden" type="radio" id="hipodoge" name="pet" />
-      <label class="pet-card" for="hipodoge">
-        <p>Hipodoge</p>
-        <img
-          src="./assets/images/mokepons_mokepon_hipodoge_attack.webp"
-          alt="Mokepon Hipodoge"
-        />
-      </label>
+      <div class="pet-card-container">
+        <input class="hidden" type="radio" id="hipodoge" name="pet" />
+        <label class="pet-card" for="hipodoge">
+          <p>Hipodoge</p>
+          <img
+            src="./assets/images/mokepons_mokepon_hipodoge_attack.webp"
+            alt="Mokepon Hipodoge"
+          />
+        </label>
 
-      <input class="hidden" type="radio" id="capipepo" name="pet" />
-      <label class="pet-card" for="capipepo">
-        <p>Capipepo</p>
-        <img
-          src="./assets/images/mokepons_mokepon_capipepo_attack.webp"
-          alt="Mokepon Capipepo"
-        />
-      </label>
+        <input class="hidden" type="radio" id="capipepo" name="pet" />
+        <label class="pet-card" for="capipepo">
+          <p>Capipepo</p>
+          <img
+            src="./assets/images/mokepons_mokepon_capipepo_attack.webp"
+            alt="Mokepon Capipepo"
+          />
+        </label>
 
-      <input class="hidden" type="radio" id="ratigueya" name="pet" />
-      <label class="pet-card" for="ratigueya">
-        <p>Ratigueya</p>
-        <img
-          src="./assets/images/mokepons_mokepon_ratigueya_attack.webp"
-          alt="Mokepon Ratigueya"
-        />
-      </label>
+        <input class="hidden" type="radio" id="ratigueya" name="pet" />
+        <label class="pet-card" for="ratigueya">
+          <p>Ratigueya</p>
+          <img
+            src="./assets/images/mokepons_mokepon_ratigueya_attack.webp"
+            alt="Mokepon Ratigueya"
+          />
+        </label>
+      </div>
 
       <button class="select-pet-button" id="btn-select-pet">Select pet</button>
     </section>
@@ -69,9 +71,11 @@
             src="./assets/images/mokepons_mokepon_hipodoge_attack.webp"
             alt="Mokepon Hipodoge"
           />
-          <p id="player-pet-lives">❤️❤️❤️</p>
-          <p class="pet-name" id="player-pet-name"></p>
-          <div class="attack-messages-section" id="player-attacks"></div>
+          <div class="player-stats">
+            <p class="pet-lives" id="player-pet-lives">❤️❤️❤️</p>
+            <p class="pet-name" id="player-pet-name"></p>
+            <div class="attack-messages-section" id="player-attacks"></div>
+          </div>
         </div>
 
         <div class="player-info">
@@ -80,9 +84,11 @@
             src="./assets/images/mokepons_mokepon_ratigueya_attack.webp"
             alt="Mokepon Ratigueya"
           />
-          <p id="enemy-pet-lives">❤️❤️❤️</p>
-          <p class="pet-name" id="enemy-pet-name"></p>
-          <div class="attack-messages-section" id="enemy-attacks"></div>
+          <div class="enemy-stats">
+            <p class="pet-lives" id="enemy-pet-lives">❤️❤️❤️</p>
+            <p class="pet-name" id="enemy-pet-name"></p>
+            <div class="attack-messages-section" id="enemy-attacks"></div>
+          </div>
         </div>
       </div>
     </section>
