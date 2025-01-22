@@ -144,7 +144,7 @@ input[type='radio']:checked + .pet-card {
 
 .player-info {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: center;
 }
 

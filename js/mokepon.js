@@ -13,6 +13,8 @@ const playerPetNameSpan = document.querySelector('#player-pet-name') // span to 
 const enemyPetNameSpan = document.querySelector('#enemy-pet-name') // span to display enemy's pet name
 const playerPetLivesSpan = document.querySelector('#player-pet-lives')
 const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
+const playerPetInfoContainer = document.querySelector('#player-pet-info')
+const enemyPetInfoContainer = document.querySelector('#enemy-pet-info')
 const attacks = document.querySelectorAll('#select-attack button')
 const playerAttackSection = document.querySelector('#player-attacks')
 const enemyAttackSection = document.querySelector('#enemy-attacks')
@@ -35,18 +37,26 @@ function startGame() {
 
 function selectPlayerPet() {
   let selectedPlayerPet = null
+  let playerPetImage = null
 
   for (const pet of petOptions) {
     if (pet.checked) {
-      // get the text content of the label associated with the selected pet
-      selectedPlayerPet = document
-        .querySelector(`label[for="${pet.id}"]`)
-        .textContent.trim()
+      // get the label associated with the selected pet
+      const petLabel = document.querySelector(`label[for="${pet.id}"]`)
+      selectedPlayerPet = petLabel.textContent.trim()
+
+      // remove the checked attribute to avoid selecting the same pet again
+      pet.checked = false
+
+      // get the image associated with the selected pet to display it in the attack section
+      playerPetImage = petLabel.querySelector('img').cloneNode(true)
       break
     }
   }
 
   if (selectedPlayerPet) {
+    playerPetImage.classList.add('mokepon-image')
+    playerPetInfoContainer.appendChild(playerPetImage)
     playerPetNameSpan.textContent = selectedPlayerPet
     selectEnemyPet()
   } else {
@@ -58,6 +68,9 @@ function selectEnemyPet() {
   const pets = document.querySelectorAll('label')
   const randomIndex = getRandomNumber(0, pets.length - 1)
   const selectedEnemyPet = pets[randomIndex].textContent
+  const enemyPetImage = pets[randomIndex].querySelector('img').cloneNode(true)
+  enemyPetImage.classList.add('mokepon-image')
+  enemyPetInfoContainer.appendChild(enemyPetImage)
   enemyPetNameSpan.textContent = selectedEnemyPet
 
   selectAttackSection.classList.remove('hidden')
@@ -164,18 +177,13 @@ function restartGame() {
   playerPetLives = 3
   enemyPetLives = 3
 
+  playerPetInfoContainer.lastChild.remove()
+  enemyPetInfoContainer.lastChild.remove()
   playerPetNameSpan.textContent = ''
   enemyPetNameSpan.textContent = ''
   playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
   enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
   combatResultParagraph.textContent = 'Good luck! 😎'
-
-  for (const pet of petOptions) {
-    if (pet.checked) {
-      pet.checked = false
-      break
-    }
-  }
 
   attacks.forEach(attack => {
     attack.disabled = false
