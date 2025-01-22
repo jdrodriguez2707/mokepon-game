@@ -14,13 +14,16 @@ const enemyPetNameSpan = document.querySelector('#enemy-pet-name') // span to di
 const playerPetLivesSpan = document.querySelector('#player-pet-lives')
 const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
 const attacks = document.querySelectorAll('#select-attack button')
+const playerAttackSection = document.querySelector('#player-attacks')
+const enemyAttackSection = document.querySelector('#enemy-attacks')
+const combatResultParagraph = document.querySelector('#combat-result')
 const resultMessagesSection = document.querySelector('#result-messages')
-const restartSection = document.querySelector('#restart')
+const resultModal = document.querySelector('#result-modal')
 
 function startGame() {
   // Hide the attack and restart sections at the beginning to avoid distracting the player
   selectAttackSection.classList.add('hidden')
-  restartSection.classList.add('hidden')
+  resultModal.classList.add('hidden')
 
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
@@ -102,15 +105,12 @@ function combat() {
 }
 
 function createCombatResultMessage(combatResult) {
-  const resultParagraph = document.querySelector('#combat-result')
-  resultParagraph.textContent = combatResult
+  combatResultParagraph.textContent = combatResult
 
-  const playerAttackSection = document.querySelector('#player-attacks')
   const playerAttackMessage = document.createElement('p')
   playerAttackMessage.textContent = playerPetAttack
   playerAttackSection.appendChild(playerAttackMessage)
 
-  const enemyAttackSection = document.querySelector('#enemy-attacks')
   const enemyAttackMessage = document.createElement('p')
   enemyAttackMessage.textContent = enemyPetAttack
   enemyAttackSection.appendChild(enemyAttackMessage)
@@ -154,7 +154,7 @@ function endGame() {
   btnRestartGame.addEventListener('click', restartGame)
 
   // Show the restart section
-  restartSection.classList.remove('hidden')
+  resultModal.classList.remove('hidden')
 }
 
 function restartGame() {
@@ -165,8 +165,9 @@ function restartGame() {
 
   playerPetNameSpan.textContent = ''
   enemyPetNameSpan.textContent = ''
-  playerPetLivesSpan.textContent = playerPetLives
-  enemyPetLivesSpan.textContent = enemyPetLives
+  playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
+  enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
+  combatResultParagraph.textContent = 'Good luck! 😎'
   resultMessagesSection.textContent = ''
 
   for (const pet of petOptions) {
@@ -176,11 +177,17 @@ function restartGame() {
     }
   }
 
-  attacks.forEach(attack => (attack.disabled = false))
+  attacks.forEach(attack => {
+    attack.disabled = false
+    attack.classList.remove('disabled')
+  })
+
+  playerAttackSection.textContent = ''
+  enemyAttackSection.textContent = ''
 
   selectPetSection.classList.remove('hidden')
   selectAttackSection.classList.add('hidden')
-  restartSection.classList.add('hidden')
+  resultModal.classList.add('hidden')
 }
 
 startGame()
