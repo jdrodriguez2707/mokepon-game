@@ -7,7 +7,7 @@ let enemyPetLives = 3
 
 // Cached DOM elements
 const selectPetSection = document.querySelector('#select-pet')
-const petOptions = document.querySelectorAll('input[name="pet"]')
+const petCardContainer = document.querySelector('#pet-card-container')
 const selectAttackSection = document.querySelector('#select-attack')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
 const enemyPetNameSpan = document.querySelector('#enemy-pet-name') // span to display enemy's pet name
@@ -23,7 +23,53 @@ const resultModal = document.querySelector('#result-modal')
 const gameResultContainer = document.querySelector('#game-result-container')
 const footer = document.querySelector('footer')
 
+const pets = [
+  {
+    id: 'hipodoge',
+    name: 'Hipodoge',
+    type: 'Water💧',
+    imageSrc: './assets/images/mokepons_mokepon_hipodoge_attack.webp',
+    imageAlt: 'Mokepon Hipodoge'
+  },
+  {
+    id: 'capipepo',
+    name: 'Capipepo',
+    type: 'Grass🌱',
+    imageSrc: './assets/images/mokepons_mokepon_capipepo_attack.webp',
+    imageAlt: 'Mokepon Capipepo'
+  },
+  {
+    id: 'ratigueya',
+    name: 'Ratigueya',
+    type: 'Fire🔥',
+    imageSrc: './assets/images/mokepons_mokepon_ratigueya_attack.webp',
+    imageAlt: 'Mokepon Ratigueya'
+  }
+]
+
 function startGame() {
+  pets.forEach(pet => {
+    const input = document.createElement('input')
+    input.classList.add('hidden')
+    input.type = 'radio'
+    input.id = pet.id
+    input.name = 'pet'
+
+    const label = document.createElement('label')
+    label.classList.add('pet-card')
+    label.setAttribute('for', pet.id)
+
+    const img = document.createElement('img')
+    img.src = pet.imageSrc
+    img.alt = pet.imageAlt
+
+    label.textContent = pet.name
+    label.appendChild(img)
+
+    petCardContainer.appendChild(input)
+    petCardContainer.appendChild(label)
+  })
+
   // Hide the attack and restart sections at the beginning to avoid distracting the player
   selectAttackSection.classList.add('hidden')
   resultModal.classList.add('hidden')
@@ -36,6 +82,7 @@ function startGame() {
 }
 
 function selectPlayerPet() {
+  const petOptions = document.querySelectorAll('input[name="pet"]')
   let selectedPlayerPet = ''
   let playerPetImage = null
 
@@ -66,10 +113,11 @@ function selectPlayerPet() {
 }
 
 function selectEnemyPet() {
-  const pets = document.querySelectorAll('label')
   const randomIndex = getRandomNumber(0, pets.length - 1)
-  const selectedEnemyPet = pets[randomIndex].textContent
-  const enemyPetImage = pets[randomIndex].querySelector('img').cloneNode(true)
+  const selectedEnemyPet = pets[randomIndex].name
+  const enemyPetImage = document.createElement('img')
+  enemyPetImage.src = pets[randomIndex].imageSrc
+  enemyPetImage.alt = pets[randomIndex].imageAlt
   enemyPetImage.classList.add('mokepon-image')
   enemyPetInfoContainer.appendChild(enemyPetImage)
   enemyPetNameSpan.textContent = selectedEnemyPet
