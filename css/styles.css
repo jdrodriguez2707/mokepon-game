@@ -234,7 +234,7 @@ input[type='radio']:checked + .pet-card {
   .pet-card-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
     width: inherit;
     max-width: 1200px;
   }
@@ -247,6 +247,10 @@ input[type='radio']:checked + .pet-card {
 @media (width >= 1100px) {
   .select-pet-section {
     width: 100%;
+  }
+
+  .pet-card-container {
+    gap: 12px;
   }
 
   .pet-card {
