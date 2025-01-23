@@ -36,28 +36,28 @@ const pets = [
     'hipodoge',
     './assets/images/mokepons_mokepon_hipodoge_attack.webp',
     'Mokepon Hipodoge',
-    ['Water💧', 'Water💧', 'Water💧', 'Fire🔥', 'Grass🌱']
+    ['💧', '💧', '💧', '🔥', '🌱']
   ),
   new Mokepon(
     'Capipepo',
     'capipepo',
     './assets/images/mokepons_mokepon_capipepo_attack.webp',
     'Mokepon Capipepo',
-    ['Grass🌱', 'Grass🌱', 'Grass🌱', 'Fire🔥', 'Water💧']
+    ['🌱', '🌱', '🌱', '🔥', '💧']
   ),
   new Mokepon(
     'Ratigueya',
     'ratigueya',
     './assets/images/mokepons_mokepon_ratigueya_attack.webp',
     'Mokepon Ratigueya',
-    ['Fire🔥', 'Fire🔥', 'Fire🔥', 'Water💧', 'Grass🌱']
+    ['🔥', '🔥', '🔥', '💧', '🌱']
   )
 ]
 
 const combatRules = {
-  'Fire🔥': 'Grass🌱', // Left beats right
-  'Water💧': 'Fire🔥',
-  'Grass🌱': 'Water💧'
+  '🔥': '🌱', // Left beats right
+  '💧': '🔥',
+  '🌱': '💧'
 }
 
 let playerPetAttack = ''
