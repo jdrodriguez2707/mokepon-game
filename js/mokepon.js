@@ -1,10 +1,5 @@
 'use strict'
 
-let playerPetAttack = ''
-let enemyPetAttack = ''
-let playerPetLives = 3
-let enemyPetLives = 3
-
 // Cached DOM elements
 const selectPetSection = document.querySelector('#select-pet')
 const petCardContainer = document.querySelector('#pet-card-container')
@@ -15,7 +10,10 @@ const playerPetLivesSpan = document.querySelector('#player-pet-lives')
 const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
 const playerPetInfoContainer = document.querySelector('#player-pet-info')
 const enemyPetInfoContainer = document.querySelector('#enemy-pet-info')
-const attacks = document.querySelectorAll('.attack-button')
+const attackButtonContainer = document.querySelector(
+  '#attack-buttons-container'
+)
+let attackButtons = [] // To save buttons to disable them when the game ends
 const playerAttackSection = document.querySelector('#player-attacks')
 const enemyAttackSection = document.querySelector('#enemy-attacks')
 const combatResultParagraph = document.querySelector('#combat-result')
@@ -46,6 +44,19 @@ const pets = [
     imageAlt: 'Mokepon Ratigueya'
   }
 ]
+
+const attacks = ['Fire🔥', 'Water💧', 'Grass🌱']
+
+const combatRules = {
+  'Fire🔥': 'Grass🌱', // Left beats right
+  'Water💧': 'Fire🔥',
+  'Grass🌱': 'Water💧'
+}
+
+let playerPetAttack = ''
+let enemyPetAttack = ''
+let playerPetLives = 3
+let enemyPetLives = 3
 
 function startGame() {
   pets.forEach(pet => {
@@ -78,7 +89,7 @@ function startGame() {
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
 
   // Ensure the event listeners are added only once to avoid multiple event listeners
-  addAttackEventListeners()
+  setupAttackButtons()
 }
 
 function selectPlayerPet() {
@@ -131,28 +142,29 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function addAttackEventListeners() {
+function setupAttackButtons() {
   for (const attack of attacks) {
-    attack.addEventListener('click', () => {
-      playerPetAttack = attack.textContent
+    const button = document.createElement('button')
+    button.classList.add('attack-button')
+    button.textContent = attack
+
+    button.addEventListener('click', () => {
+      playerPetAttack = attack
       selectEnemyPetAttack()
     })
+
+    attackButtons.push(button)
+    attackButtonContainer.appendChild(button)
   }
 }
 
 function selectEnemyPetAttack() {
   const randomIndex = getRandomNumber(0, attacks.length - 1)
-  enemyPetAttack = attacks[randomIndex].textContent
+  enemyPetAttack = attacks[randomIndex]
   combat()
 }
 
 function combat() {
-  const combatRules = {
-    'Fire🔥': 'Grass🌱', // Fire beats Grass
-    'Water💧': 'Fire🔥', // Water beats Fire
-    'Grass🌱': 'Water💧' // Grass beats Water
-  }
-
   if (playerPetAttack === enemyPetAttack) {
     createCombatMessages("It's a tie!🫱🏼‍🫲🏼")
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
@@ -209,9 +221,9 @@ function createFinalMessage(finalMessage) {
 
 function endGame() {
   // Disable the attack buttons to avoid attacking again
-  attacks.forEach(attack => {
-    attack.disabled = true
-    attack.classList.add('disabled')
+  attackButtons.forEach(attackButton => {
+    attackButton.disabled = true
+    attackButton.classList.add('disabled')
   })
 
   const btnRestartGame = document.querySelector('#btn-restart-game')
@@ -235,9 +247,9 @@ function restartGame() {
   enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
   combatResultParagraph.textContent = 'Good luck! 😎'
 
-  attacks.forEach(attack => {
-    attack.disabled = false
-    attack.classList.remove('disabled')
+  attackButtons.forEach(attackButton => {
+    attackButton.disabled = false
+    attackButton.classList.remove('disabled')
   })
 
   playerAttackSection.textContent = ''
