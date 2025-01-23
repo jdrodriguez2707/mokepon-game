@@ -122,7 +122,7 @@ function selectPlayerPet() {
     playerPetInfoContainer.appendChild(playerPetImage)
     playerPetNameSpan.textContent = selectedPlayerPet
     selectEnemyPet()
-    setupPlayerAttackButtons(selectedPlayerPet)
+    extractPlayerAttacks(selectedPlayerPet)
   } else {
     // TODO: Show a message to the player to select a pet
     alert('Please select a pet')
@@ -138,6 +138,8 @@ function selectEnemyPet() {
   enemyPetImage.classList.add('mokepon-image')
   enemyPetInfoContainer.appendChild(enemyPetImage)
   enemyPetNameSpan.textContent = selectedEnemyPet.name
+
+  // Extract attacks from the selected enemy pet
   enemyAttacks.push(...selectedEnemyPet.attacks)
 
   selectAttackSection.classList.remove('hidden')
@@ -149,10 +151,15 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function setupPlayerAttackButtons(selectedPlayerPet) {
-  const playerPet = pets.find(pet => pet.name === selectedPlayerPet)
+function extractPlayerAttacks(selectedPet) {
+  // Extract attacks from the selected player pet
+  const playerPet = pets.find(pet => pet.name === selectedPet)
   const attacks = playerPet.attacks
 
+  setupPlayerAttackButtons(attacks)
+}
+
+function setupPlayerAttackButtons(attacks) {
   for (const attack of attacks) {
     const button = document.createElement('button')
     button.classList.add('attack-button')
