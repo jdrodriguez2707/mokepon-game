@@ -13,7 +13,6 @@ const enemyPetInfoContainer = document.querySelector('#enemy-pet-info')
 const attackButtonContainer = document.querySelector(
   '#attack-buttons-container'
 )
-let attackButtons = [] // To save buttons to disable them when the game ends
 const playerAttackSection = document.querySelector('#player-attacks')
 const enemyAttackSection = document.querySelector('#enemy-attacks')
 const combatResultParagraph = document.querySelector('#combat-result')
@@ -21,31 +20,39 @@ const resultModal = document.querySelector('#result-modal')
 const gameResultContainer = document.querySelector('#game-result-container')
 const footer = document.querySelector('footer')
 
-const pets = [
-  {
-    id: 'hipodoge',
-    name: 'Hipodoge',
-    type: 'Water💧',
-    imageSrc: './assets/images/mokepons_mokepon_hipodoge_attack.webp',
-    imageAlt: 'Mokepon Hipodoge'
-  },
-  {
-    id: 'capipepo',
-    name: 'Capipepo',
-    type: 'Grass🌱',
-    imageSrc: './assets/images/mokepons_mokepon_capipepo_attack.webp',
-    imageAlt: 'Mokepon Capipepo'
-  },
-  {
-    id: 'ratigueya',
-    name: 'Ratigueya',
-    type: 'Fire🔥',
-    imageSrc: './assets/images/mokepons_mokepon_ratigueya_attack.webp',
-    imageAlt: 'Mokepon Ratigueya'
+class Mokepon {
+  constructor(name, id, imageSrc, imageAlt, attacks) {
+    this.name = name
+    this.id = id
+    this.imageSrc = imageSrc
+    this.imageAlt = imageAlt
+    this.attacks = attacks
   }
-]
+}
 
-const attacks = ['Fire🔥', 'Water💧', 'Grass🌱']
+const pets = [
+  new Mokepon(
+    'Hipodoge',
+    'hipodoge',
+    './assets/images/mokepons_mokepon_hipodoge_attack.webp',
+    'Mokepon Hipodoge',
+    ['Water💧', 'Water💧', 'Water💧', 'Fire🔥', 'Grass🌱']
+  ),
+  new Mokepon(
+    'Capipepo',
+    'capipepo',
+    './assets/images/mokepons_mokepon_capipepo_attack.webp',
+    'Mokepon Capipepo',
+    ['Grass🌱', 'Grass🌱', 'Grass🌱', 'Fire🔥', 'Water💧']
+  ),
+  new Mokepon(
+    'Ratigueya',
+    'ratigueya',
+    './assets/images/mokepons_mokepon_ratigueya_attack.webp',
+    'Mokepon Ratigueya',
+    ['Fire🔥', 'Fire🔥', 'Fire🔥', 'Water💧', 'Grass🌱']
+  )
+]
 
 const combatRules = {
   'Fire🔥': 'Grass🌱', // Left beats right
@@ -54,6 +61,7 @@ const combatRules = {
 }
 
 let playerPetAttack = ''
+const enemyAttacks = [] // To save enemy's attacks to select one randomly
 let enemyPetAttack = ''
 let playerPetLives = 3
 let enemyPetLives = 3
@@ -87,9 +95,6 @@ function startGame() {
 
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
-
-  // Ensure the event listeners are added only once to avoid multiple event listeners
-  setupAttackButtons()
 }
 
 function selectPlayerPet() {
@@ -117,6 +122,7 @@ function selectPlayerPet() {
     playerPetInfoContainer.appendChild(playerPetImage)
     playerPetNameSpan.textContent = selectedPlayerPet
     selectEnemyPet()
+    setupPlayerAttackButtons(selectedPlayerPet)
   } else {
     // TODO: Show a message to the player to select a pet
     alert('Please select a pet')
@@ -125,13 +131,14 @@ function selectPlayerPet() {
 
 function selectEnemyPet() {
   const randomIndex = getRandomNumber(0, pets.length - 1)
-  const selectedEnemyPet = pets[randomIndex].name
+  const selectedEnemyPet = pets[randomIndex]
   const enemyPetImage = document.createElement('img')
   enemyPetImage.src = pets[randomIndex].imageSrc
   enemyPetImage.alt = pets[randomIndex].imageAlt
   enemyPetImage.classList.add('mokepon-image')
   enemyPetInfoContainer.appendChild(enemyPetImage)
-  enemyPetNameSpan.textContent = selectedEnemyPet
+  enemyPetNameSpan.textContent = selectedEnemyPet.name
+  enemyAttacks.push(...selectedEnemyPet.attacks)
 
   selectAttackSection.classList.remove('hidden')
   selectPetSection.classList.add('hidden')
@@ -142,7 +149,10 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function setupAttackButtons() {
+function setupPlayerAttackButtons(selectedPlayerPet) {
+  const playerPet = pets.find(pet => pet.name === selectedPlayerPet)
+  const attacks = playerPet.attacks
+
   for (const attack of attacks) {
     const button = document.createElement('button')
     button.classList.add('attack-button')
@@ -153,14 +163,13 @@ function setupAttackButtons() {
       selectEnemyPetAttack()
     })
 
-    attackButtons.push(button)
     attackButtonContainer.appendChild(button)
   }
 }
 
 function selectEnemyPetAttack() {
-  const randomIndex = getRandomNumber(0, attacks.length - 1)
-  enemyPetAttack = attacks[randomIndex]
+  const randomIndex = getRandomNumber(0, enemyAttacks.length - 1)
+  enemyPetAttack = enemyAttacks[randomIndex]
   combat()
 }
 
@@ -221,6 +230,7 @@ function createFinalMessage(finalMessage) {
 
 function endGame() {
   // Disable the attack buttons to avoid attacking again
+  const attackButtons = document.querySelectorAll('.attack-button')
   attackButtons.forEach(attackButton => {
     attackButton.disabled = true
     attackButton.classList.add('disabled')
@@ -247,13 +257,10 @@ function restartGame() {
   enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
   combatResultParagraph.textContent = 'Good luck! 😎'
 
-  attackButtons.forEach(attackButton => {
-    attackButton.disabled = false
-    attackButton.classList.remove('disabled')
-  })
-
+  attackButtonContainer.textContent = ''
   playerAttackSection.textContent = ''
   enemyAttackSection.textContent = ''
+  enemyAttacks.length = 0
 
   selectPetSection.classList.remove('hidden')
   footer.classList.remove('hidden')
