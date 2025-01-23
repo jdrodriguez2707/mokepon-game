@@ -15,11 +15,10 @@ const playerPetLivesSpan = document.querySelector('#player-pet-lives')
 const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
 const playerPetInfoContainer = document.querySelector('#player-pet-info')
 const enemyPetInfoContainer = document.querySelector('#enemy-pet-info')
-const attacks = document.querySelectorAll('#select-attack button')
+const attacks = document.querySelectorAll('.attack-button')
 const playerAttackSection = document.querySelector('#player-attacks')
 const enemyAttackSection = document.querySelector('#enemy-attacks')
 const combatResultParagraph = document.querySelector('#combat-result')
-const resultMessagesSection = document.querySelector('#result-messages')
 const resultModal = document.querySelector('#result-modal')
 const gameResultContainer = document.querySelector('#game-result-container')
 const footer = document.querySelector('footer')
@@ -32,12 +31,12 @@ function startGame() {
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
 
-  // Add event listeners to the attack buttons so the player can select an attack
+  // Ensure the event listeners are added only once to avoid multiple event listeners
   addAttackEventListeners()
 }
 
 function selectPlayerPet() {
-  let selectedPlayerPet = null
+  let selectedPlayerPet = ''
   let playerPetImage = null
 
   for (const pet of petOptions) {
@@ -61,6 +60,7 @@ function selectPlayerPet() {
     playerPetNameSpan.textContent = selectedPlayerPet
     selectEnemyPet()
   } else {
+    // TODO: Show a message to the player to select a pet
     alert('Please select a pet')
   }
 }
@@ -106,13 +106,13 @@ function combat() {
   }
 
   if (playerPetAttack === enemyPetAttack) {
-    createCombatResultMessage("It's a tie!🫱🏼‍🫲🏼")
+    createCombatMessages("It's a tie!🫱🏼‍🫲🏼")
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
-    createCombatResultMessage('You win!🏆')
+    createCombatMessages('You win!🏆')
     enemyPetLives--
     updatePetLives()
   } else {
-    createCombatResultMessage('You lose!☹️')
+    createCombatMessages('You lose!☹️')
     playerPetLives--
     updatePetLives()
   }
@@ -120,7 +120,7 @@ function combat() {
   checkLives()
 }
 
-function createCombatResultMessage(combatResult) {
+function createCombatMessages(combatResult) {
   combatResultParagraph.textContent = combatResult
 
   const playerAttackMessage = document.createElement('p')
