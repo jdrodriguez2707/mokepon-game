@@ -4,6 +4,7 @@
 const selectPetSection = document.querySelector('#select-pet')
 const petCardContainer = document.querySelector('#pet-card-container')
 const selectAttackSection = document.querySelector('#select-attack')
+const roundNumberSpan = document.querySelector('#round-number')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
 const enemyPetNameSpan = document.querySelector('#enemy-pet-name') // span to display enemy's pet name
 const playerPetLivesSpan = document.querySelector('#player-pet-lives')
@@ -60,6 +61,7 @@ const combatRules = {
   '🌱': '💧'
 }
 
+let roundNumber = 1
 let playerPetAttack = ''
 const enemyAttacks = [] // To save enemy's attacks to select one randomly
 let enemyPetAttack = ''
@@ -230,11 +232,15 @@ function checkLives() {
   } else if (enemyPetLives === 0) {
     createFinalMessage('You won the game!🎉')
   } else if (isRoundOver(attackButtons)) {
+    // Prepare next round
     setTimeout(() => {
       for (const attackButton of attackButtons) {
         attackButton.disabled = false
         attackButton.classList.remove('disabled')
       }
+
+      roundNumberSpan.textContent = ++roundNumber
+      combatResultParagraph.textContent = 'Good luck! 😎'
     }, 1000)
   }
 
@@ -260,11 +266,13 @@ function endGame() {
 }
 
 function restartGame() {
+  roundNumber = 1
   playerPetAttack = ''
   enemyPetAttack = ''
   playerPetLives = 3
   enemyPetLives = 3
 
+  roundNumberSpan.textContent = roundNumber
   playerPetInfoContainer.lastChild.remove()
   enemyPetInfoContainer.lastChild.remove()
   playerPetNameSpan.textContent = ''

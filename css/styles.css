@@ -129,11 +129,16 @@ input[type='radio']:checked + .pet-card {
   }
 }
 
+.round-number {
+  margin-top: 20px;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+}
+
 .combat-result {
   color: var(--secondary-font-color);
   font-size: var(--small-font-size);
   font-weight: bold;
-  margin-top: 24px;
 }
 
 .player-info-container {
