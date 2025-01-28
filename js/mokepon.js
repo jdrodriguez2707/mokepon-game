@@ -161,16 +161,18 @@ function extractPlayerAttacks(selectedPet) {
 
 function setupPlayerAttackButtons(attacks) {
   for (const attack of attacks) {
-    const button = document.createElement('button')
-    button.classList.add('attack-button')
-    button.textContent = attack
+    const attackButton = document.createElement('button')
+    attackButton.classList.add('attack-button')
+    attackButton.textContent = attack
 
-    button.addEventListener('click', () => {
+    attackButton.addEventListener('click', () => {
+      attackButton.disabled = true
+      attackButton.classList.add('disabled')
       playerPetAttack = attack
       selectEnemyPetAttack()
     })
 
-    attackButtonContainer.appendChild(button)
+    attackButtonContainer.appendChild(attackButton)
   }
 }
 
@@ -220,13 +222,27 @@ function updatePetLives() {
 }
 
 function checkLives() {
+  // Save all attack buttons to check if the round is over and enable them again for the next round if there are lives left
+  const attackButtons = document.querySelectorAll('.attack-button')
+
   if (playerPetLives === 0) {
     createFinalMessage('You lost the game☹️')
   } else if (enemyPetLives === 0) {
     createFinalMessage('You won the game!🎉')
+  } else if (isRoundOver(attackButtons)) {
+    setTimeout(() => {
+      for (const attackButton of attackButtons) {
+        attackButton.disabled = false
+        attackButton.classList.remove('disabled')
+      }
+    }, 1000)
   }
 
   if (playerPetLives === 0 || enemyPetLives === 0) endGame()
+}
+
+function isRoundOver(attackButtons) {
+  return Array.from(attackButtons).every(attackButton => attackButton.disabled)
 }
 
 function createFinalMessage(finalMessage) {
@@ -236,13 +252,6 @@ function createFinalMessage(finalMessage) {
 }
 
 function endGame() {
-  // Disable the attack buttons to avoid attacking again
-  const attackButtons = document.querySelectorAll('.attack-button')
-  attackButtons.forEach(attackButton => {
-    attackButton.disabled = true
-    attackButton.classList.add('disabled')
-  })
-
   const btnRestartGame = document.querySelector('#btn-restart-game')
   btnRestartGame.addEventListener('click', restartGame)
 
