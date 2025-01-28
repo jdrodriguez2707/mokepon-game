@@ -48,23 +48,27 @@ body {
 }
 
 .pet-card-container {
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
+  max-height: 430px;
 }
 
 .pet-card {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap-reverse;
+  gap: 10px;
   margin: 14px;
-  padding: 48px 56px;
   border-radius: 12px;
   font-size: var(--small-font-size);
   color: var(--primary-font-color);
-  width: 180px;
-  height: 100px;
   background-color: var(--secondary-color);
   cursor: pointer;
+  padding: 24px 16px;
+
+  & > img {
+    width: 80px;
+  }
 }
 
 .pet-card:hover,
@@ -166,6 +170,7 @@ input[type='radio']:checked + .pet-card {
 }
 
 .pet-name {
+  text-align: center;
   font-weight: bold;
 }
 
@@ -240,6 +245,7 @@ input[type='radio']:checked + .pet-card {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    flex-wrap: wrap;
     width: inherit;
     max-width: 1200px;
   }
@@ -256,6 +262,7 @@ input[type='radio']:checked + .pet-card {
 
   .pet-card-container {
     gap: 12px;
+    max-height: 400px;
   }
 
   .pet-card {
@@ -264,6 +271,10 @@ input[type='radio']:checked + .pet-card {
     padding: 32px;
     width: 260px;
     height: 300px;
+
+    & > img {
+      width: initial;
+    }
   }
 
   .player-info {

@@ -52,6 +52,27 @@ const pets = [
     './assets/images/mokepons_mokepon_ratigueya_attack.webp',
     'Mokepon Ratigueya',
     ['🔥', '🔥', '🔥', '💧', '🌱']
+  ),
+  new Mokepon(
+    'Pydos',
+    'pydos',
+    './assets/images/mokepons_mokepon_pydos_attack.webp',
+    'Mokepon Pydos',
+    ['💧', '💧', '💧', '🌱', '🔥']
+  ),
+  new Mokepon(
+    'Tucapalma',
+    'tucapalma',
+    './assets/images/mokepons_mokepon_tucapalma_attack.webp',
+    'Mokepon Tucapalma',
+    ['🌱', '🌱', '🌱', '💧', '🔥']
+  ),
+  new Mokepon(
+    'Langostelvis',
+    'langostelvis',
+    './assets/images/mokepons_mokepon_langostelvis_attack.webp',
+    'Mokepon Langostelvis',
+    ['🔥', '🔥', '🔥', '🌱', '💧']
   )
 ]
 
