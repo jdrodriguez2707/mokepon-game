@@ -3,6 +3,9 @@
 // Cached DOM elements
 const selectPetSection = document.querySelector('#select-pet')
 const petCardContainer = document.querySelector('#pet-card-container')
+const errorMessageModal = document.querySelector('#error-modal')
+const errorMessage = document.querySelector('#error-message')
+const btnCloseErrorModal = document.querySelector('#close-error-modal-btn')
 const selectAttackSection = document.querySelector('#select-attack')
 const roundNumberSpan = document.querySelector('#round-number')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
@@ -118,6 +121,12 @@ function startGame() {
 
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
+
+  // To close the error modal that appears when the player doesn't select a pet
+  btnCloseErrorModal.addEventListener('click', () => {
+    errorMessage.textContent = ''
+    errorMessageModal.classList.add('hidden')
+  })
 }
 
 function selectPlayerPet() {
@@ -147,8 +156,8 @@ function selectPlayerPet() {
     selectEnemyPet()
     extractPlayerAttacks(selectedPlayerPet)
   } else {
-    // TODO: Show a message to the player to select a pet
-    alert('Please select a pet')
+    errorMessage.textContent = 'Please select a pet to start the game!🐾'
+    errorMessageModal.classList.remove('hidden')
   }
 }
 
