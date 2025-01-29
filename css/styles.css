@@ -133,6 +133,18 @@ input[type='radio']:checked + .pet-card {
   }
 }
 
+.map-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--secondary-font-color);  
+}
+
 .select-attack-section {
   display: flex;
   flex-direction: column;

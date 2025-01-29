@@ -6,6 +6,9 @@ const petCardContainer = document.querySelector('#pet-card-container')
 const errorMessageModal = document.querySelector('#error-modal')
 const errorMessage = document.querySelector('#error-message')
 const btnCloseErrorModal = document.querySelector('#close-error-modal-btn')
+const mapSection = document.querySelector('#map-section')
+const map = document.querySelector('#map')
+const canvas = map.getContext('2d')
 const selectAttackSection = document.querySelector('#select-attack')
 const roundNumberSpan = document.querySelector('#round-number')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
@@ -125,10 +128,6 @@ function startGame() {
     petCardContainer.appendChild(label)
   })
 
-  // Hide the attack and restart sections at the beginning to avoid distracting the player
-  selectAttackSection.classList.add('hidden')
-  resultModal.classList.add('hidden')
-
   const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
   btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
 
@@ -180,19 +179,29 @@ function selectEnemyPet() {
   enemyPetImage.src = pets[randomIndex].imageSrc
   enemyPetImage.alt = pets[randomIndex].imageAlt
   enemyPetImage.classList.add('mokepon-image')
+
+  showMap()
+
   enemyPetInfoContainer.appendChild(enemyPetImage)
   enemyPetNameSpan.textContent = selectedEnemyPet.name
 
   // Extract attacks from the selected enemy pet
   enemyPetAvailableAttacks.push(...selectedEnemyPet.attacks)
 
-  selectAttackSection.classList.remove('hidden')
+  // selectAttackSection.classList.remove('hidden')
   selectPetSection.classList.add('hidden')
   footer.classList.add('hidden')
 }
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function showMap() {
+  mapSection.classList.remove('hidden')
+  const mokeponImage = new Image()
+  mokeponImage.src = selectedEnemyPet.imageSrc
+  canvas.drawImage(mokeponImage, 20, 40, 100, 100)
 }
 
 function extractPlayerAttacks() {

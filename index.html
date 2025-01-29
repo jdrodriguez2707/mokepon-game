@@ -39,7 +39,14 @@
         </dialog>
       </section>
 
-      <section class="select-attack-section" id="select-attack">
+      <section class="map-section hidden" id="map-section">
+        <h2 class="section-subtitle">
+          Journey across the map with your Mokepon!
+        </h2>
+        <canvas class="map" id="map"></canvas>
+      </section>
+
+      <section class="select-attack-section hidden" id="select-attack">
         <h2 class="section-subtitle">Select your attack:</h2>
 
         <div
@@ -70,7 +77,7 @@
       </section>
     </main>
 
-    <dialog class="result-modal" id="result-modal">
+    <dialog class="result-modal hidden" id="result-modal">
       <div id="game-result-container" class="game-result-container">
         <button class="restart-button" id="btn-restart-game">Restart</button>
       </div>
