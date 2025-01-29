@@ -336,6 +336,8 @@ function endGame() {
 
 function restartGame() {
   roundNumber = 1
+  selectedPlayerPet = ''
+  selectedEnemyPet = ''
   playerPetAttack = ''
   enemyPetAttack = ''
   playerPetLives = 3
