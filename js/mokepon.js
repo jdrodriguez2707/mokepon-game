@@ -9,6 +9,7 @@ const btnCloseErrorModal = document.querySelector('#close-error-modal-btn')
 const mapSection = document.querySelector('#map-section')
 const map = document.querySelector('#map')
 const canvas = map.getContext('2d')
+const movePetBtn = document.querySelector('#move-pet-btn')
 const selectAttackSection = document.querySelector('#select-attack')
 const roundNumberSpan = document.querySelector('#round-number')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
@@ -35,6 +36,12 @@ class Mokepon {
     this.imageSrc = imageSrc
     this.imageAlt = imageAlt
     this.attacks = attacks
+    this.mapImage = new Image()
+    this.mapImage.src = imageSrc
+    this.x = 50
+    this.y = 50
+    this.width = 80
+    this.height = 80
   }
 }
 
@@ -147,7 +154,10 @@ function selectPlayerPet() {
     if (pet.checked) {
       // get the label associated with the selected pet
       const petLabel = document.querySelector(`label[for="${pet.id}"]`)
-      selectedPlayerPet = petLabel.textContent.trim()
+      // selectedPlayerPet = petLabel.textContent.trim()
+      selectedPlayerPet = pets.find(
+        pet => pet.name === petLabel.textContent.trim()
+      )
 
       // remove the checked attribute to avoid selecting the same pet again
       pet.checked = false
@@ -161,7 +171,7 @@ function selectPlayerPet() {
   if (selectedPlayerPet) {
     playerPetImage.classList.add('mokepon-image')
     playerPetInfoContainer.appendChild(playerPetImage)
-    playerPetNameSpan.textContent = selectedPlayerPet
+    playerPetNameSpan.textContent = selectedPlayerPet.name
     selectEnemyPet()
     extractPlayerAttacks()
     checkAndBoostStrongerPet()
@@ -199,14 +209,27 @@ function getRandomNumber(min, max) {
 
 function showMap() {
   mapSection.classList.remove('hidden')
-  const mokeponImage = new Image()
-  mokeponImage.src = selectedEnemyPet.imageSrc
-  canvas.drawImage(mokeponImage, 20, 40, 100, 100)
+  renderPet()
+  movePetBtn.addEventListener('click', movePet)
+}
+
+function renderPet() {
+  canvas.clearRect(0, 0, map.width, map.height)
+  canvas.drawImage(
+    selectedPlayerPet.mapImage,
+    selectedPlayerPet.x,
+    selectedPlayerPet.y,
+    selectedPlayerPet.width,
+    selectedPlayerPet.height
+  )
+}
+
+function movePet() {
+  selectedPlayerPet.x += 5
+  renderPet()
 }
 
 function extractPlayerAttacks() {
-  // Extract attacks from the selected player pet
-  selectedPlayerPet = pets.find(pet => pet.name === selectedPlayerPet)
   playerPetAvailableAttacks.push(...selectedPlayerPet.attacks)
 }
 
