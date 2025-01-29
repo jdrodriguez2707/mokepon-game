@@ -232,7 +232,8 @@ function setupPlayerAttackButtons() {
 
 function selectEnemyPetAttack() {
   const randomIndex = getRandomNumber(0, enemyPetAvailableAttacks.length - 1)
-  enemyPetAttack = enemyPetAvailableAttacks[randomIndex]
+  // Remove the selected attack from the available attacks to avoid selecting it again
+  enemyPetAttack = enemyPetAvailableAttacks.splice(randomIndex, 1).join('')
   combat()
 }
 
@@ -284,12 +285,25 @@ function checkLives() {
   } else if (enemyPetLives === 0) {
     createFinalMessage('You won the game!🎉')
   } else if (isRoundOver(attackButtons)) {
+    // Disable the attack button left before preparing the next round
+    const attackButtonLeft = Array.from(attackButtons).find(
+      attackButton => attackButton.disabled === false
+    )
+
+    if (attackButtonLeft) {
+      attackButtonLeft.disabled = true
+      attackButtonLeft.classList.add('disabled')
+    }
+
     // Prepare next round
     setTimeout(() => {
       for (const attackButton of attackButtons) {
         attackButton.disabled = false
         attackButton.classList.remove('disabled')
       }
+
+      enemyPetAvailableAttacks.length = 0
+      enemyPetAvailableAttacks.push(...selectedEnemyPet.attacks)
 
       roundNumberSpan.textContent = ++roundNumber
       combatResultParagraph.textContent = 'Good luck! 😎'
@@ -300,7 +314,10 @@ function checkLives() {
 }
 
 function isRoundOver(attackButtons) {
-  return Array.from(attackButtons).every(attackButton => attackButton.disabled)
+  return (
+    Array.from(attackButtons).every(attackButton => attackButton.disabled) ||
+    enemyPetAvailableAttacks.length === 0
+  )
 }
 
 function createFinalMessage(finalMessage) {
