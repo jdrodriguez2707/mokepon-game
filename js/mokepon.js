@@ -211,8 +211,10 @@ function getRandomNumber(min, max) {
 function showMap() {
   let interval = setInterval(renderPet, 50)
 
+  // TODO: Create a function to handle events for the pet movement
   const movementButtons = document.querySelectorAll('.movement-btn')
   for (const button of movementButtons) {
+    // Mouse events to move the pet
     button.addEventListener('mousedown', () => {
       movePet(button.id)
     })
@@ -221,6 +223,7 @@ function showMap() {
       stopMovement() // Stop the pet when the button is released
     })
 
+    // Touch events to move the pet
     button.addEventListener('touchstart', () => {
       movePet(button.id)
     })
@@ -229,6 +232,13 @@ function showMap() {
       stopMovement()
     })
   }
+
+  // Keyboard events to move the pet
+  window.addEventListener('keydown', event => {
+    movePet(event.key)
+  })
+
+  window.addEventListener('keyup', stopMovement)
 
   mapSection.classList.remove('hidden')
 }
@@ -251,15 +261,19 @@ function renderPet() {
 function movePet(direction) {
   switch (direction) {
     case 'up':
+    case 'ArrowUp':
       selectedPlayerPet.speedY = -5
       break
     case 'down':
+    case 'ArrowDown':
       selectedPlayerPet.speedY = 5
       break
     case 'left':
+    case 'ArrowLeft':
       selectedPlayerPet.speedX = -5
       break
     case 'right':
+    case 'ArrowRight':
       selectedPlayerPet.speedX = 5
       break
   }

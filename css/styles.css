@@ -157,6 +157,7 @@ input[type='radio']:checked + .pet-card {
   border: 1px solid var(--tertiary-color);
   border-radius: 20px;
   background-color: transparent;
+  cursor: pointer;
 }
 
 .movement-btn--up {
