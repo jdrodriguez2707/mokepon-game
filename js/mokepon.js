@@ -9,7 +9,6 @@ const btnCloseErrorModal = document.querySelector('#close-error-modal-btn')
 const mapSection = document.querySelector('#map-section')
 const map = document.querySelector('#map')
 const canvas = map.getContext('2d')
-const movePetBtn = document.querySelector('#move-pet-btn')
 const selectAttackSection = document.querySelector('#select-attack')
 const roundNumberSpan = document.querySelector('#round-number')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
@@ -208,9 +207,16 @@ function getRandomNumber(min, max) {
 }
 
 function showMap() {
-  mapSection.classList.remove('hidden')
   renderPet()
-  movePetBtn.addEventListener('click', movePet)
+
+  const movementButtons = document.querySelectorAll('.movement-btn')
+  for (const button of movementButtons) {
+    button.addEventListener('click', () => {
+      movePet(button.id)
+    })
+  }
+
+  mapSection.classList.remove('hidden')
 }
 
 function renderPet() {
@@ -224,8 +230,22 @@ function renderPet() {
   )
 }
 
-function movePet() {
-  selectedPlayerPet.x += 5
+function movePet(direction) {
+  switch (direction) {
+    case 'up':
+      selectedPlayerPet.y -= 5
+      break
+    case 'down':
+      selectedPlayerPet.y += 5
+      break
+    case 'left':
+      selectedPlayerPet.x -= 5
+      break
+    case 'right':
+      selectedPlayerPet.x += 5
+      break
+  }
+
   renderPet()
 }
 
