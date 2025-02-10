@@ -41,6 +41,8 @@ class Mokepon {
     this.y = 50
     this.width = 80
     this.height = 80
+    this.speedX = 0
+    this.speedY = 0
   }
 }
 
@@ -207,12 +209,24 @@ function getRandomNumber(min, max) {
 }
 
 function showMap() {
-  renderPet()
+  let interval = setInterval(renderPet, 50)
 
   const movementButtons = document.querySelectorAll('.movement-btn')
   for (const button of movementButtons) {
-    button.addEventListener('click', () => {
+    button.addEventListener('mousedown', () => {
       movePet(button.id)
+    })
+
+    button.addEventListener('mouseup', () => {
+      stopMovement() // Stop the pet when the button is released
+    })
+
+    button.addEventListener('touchstart', () => {
+      movePet(button.id)
+    })
+
+    button.addEventListener('touchend', () => {
+      stopMovement()
     })
   }
 
@@ -220,6 +234,10 @@ function showMap() {
 }
 
 function renderPet() {
+  // Update the pet's position on the map based on the speed
+  selectedPlayerPet.x += selectedPlayerPet.speedX
+  selectedPlayerPet.y += selectedPlayerPet.speedY
+
   canvas.clearRect(0, 0, map.width, map.height)
   canvas.drawImage(
     selectedPlayerPet.mapImage,
@@ -233,20 +251,23 @@ function renderPet() {
 function movePet(direction) {
   switch (direction) {
     case 'up':
-      selectedPlayerPet.y -= 5
+      selectedPlayerPet.speedY = -5
       break
     case 'down':
-      selectedPlayerPet.y += 5
+      selectedPlayerPet.speedY = 5
       break
     case 'left':
-      selectedPlayerPet.x -= 5
+      selectedPlayerPet.speedX = -5
       break
     case 'right':
-      selectedPlayerPet.x += 5
+      selectedPlayerPet.speedX = 5
       break
   }
+}
 
-  renderPet()
+function stopMovement() {
+  selectedPlayerPet.speedX = 0
+  selectedPlayerPet.speedY = 0
 }
 
 function extractPlayerAttacks() {
