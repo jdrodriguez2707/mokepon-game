@@ -140,11 +140,9 @@ input[type='radio']:checked + .pet-card {
   gap: 20px;
 }
 
-.map {
+/* .map {
   border: 1px solid var(--secondary-font-color);
-  width: 90%;
-  max-width: 900px;
-}
+} */
 
 .movement-buttons {
   display: grid;

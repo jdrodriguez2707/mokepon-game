@@ -9,6 +9,10 @@ const btnCloseErrorModal = document.querySelector('#close-error-modal-btn')
 const mapSection = document.querySelector('#map-section')
 const map = document.querySelector('#map')
 const canvas = map.getContext('2d')
+const mapBackground = new Image()
+mapBackground.src = '../assets/images/mokemap.png'
+map.width = 700
+map.height = 500
 const selectAttackSection = document.querySelector('#select-attack')
 const roundNumberSpan = document.querySelector('#round-number')
 const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
@@ -209,17 +213,21 @@ function getRandomNumber(min, max) {
 }
 
 function showMap() {
-  let interval = setInterval(renderPet, 50)
+  let interval = setInterval(renderCanvas, 50)
   setUpPetMovementEvents()
   mapSection.classList.remove('hidden')
 }
 
-function renderPet() {
+function renderCanvas() {
   // Update the pet's position on the map based on the speed
   selectedPlayerPet.x += selectedPlayerPet.speedX
   selectedPlayerPet.y += selectedPlayerPet.speedY
 
+  // Clear the canvas before drawing the pet to avoid leaving a trail
   canvas.clearRect(0, 0, map.width, map.height)
+
+  // Draw the map background and the pet
+  canvas.drawImage(mapBackground, 0, 0, map.width, map.height)
   canvas.drawImage(
     selectedPlayerPet.mapImage,
     selectedPlayerPet.x,
