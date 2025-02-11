@@ -32,72 +32,175 @@ const gameResultContainer = document.querySelector('#game-result-container')
 const footer = document.querySelector('footer')
 
 class Mokepon {
-  constructor(name, id, type, imageSrc, imageAlt, attacks) {
+  constructor(
+    name,
+    id,
+    type,
+    imageSrc,
+    imageAlt,
+    mapImage,
+    attacks,
+    x = 10,
+    y = 30
+  ) {
     this.name = name
     this.id = id
     this.type = type
     this.imageSrc = imageSrc
     this.imageAlt = imageAlt
-    this.attacks = attacks
     this.mapImage = new Image()
-    this.mapImage.src = imageSrc
-    this.x = 50
-    this.y = 50
+    this.mapImage.src = mapImage
+    this.x = x
+    this.y = y
     this.width = 80
     this.height = 80
     this.speedX = 0
     this.speedY = 0
+    this.attacks = attacks
+  }
+
+  renderPet() {
+    canvas.drawImage(this.mapImage, this.x, this.y, this.width, this.height)
   }
 }
 
-const pets = [
+const playerPets = [
   new Mokepon(
     'Hipodoge',
     'hipodoge',
     '💧',
-    './assets/images/mokepons_mokepon_hipodoge_attack.webp',
+    '../assets/images/mokepons_mokepon_hipodoge_attack.webp',
     'Mokepon Hipodoge',
-    ['💧', '💧', '💧', '🔥', '🌱']
+    '../assets/images/hipodoge_head.png',
+    ['💧', '💧', '💧', '🔥', '🌱'],
+    10,
+    30
   ),
   new Mokepon(
     'Capipepo',
     'capipepo',
     '🌱',
-    './assets/images/mokepons_mokepon_capipepo_attack.webp',
+    '../assets/images/mokepons_mokepon_capipepo_attack.webp',
     'Mokepon Capipepo',
-    ['🌱', '🌱', '🌱', '🔥', '💧']
+    '../assets/images/capipepo_head.png',
+    ['🌱', '🌱', '🌱', '🔥', '💧'],
+    50,
+    100
   ),
   new Mokepon(
     'Ratigueya',
     'ratigueya',
     '🔥',
-    './assets/images/mokepons_mokepon_ratigueya_attack.webp',
+    '../assets/images/mokepons_mokepon_ratigueya_attack.webp',
     'Mokepon Ratigueya',
-    ['🔥', '🔥', '🔥', '💧', '🌱']
+    '../assets/images/ratigueya_head.png',
+    ['🔥', '🔥', '🔥', '💧', '🌱'],
+    100,
+    231
   ),
+  // TODO: Create map images for the following pets
   new Mokepon(
     'Pydos',
     'pydos',
     '💧',
-    './assets/images/mokepons_mokepon_pydos_attack.webp',
+    '../assets/images/mokepons_mokepon_pydos_attack.webp',
     'Mokepon Pydos',
-    ['💧', '💧', '💧', '🌱', '🔥']
+    '../assets/images/mokepons_mokepon_pydos_attack.webp',
+    ['💧', '💧', '💧', '🌱', '🔥'],
+    200,
+    300
   ),
   new Mokepon(
     'Tucapalma',
     'tucapalma',
     '🌱',
-    './assets/images/mokepons_mokepon_tucapalma_attack.webp',
+    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
     'Mokepon Tucapalma',
-    ['🌱', '🌱', '🌱', '💧', '🔥']
+    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
+    ['🌱', '🌱', '🌱', '💧', '🔥'],
+    400,
+    200
   ),
   new Mokepon(
     'Langostelvis',
     'langostelvis',
     '🔥',
-    './assets/images/mokepons_mokepon_langostelvis_attack.webp',
+    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
     'Mokepon Langostelvis',
-    ['🔥', '🔥', '🔥', '🌱', '💧']
+    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
+    ['🔥', '🔥', '🔥', '🌱', '💧'],
+    500,
+    100
+  )
+]
+
+const enemyPets = [
+  new Mokepon(
+    'Hipodoge',
+    'hipodoge',
+    '💧',
+    '../assets/images/mokepons_mokepon_hipodoge_attack.webp',
+    'Mokepon Hipodoge',
+    '../assets/images/hipodoge_head.png',
+    ['💧', '💧', '💧', '🔥', '🌱'],
+    51,
+    89
+  ),
+  new Mokepon(
+    'Capipepo',
+    'capipepo',
+    '🌱',
+    '../assets/images/mokepons_mokepon_capipepo_attack.webp',
+    'Mokepon Capipepo',
+    '../assets/images/capipepo_head.png',
+    ['🌱', '🌱', '🌱', '🔥', '💧'],
+    100,
+    200
+  ),
+  new Mokepon(
+    'Ratigueya',
+    'ratigueya',
+    '🔥',
+    '../assets/images/mokepons_mokepon_ratigueya_attack.webp',
+    'Mokepon Ratigueya',
+    '../assets/images/ratigueya_head.png',
+    ['🔥', '🔥', '🔥', '💧', '🌱'],
+    145,
+    123
+  ),
+  // TODO: Create map images for the following pets
+  new Mokepon(
+    'Pydos',
+    'pydos',
+    '💧',
+    '../assets/images/mokepons_mokepon_pydos_attack.webp',
+    'Mokepon Pydos',
+    '../assets/images/mokepons_mokepon_pydos_attack.webp',
+    ['💧', '💧', '💧', '🌱', '🔥'],
+    200,
+    300
+  ),
+  new Mokepon(
+    'Tucapalma',
+    'tucapalma',
+    '🌱',
+    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
+    'Mokepon Tucapalma',
+    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
+    ['🌱', '🌱', '🌱', '💧', '🔥'],
+    468,
+    99
+  ),
+  new Mokepon(
+    'Langostelvis',
+    'langostelvis',
+    '🔥',
+    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
+    'Mokepon Langostelvis',
+    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
+    ['🔥', '🔥', '🔥', '🌱', '💧'],
+    535,
+    121
   )
 ]
 
@@ -118,7 +221,7 @@ let playerPetLives = 3
 let enemyPetLives = 3
 
 function startGame() {
-  pets.forEach(pet => {
+  playerPets.forEach(pet => {
     const input = document.createElement('input')
     input.classList.add('hidden')
     input.type = 'radio'
@@ -160,7 +263,7 @@ function selectPlayerPet() {
       // get the label associated with the selected pet
       const petLabel = document.querySelector(`label[for="${pet.id}"]`)
       // selectedPlayerPet = petLabel.textContent.trim()
-      selectedPlayerPet = pets.find(
+      selectedPlayerPet = playerPets.find(
         pet => pet.name === petLabel.textContent.trim()
       )
 
@@ -188,14 +291,15 @@ function selectPlayerPet() {
 }
 
 function selectEnemyPet() {
-  const randomIndex = getRandomNumber(0, pets.length - 1)
-  selectedEnemyPet = pets[randomIndex]
-  const enemyPetImage = document.createElement('img')
-  enemyPetImage.src = pets[randomIndex].imageSrc
-  enemyPetImage.alt = pets[randomIndex].imageAlt
-  enemyPetImage.classList.add('mokepon-image')
+  const randomIndex = getRandomNumber(0, enemyPets.length - 1)
+  selectedEnemyPet = enemyPets[randomIndex]
 
   showMap()
+
+  const enemyPetImage = document.createElement('img')
+  enemyPetImage.src = enemyPets[randomIndex].imageSrc
+  enemyPetImage.alt = enemyPets[randomIndex].imageAlt
+  enemyPetImage.classList.add('mokepon-image')
 
   enemyPetInfoContainer.appendChild(enemyPetImage)
   enemyPetNameSpan.textContent = selectedEnemyPet.name
@@ -226,15 +330,10 @@ function renderCanvas() {
   // Clear the canvas before drawing the pet to avoid leaving a trail
   canvas.clearRect(0, 0, map.width, map.height)
 
-  // Draw the map background and the pet
+  // Draw the map background and the pets
   canvas.drawImage(mapBackground, 0, 0, map.width, map.height)
-  canvas.drawImage(
-    selectedPlayerPet.mapImage,
-    selectedPlayerPet.x,
-    selectedPlayerPet.y,
-    selectedPlayerPet.width,
-    selectedPlayerPet.height
-  )
+  selectedPlayerPet.renderPet()
+  selectedEnemyPet.renderPet()
 }
 
 function setUpPetMovementEvents() {
