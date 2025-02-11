@@ -210,9 +210,28 @@ function getRandomNumber(min, max) {
 
 function showMap() {
   let interval = setInterval(renderPet, 50)
+  setUpPetMovementEvents()
+  mapSection.classList.remove('hidden')
+}
 
-  // TODO: Create a function to handle events for the pet movement
+function renderPet() {
+  // Update the pet's position on the map based on the speed
+  selectedPlayerPet.x += selectedPlayerPet.speedX
+  selectedPlayerPet.y += selectedPlayerPet.speedY
+
+  canvas.clearRect(0, 0, map.width, map.height)
+  canvas.drawImage(
+    selectedPlayerPet.mapImage,
+    selectedPlayerPet.x,
+    selectedPlayerPet.y,
+    selectedPlayerPet.width,
+    selectedPlayerPet.height
+  )
+}
+
+function setUpPetMovementEvents() {
   const movementButtons = document.querySelectorAll('.movement-btn')
+
   for (const button of movementButtons) {
     // Mouse events to move the pet
     button.addEventListener('mousedown', () => {
@@ -239,23 +258,6 @@ function showMap() {
   })
 
   window.addEventListener('keyup', stopMovement)
-
-  mapSection.classList.remove('hidden')
-}
-
-function renderPet() {
-  // Update the pet's position on the map based on the speed
-  selectedPlayerPet.x += selectedPlayerPet.speedX
-  selectedPlayerPet.y += selectedPlayerPet.speedY
-
-  canvas.clearRect(0, 0, map.width, map.height)
-  canvas.drawImage(
-    selectedPlayerPet.mapImage,
-    selectedPlayerPet.x,
-    selectedPlayerPet.y,
-    selectedPlayerPet.width,
-    selectedPlayerPet.height
-  )
 }
 
 function movePet(direction) {
