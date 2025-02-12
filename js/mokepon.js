@@ -334,6 +334,35 @@ function renderCanvas() {
   canvas.drawImage(mapBackground, 0, 0, map.width, map.height)
   selectedPlayerPet.renderPet()
   selectedEnemyPet.renderPet()
+
+  if (selectedPlayerPet.speedX !== 0 || selectedPlayerPet.speedY !== 0)
+    checkCollision()
+}
+
+function checkCollision() {
+  const playerPetDownSide = selectedPlayerPet.y + selectedPlayerPet.height
+  const playerPetUpSide = selectedPlayerPet.y
+  const playerPetRightSide = selectedPlayerPet.x + selectedPlayerPet.width
+  const playerPetLeftSide = selectedPlayerPet.x
+
+  const enemyPetDownSide = selectedEnemyPet.y + selectedEnemyPet.height
+  const enemyPetUpSide = selectedEnemyPet.y
+  const enemyPetRightSide = selectedEnemyPet.x + selectedEnemyPet.width
+  const enemyPetLeftSide = selectedEnemyPet.x
+
+  if (
+    playerPetDownSide < enemyPetUpSide ||
+    playerPetUpSide > enemyPetDownSide ||
+    playerPetRightSide < enemyPetLeftSide ||
+    playerPetLeftSide > enemyPetRightSide
+  ) {
+    // No collision detected!
+    return
+  }
+
+  // Collision detected!
+  stopMovement()
+  alert('Collision detected!')
 }
 
 function setUpPetMovementEvents() {
@@ -371,19 +400,19 @@ function movePet(direction) {
   switch (direction) {
     case 'up':
     case 'ArrowUp':
-      selectedPlayerPet.speedY = -5
+      selectedPlayerPet.speedY = -8
       break
     case 'down':
     case 'ArrowDown':
-      selectedPlayerPet.speedY = 5
+      selectedPlayerPet.speedY = 8
       break
     case 'left':
     case 'ArrowLeft':
-      selectedPlayerPet.speedX = -5
+      selectedPlayerPet.speedX = -8
       break
     case 'right':
     case 'ArrowRight':
-      selectedPlayerPet.speedX = 5
+      selectedPlayerPet.speedX = 8
       break
   }
 }
