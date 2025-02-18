@@ -3,15 +3,18 @@
 // Cached DOM elements
 const selectPetSection = document.querySelector("#select-pet");
 const petCardContainer = document.querySelector("#pet-card-container");
+
 const errorMessageModal = document.querySelector("#error-modal");
 const errorMessage = document.querySelector("#error-message");
 const btnCloseErrorModal = document.querySelector("#close-error-modal-btn");
+
 const mapSection = document.querySelector("#map-section");
 const map = document.querySelector("#map");
 const canvas = map.getContext("2d");
 const mapBackground = new Image();
 mapBackground.src = "../assets/images/mokemap.png";
 let renderMapInterval;
+
 const selectAttackSection = document.querySelector("#select-attack");
 const roundNumberSpan = document.querySelector("#round-number");
 const playerPetNameSpan = document.querySelector("#player-pet-name"); // span to display player's pet name
@@ -26,22 +29,14 @@ const attackButtonContainer = document.querySelector(
 const playerAttackSection = document.querySelector("#player-attacks");
 const enemyAttackSection = document.querySelector("#enemy-attacks");
 const combatResultParagraph = document.querySelector("#combat-result");
+
 const resultModal = document.querySelector("#result-modal");
 const gameResultContainer = document.querySelector("#game-result-container");
+
 const footer = document.querySelector("footer");
 
 class Mokepon {
-  constructor(
-    name,
-    id,
-    type,
-    imageSrc,
-    imageAlt,
-    mapImage,
-    attacks,
-    x = 10,
-    y = 30
-  ) {
+  constructor(name, id, type, imageSrc, imageAlt, mapImage, attacks) {
     this.name = name;
     this.id = id;
     this.type = type;
@@ -49,10 +44,10 @@ class Mokepon {
     this.imageAlt = imageAlt;
     this.mapImage = new Image();
     this.mapImage.src = mapImage;
-    this.x = x;
-    this.y = y;
     this.width = 80;
     this.height = 80;
+    this.x = 0;
+    this.y = 0;
     this.speedX = 0;
     this.speedY = 0;
     this.attacks = attacks;
@@ -71,9 +66,7 @@ const playerPets = [
     "../assets/images/mokepons_mokepon_hipodoge_attack.webp",
     "Mokepon Hipodoge",
     "../assets/images/hipodoge_head.png",
-    ["💧", "💧", "💧", "🔥", "🌱"],
-    10,
-    30
+    ["💧", "💧", "💧", "🔥", "🌱"]
   ),
   new Mokepon(
     "Capipepo",
@@ -82,9 +75,7 @@ const playerPets = [
     "../assets/images/mokepons_mokepon_capipepo_attack.webp",
     "Mokepon Capipepo",
     "../assets/images/capipepo_head.png",
-    ["🌱", "🌱", "🌱", "🔥", "💧"],
-    50,
-    100
+    ["🌱", "🌱", "🌱", "🔥", "💧"]
   ),
   new Mokepon(
     "Ratigueya",
@@ -93,9 +84,7 @@ const playerPets = [
     "../assets/images/mokepons_mokepon_ratigueya_attack.webp",
     "Mokepon Ratigueya",
     "../assets/images/ratigueya_head.png",
-    ["🔥", "🔥", "🔥", "💧", "🌱"],
-    100,
-    231
+    ["🔥", "🔥", "🔥", "💧", "🌱"]
   ),
   // TODO: Create map images for the following pets
   new Mokepon(
@@ -105,9 +94,7 @@ const playerPets = [
     "../assets/images/mokepons_mokepon_pydos_attack.webp",
     "Mokepon Pydos",
     "../assets/images/mokepons_mokepon_pydos_attack.webp",
-    ["💧", "💧", "💧", "🌱", "🔥"],
-    200,
-    300
+    ["💧", "💧", "💧", "🌱", "🔥"]
   ),
   new Mokepon(
     "Tucapalma",
@@ -116,9 +103,7 @@ const playerPets = [
     "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
     "Mokepon Tucapalma",
     "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
-    ["🌱", "🌱", "🌱", "💧", "🔥"],
-    400,
-    200
+    ["🌱", "🌱", "🌱", "💧", "🔥"]
   ),
   new Mokepon(
     "Langostelvis",
@@ -127,9 +112,7 @@ const playerPets = [
     "../assets/images/mokepons_mokepon_langostelvis_attack.webp",
     "Mokepon Langostelvis",
     "../assets/images/mokepons_mokepon_langostelvis_attack.webp",
-    ["🔥", "🔥", "🔥", "🌱", "💧"],
-    500,
-    100
+    ["🔥", "🔥", "🔥", "🌱", "💧"]
   ),
 ];
 
@@ -141,9 +124,7 @@ const enemyPets = [
     "../assets/images/mokepons_mokepon_hipodoge_attack.webp",
     "Mokepon Hipodoge",
     "../assets/images/hipodoge_head.png",
-    ["💧", "💧", "💧", "🔥", "🌱"],
-    51,
-    89
+    ["💧", "💧", "💧", "🔥", "🌱"]
   ),
   new Mokepon(
     "Capipepo",
@@ -152,9 +133,7 @@ const enemyPets = [
     "../assets/images/mokepons_mokepon_capipepo_attack.webp",
     "Mokepon Capipepo",
     "../assets/images/capipepo_head.png",
-    ["🌱", "🌱", "🌱", "🔥", "💧"],
-    100,
-    200
+    ["🌱", "🌱", "🌱", "🔥", "💧"]
   ),
   new Mokepon(
     "Ratigueya",
@@ -163,9 +142,7 @@ const enemyPets = [
     "../assets/images/mokepons_mokepon_ratigueya_attack.webp",
     "Mokepon Ratigueya",
     "../assets/images/ratigueya_head.png",
-    ["🔥", "🔥", "🔥", "💧", "🌱"],
-    145,
-    123
+    ["🔥", "🔥", "🔥", "💧", "🌱"]
   ),
   // TODO: Create map images for the following pets
   new Mokepon(
@@ -175,9 +152,7 @@ const enemyPets = [
     "../assets/images/mokepons_mokepon_pydos_attack.webp",
     "Mokepon Pydos",
     "../assets/images/mokepons_mokepon_pydos_attack.webp",
-    ["💧", "💧", "💧", "🌱", "🔥"],
-    200,
-    300
+    ["💧", "💧", "💧", "🌱", "🔥"]
   ),
   new Mokepon(
     "Tucapalma",
@@ -186,9 +161,7 @@ const enemyPets = [
     "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
     "Mokepon Tucapalma",
     "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
-    ["🌱", "🌱", "🌱", "💧", "🔥"],
-    468,
-    99
+    ["🌱", "🌱", "🌱", "💧", "🔥"]
   ),
   new Mokepon(
     "Langostelvis",
@@ -197,9 +170,7 @@ const enemyPets = [
     "../assets/images/mokepons_mokepon_langostelvis_attack.webp",
     "Mokepon Langostelvis",
     "../assets/images/mokepons_mokepon_langostelvis_attack.webp",
-    ["🔥", "🔥", "🔥", "🌱", "💧"],
-    535,
-    121
+    ["🔥", "🔥", "🔥", "🌱", "💧"]
   ),
 ];
 
@@ -318,9 +289,23 @@ function getRandomNumber(min, max) {
 function showMap() {
   // Resize map for responsiveness
   resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
 
-  renderMapInterval = setInterval(renderCanvas, 50);
+  // Resize map when the window is resized
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    renderCanvas();
+  });
+
+  // Set the initial position of the pets on the map randomly
+  selectedPlayerPet.x = getRandomNumber(0, map.width - selectedPlayerPet.width);
+  selectedPlayerPet.y = getRandomNumber(
+    0,
+    map.height - selectedPlayerPet.height
+  );
+  selectedEnemyPet.x = getRandomNumber(0, map.width - selectedEnemyPet.width);
+  selectedEnemyPet.y = getRandomNumber(0, map.height - selectedEnemyPet.height);
+
+  renderMapInterval = setInterval(renderCanvas, 30);
   setUpPetMovementEvents();
   mapSection.classList.remove("hidden");
 }
@@ -330,7 +315,6 @@ function resizeCanvas() {
   const maxWidth = 700; // Set the maximum width for the canvas
   map.width = Math.min(window.innerWidth * 0.8, maxWidth);
   map.height = map.width / aspectRatio;
-  renderCanvas();
 }
 
 function renderCanvas() {
