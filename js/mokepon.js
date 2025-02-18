@@ -13,6 +13,7 @@ const mapBackground = new Image();
 mapBackground.src = "../assets/images/mokemap.png";
 map.width = 700;
 map.height = 500;
+let renderMapInterval;
 const selectAttackSection = document.querySelector("#select-attack");
 const roundNumberSpan = document.querySelector("#round-number");
 const playerPetNameSpan = document.querySelector("#player-pet-name"); // span to display player's pet name
@@ -317,7 +318,7 @@ function getRandomNumber(min, max) {
 }
 
 function showMap() {
-  let interval = setInterval(renderCanvas, 50);
+  renderMapInterval = setInterval(renderCanvas, 50);
   setUpPetMovementEvents();
   mapSection.classList.remove("hidden");
 }
@@ -362,7 +363,9 @@ function checkCollision() {
 
   // Collision detected!
   stopMovement();
-  alert("Collision detected!");
+  clearInterval(renderMapInterval);
+  selectAttackSection.classList.remove("hidden");
+  mapSection.classList.add("hidden");
 }
 
 function setUpPetMovementEvents() {
