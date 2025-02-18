@@ -11,8 +11,6 @@ const map = document.querySelector("#map");
 const canvas = map.getContext("2d");
 const mapBackground = new Image();
 mapBackground.src = "../assets/images/mokemap.png";
-map.width = 700;
-map.height = 500;
 let renderMapInterval;
 const selectAttackSection = document.querySelector("#select-attack");
 const roundNumberSpan = document.querySelector("#round-number");
@@ -318,9 +316,21 @@ function getRandomNumber(min, max) {
 }
 
 function showMap() {
+  // Resize map for responsiveness
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
   renderMapInterval = setInterval(renderCanvas, 50);
   setUpPetMovementEvents();
   mapSection.classList.remove("hidden");
+}
+
+function resizeCanvas() {
+  const aspectRatio = mapBackground.width / mapBackground.height;
+  const maxWidth = 700; // Set the maximum width for the canvas
+  map.width = Math.min(window.innerWidth * 0.8, maxWidth);
+  map.height = map.width / aspectRatio;
+  renderCanvas();
 }
 
 function renderCanvas() {
