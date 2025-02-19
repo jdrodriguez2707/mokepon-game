@@ -326,6 +326,9 @@ function resizeCanvas() {
   // Adjust pet positions based on the new canvas size
   const positionScaleFactor = map.width / previousWidth;
   resizePetPositions(positionScaleFactor);
+
+  // Adjust pet speeds based on the new canvas size
+  adjustPetSpeed(scaleFactor);
 }
 
 function resizePets(scaleFactor) {
@@ -344,6 +347,18 @@ function resizePetPositions(positionScaleFactor) {
   selectedPlayerPet.y *= positionScaleFactor;
   selectedEnemyPet.x *= positionScaleFactor;
   selectedEnemyPet.y *= positionScaleFactor;
+}
+
+function adjustPetSpeed(scaleFactor) {
+  const baseSpeed = 8; // Base speed for the pets
+  playerPets.forEach((pet) => {
+    pet.baseSpeedX = baseSpeed * scaleFactor;
+    pet.baseSpeedY = baseSpeed * scaleFactor;
+  });
+  enemyPets.forEach((pet) => {
+    pet.baseSpeedX = baseSpeed * scaleFactor;
+    pet.baseSpeedY = baseSpeed * scaleFactor;
+  });
 }
 
 function renderCanvas() {
@@ -427,22 +442,24 @@ function setUpPetMovementEvents() {
 }
 
 function movePet(direction) {
+  const speedX = selectedPlayerPet.baseSpeedX; // Use the adjusted speed
+  const speedY = selectedPlayerPet.baseSpeedY; // Use the adjusted speed
   switch (direction) {
     case "up":
     case "ArrowUp":
-      selectedPlayerPet.speedY = -8;
+      selectedPlayerPet.speedY = -speedY;
       break;
     case "down":
     case "ArrowDown":
-      selectedPlayerPet.speedY = 8;
+      selectedPlayerPet.speedY = speedY;
       break;
     case "left":
     case "ArrowLeft":
-      selectedPlayerPet.speedX = -8;
+      selectedPlayerPet.speedX = -speedX;
       break;
     case "right":
     case "ArrowRight":
-      selectedPlayerPet.speedX = 8;
+      selectedPlayerPet.speedX = speedX;
       break;
   }
 }
