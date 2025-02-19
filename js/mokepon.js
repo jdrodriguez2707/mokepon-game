@@ -36,6 +36,16 @@ const gameResultContainer = document.querySelector("#game-result-container");
 const footer = document.querySelector("footer");
 
 class Mokepon {
+  // Default size for the pets
+  static get DEFAULT_SIZE() {
+    return 80;
+  }
+
+  // Base speed for the pets to move on the map
+  static get BASE_SPEED() {
+    return 7;
+  }
+
   constructor(name, id, type, imageSrc, imageAlt, mapImage, attacks) {
     this.name = name;
     this.id = id;
@@ -44,8 +54,8 @@ class Mokepon {
     this.imageAlt = imageAlt;
     this.mapImage = new Image();
     this.mapImage.src = mapImage;
-    this.width = 0;
-    this.height = 0;
+    this.width = Mokepon.DEFAULT_SIZE;
+    this.height = Mokepon.DEFAULT_SIZE;
     this.x = 0;
     this.y = 0;
     this.speedX = 0;
@@ -333,12 +343,12 @@ function resizeCanvas() {
 
 function resizePets(scaleFactor) {
   playerPets.forEach((pet) => {
-    pet.width = 80 * scaleFactor;
-    pet.height = 80 * scaleFactor;
+    pet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
+    pet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
   });
   enemyPets.forEach((pet) => {
-    pet.width = 80 * scaleFactor;
-    pet.height = 80 * scaleFactor;
+    pet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
+    pet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
   });
 }
 
@@ -350,15 +360,14 @@ function resizePetPositions(positionScaleFactor) {
 }
 
 function adjustPetSpeed(scaleFactor) {
-  const baseSpeed = 8; // Base speed for the pets
   playerPets.forEach((pet) => {
-    pet.baseSpeedX = baseSpeed * scaleFactor;
-    pet.baseSpeedY = baseSpeed * scaleFactor;
+    pet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
+    pet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
   });
-  enemyPets.forEach((pet) => {
-    pet.baseSpeedX = baseSpeed * scaleFactor;
-    pet.baseSpeedY = baseSpeed * scaleFactor;
-  });
+  // enemyPets.forEach((pet) => {
+  //   pet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
+  //   pet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
+  // });
 }
 
 function renderCanvas() {
@@ -442,8 +451,9 @@ function setUpPetMovementEvents() {
 }
 
 function movePet(direction) {
-  const speedX = selectedPlayerPet.baseSpeedX; // Use the adjusted speed
-  const speedY = selectedPlayerPet.baseSpeedY; // Use the adjusted speed
+  // Use the adjusted speed
+  const speedX = selectedPlayerPet.adjustedSpeedX; 
+  const speedY = selectedPlayerPet.adjustedSpeedY;
   switch (direction) {
     case "up":
     case "ArrowUp":
