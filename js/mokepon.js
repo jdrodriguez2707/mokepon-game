@@ -44,8 +44,8 @@ class Mokepon {
     this.imageAlt = imageAlt;
     this.mapImage = new Image();
     this.mapImage.src = mapImage;
-    this.width = 80;
-    this.height = 80;
+    this.width = 0;
+    this.height = 0;
     this.x = 0;
     this.y = 0;
     this.speedX = 0;
@@ -292,8 +292,10 @@ function showMap() {
 
   // Resize map when the window is resized
   window.addEventListener("resize", () => {
-    resizeCanvas();
-    renderCanvas();
+    if (!mapSection.classList.contains("hidden")) {
+      resizeCanvas();
+      renderCanvas();
+    }
   });
 
   // Set the initial position of the pets on the map randomly
@@ -313,12 +315,20 @@ function showMap() {
 function resizeCanvas() {
   const aspectRatio = mapBackground.width / mapBackground.height;
   const maxWidth = 700; // Set the maximum width for the canvas
-  const previousWidth = map.width;  
+  const previousWidth = map.width;
   map.width = Math.min(window.innerWidth * 0.8, maxWidth);
   map.height = map.width / aspectRatio;
 
   // Adjust pet sizes based on the new canvas size
   const scaleFactor = map.width / maxWidth;
+  resizePets(scaleFactor);
+
+  // Adjust pet positions based on the new canvas size
+  const positionScaleFactor = map.width / previousWidth;
+  resizePetPositions(positionScaleFactor);
+}
+
+function resizePets(scaleFactor) {
   playerPets.forEach((pet) => {
     pet.width = 80 * scaleFactor;
     pet.height = 80 * scaleFactor;
@@ -327,9 +337,9 @@ function resizeCanvas() {
     pet.width = 80 * scaleFactor;
     pet.height = 80 * scaleFactor;
   });
+}
 
-  // Adjust pet positions based on the new canvas size
-  const positionScaleFactor = map.width / previousWidth;
+function resizePetPositions(positionScaleFactor) {
   selectedPlayerPet.x *= positionScaleFactor;
   selectedPlayerPet.y *= positionScaleFactor;
   selectedEnemyPet.x *= positionScaleFactor;
