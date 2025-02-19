@@ -404,6 +404,10 @@ function setUpPetMovementEvents() {
       stopMovement(); // Stop the pet when the button is released
     });
 
+    button.addEventListener("mouseleave", () => {
+      stopMovement(); // Stop the pet when the mouse leaves the button
+    });
+
     // Touch events to move the pet
     button.addEventListener("touchstart", () => {
       movePet(button.id);
