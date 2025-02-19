@@ -42,6 +42,7 @@ body {
 }
 
 .section-subtitle {
+  padding: 0 16px;
   text-align: center;
   font-size: var(--medium-font-size);
   color: #fff;
