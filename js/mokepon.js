@@ -313,6 +313,7 @@ function showMap() {
 function resizeCanvas() {
   const aspectRatio = mapBackground.width / mapBackground.height;
   const maxWidth = 700; // Set the maximum width for the canvas
+  const previousWidth = map.width;  
   map.width = Math.min(window.innerWidth * 0.8, maxWidth);
   map.height = map.width / aspectRatio;
 
@@ -326,6 +327,13 @@ function resizeCanvas() {
     pet.width = 80 * scaleFactor;
     pet.height = 80 * scaleFactor;
   });
+
+  // Adjust pet positions based on the new canvas size
+  const positionScaleFactor = map.width / previousWidth;
+  selectedPlayerPet.x *= positionScaleFactor;
+  selectedPlayerPet.y *= positionScaleFactor;
+  selectedEnemyPet.x *= positionScaleFactor;
+  selectedEnemyPet.y *= positionScaleFactor;
 }
 
 function renderCanvas() {
