@@ -315,6 +315,17 @@ function resizeCanvas() {
   const maxWidth = 700; // Set the maximum width for the canvas
   map.width = Math.min(window.innerWidth * 0.8, maxWidth);
   map.height = map.width / aspectRatio;
+
+  // Adjust pet sizes based on the new canvas size
+  const scaleFactor = map.width / maxWidth;
+  playerPets.forEach((pet) => {
+    pet.width = 80 * scaleFactor;
+    pet.height = 80 * scaleFactor;
+  });
+  enemyPets.forEach((pet) => {
+    pet.width = 80 * scaleFactor;
+    pet.height = 80 * scaleFactor;
+  });
 }
 
 function renderCanvas() {
