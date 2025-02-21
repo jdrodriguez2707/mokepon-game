@@ -1,0 +1,26 @@
+{
+  "name": "mokepon",
+  "version": "1.0.0",
+  "description": "A video game inspired by Pokemon",
+  "keywords": [
+    "mokepon",
+    "javascript",
+    "node",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/jdrodriguez2707/mokepon-game#readme",
+  "bugs": {
+    "url": "https://github.com/jdrodriguez2707/mokepon-game/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdrodriguez2707/mokepon-game.git"
+  },
+  "license": "MIT",
+  "author": "Johan Rodriguez",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
