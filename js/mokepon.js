@@ -342,14 +342,10 @@ function resizeCanvas() {
 }
 
 function resizePets(scaleFactor) {
-  playerPets.forEach((pet) => {
-    pet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
-    pet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
-  });
-  enemyPets.forEach((pet) => {
-    pet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
-    pet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
-  });
+  selectedPlayerPet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
+  selectedPlayerPet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
+  selectedEnemyPet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
+  selectedEnemyPet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
 }
 
 function resizePetPositions(positionScaleFactor) {
@@ -360,14 +356,10 @@ function resizePetPositions(positionScaleFactor) {
 }
 
 function adjustPetSpeed(scaleFactor) {
-  playerPets.forEach((pet) => {
-    pet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
-    pet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
-  });
-  // enemyPets.forEach((pet) => {
-  //   pet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
-  //   pet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
-  // });
+  selectedPlayerPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
+  selectedPlayerPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
+  // selectedEnemyPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
+  // selectedEnemyPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
 }
 
 function renderCanvas() {
@@ -452,7 +444,7 @@ function setUpPetMovementEvents() {
 
 function movePet(direction) {
   // Use the adjusted speed
-  const speedX = selectedPlayerPet.adjustedSpeedX; 
+  const speedX = selectedPlayerPet.adjustedSpeedX;
   const speedY = selectedPlayerPet.adjustedSpeedY;
   switch (direction) {
     case "up":
