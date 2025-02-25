@@ -200,7 +200,7 @@ const enemyPetAvailableAttacks = []; // To save enemy's attacks to select one ra
 let playerPetLives = 3;
 let enemyPetLives = 3;
 
-function startGame() {
+function initializeGameUI() {
   playerPets.forEach((pet) => {
     const input = document.createElement("input");
     input.classList.add("hidden");
@@ -231,6 +231,22 @@ function startGame() {
     errorMessage.textContent = "";
     errorMessageModal.classList.add("hidden");
   });
+
+  // Connect to the server to join the game
+  joinGame();
+}
+
+async function joinGame() {
+  try {
+    const response = await fetch("http://localhost:3000/join");
+    if (!response.ok) {
+      throw new Error("Failed to join the game!😢");
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
+  }
 }
 
 function selectPlayerPet() {
@@ -639,4 +655,4 @@ function restartGame() {
   resultModal.classList.add("hidden");
 }
 
-startGame();
+initializeGameUI();
