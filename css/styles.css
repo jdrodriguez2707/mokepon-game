@@ -5,8 +5,8 @@
   --tertiary-color: #119da4;
 
   /* Fonts */
-  --primary-font-family: 'Poppins', serif;
-  --secondary-font-family: 'Jersey 15', serif;
+  --primary-font-family: "Poppins", serif;
+  --secondary-font-family: "Jersey 15", serif;
   --primary-font-color: #fff;
   --secondary-font-color: #ffc857;
   --large-font-size: 5rem;
@@ -73,7 +73,7 @@ body {
 }
 
 .pet-card:hover,
-input[type='radio']:checked + .pet-card {
+input[type="radio"]:checked + .pet-card {
   outline: 2px solid var(--tertiary-color);
 }
 
@@ -322,7 +322,7 @@ input[type='radio']:checked + .pet-card {
 
 @media (width >= 440px) {
   .game-title::after {
-    content: '🔥💧🌱';
+    content: "🔥💧🌱";
   }
 }
 
