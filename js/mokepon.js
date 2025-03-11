@@ -46,9 +46,9 @@ class Mokepon {
     return 7;
   }
 
-  constructor(name, id, type, imageSrc, imageAlt, mapImage, attacks) {
+  constructor(name, inputId, type, imageSrc, imageAlt, mapImage, attacks) {
     this.name = name;
-    this.id = id;
+    this.inputId = inputId;
     this.type = type;
     this.imageSrc = imageSrc;
     this.imageAlt = imageAlt;
@@ -191,6 +191,7 @@ const combatRules = {
 };
 
 let roundNumber = 1;
+let playerId = "";
 let selectedPlayerPet = "";
 let selectedEnemyPet = "";
 let playerPetAttack = "";
@@ -205,12 +206,12 @@ function initializeGameUI() {
     const input = document.createElement("input");
     input.classList.add("hidden");
     input.type = "radio";
-    input.id = pet.id;
+    input.id = pet.inputId;
     input.name = "pet";
 
     const label = document.createElement("label");
     label.classList.add("pet-card");
-    label.setAttribute("for", pet.id);
+    label.setAttribute("for", pet.inputId);
 
     const img = document.createElement("img");
     img.src = pet.imageSrc;
@@ -244,6 +245,7 @@ async function joinGame() {
     }
     const data = await response.json();
     console.log(data);
+    playerId = data.id;
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
   }
@@ -273,6 +275,8 @@ function selectPlayerPet() {
   }
 
   if (selectedPlayerPet) {
+    // Post mokepon info to the server
+    postMokeponInfo(selectedPlayerPet);
     playerPetImage.classList.add("mokepon-image");
     playerPetInfoContainer.appendChild(playerPetImage);
     playerPetNameSpan.textContent = selectedPlayerPet.name;
@@ -283,6 +287,26 @@ function selectPlayerPet() {
   } else {
     errorMessage.textContent = "Please select a pet to start the game!🐾";
     errorMessageModal.classList.remove("hidden");
+  }
+}
+
+async function postMokeponInfo(mokepon) {
+  try {
+    const response = await fetch(`http://localhost:3000/mokepon/${playerId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mokeponName: mokepon.name,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to post mokepon info!😢");
+    }
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
   }
 }
 
@@ -483,8 +507,12 @@ function movePet(direction) {
 }
 
 function stopMovement() {
-  selectedPlayerPet.speedX = 0;
-  selectedPlayerPet.speedY = 0;
+  if (selectedPlayerPet) {
+    selectedPlayerPet.speedX = 0;
+    selectedPlayerPet.speedY = 0;
+  }
+  // selectedPlayerPet.speedX = 0;
+  // selectedPlayerPet.speedY = 0;
 }
 
 function extractPlayerAttacks() {
