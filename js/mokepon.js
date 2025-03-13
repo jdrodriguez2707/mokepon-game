@@ -415,6 +415,9 @@ function renderCanvas() {
   selectedPlayerPet.renderPet()
   selectedEnemyPet.renderPet()
 
+  // Sent mokepon position to the server
+  sendMokeponPosition()
+
   if (selectedPlayerPet.speedX !== 0 || selectedPlayerPet.speedY !== 0)
     checkCollision()
 }
@@ -445,6 +448,30 @@ function checkCollision() {
   clearInterval(renderMapInterval)
   selectAttackSection.classList.remove('hidden')
   mapSection.classList.add('hidden')
+}
+
+async function sendMokeponPosition() {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/mokepon/${playerId}/position`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          x: selectedPlayerPet.x,
+          y: selectedPlayerPet.y
+        })
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to send mokepon position!😢')
+    }
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
 }
 
 function setUpPetMovementEvents() {
