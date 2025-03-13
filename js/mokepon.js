@@ -66,6 +66,26 @@ class Mokepon {
   renderPet() {
     canvas.drawImage(this.mapImage, this.x, this.y, this.width, this.height)
   }
+
+  // Method to clone an instance
+  clone() {
+    const clone = new Mokepon(
+      this.name,
+      this.inputId,
+      this.type,
+      this.imageSrc,
+      this.imageAlt,
+      this.mapImage.src,
+      [...this.attacks]
+    )
+
+    clone.x = this.x
+    clone.y = this.y
+    clone.speedX = this.speedX
+    clone.speedY = this.speedY
+
+    return clone
+  }
 }
 
 const playerPets = [
@@ -126,63 +146,63 @@ const playerPets = [
   )
 ]
 
-const enemyPets = [
-  new Mokepon(
-    'Hipodoge',
-    'hipodoge',
-    '💧',
-    '../assets/images/mokepons_mokepon_hipodoge_attack.webp',
-    'Mokepon Hipodoge',
-    '../assets/images/hipodoge_head.png',
-    ['💧', '💧', '💧', '🔥', '🌱']
-  ),
-  new Mokepon(
-    'Capipepo',
-    'capipepo',
-    '🌱',
-    '../assets/images/mokepons_mokepon_capipepo_attack.webp',
-    'Mokepon Capipepo',
-    '../assets/images/capipepo_head.png',
-    ['🌱', '🌱', '🌱', '🔥', '💧']
-  ),
-  new Mokepon(
-    'Ratigueya',
-    'ratigueya',
-    '🔥',
-    '../assets/images/mokepons_mokepon_ratigueya_attack.webp',
-    'Mokepon Ratigueya',
-    '../assets/images/ratigueya_head.png',
-    ['🔥', '🔥', '🔥', '💧', '🌱']
-  ),
-  // TODO: Create map images for the following pets
-  new Mokepon(
-    'Pydos',
-    'pydos',
-    '💧',
-    '../assets/images/mokepons_mokepon_pydos_attack.webp',
-    'Mokepon Pydos',
-    '../assets/images/mokepons_mokepon_pydos_attack.webp',
-    ['💧', '💧', '💧', '🌱', '🔥']
-  ),
-  new Mokepon(
-    'Tucapalma',
-    'tucapalma',
-    '🌱',
-    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
-    'Mokepon Tucapalma',
-    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
-    ['🌱', '🌱', '🌱', '💧', '🔥']
-  ),
-  new Mokepon(
-    'Langostelvis',
-    'langostelvis',
-    '🔥',
-    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
-    'Mokepon Langostelvis',
-    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
-    ['🔥', '🔥', '🔥', '🌱', '💧']
-  )
-]
+// const enemyPets = [
+//   new Mokepon(
+//     'Hipodoge',
+//     'hipodoge',
+//     '💧',
+//     '../assets/images/mokepons_mokepon_hipodoge_attack.webp',
+//     'Mokepon Hipodoge',
+//     '../assets/images/hipodoge_head.png',
+//     ['💧', '💧', '💧', '🔥', '🌱']
+//   ),
+//   new Mokepon(
+//     'Capipepo',
+//     'capipepo',
+//     '🌱',
+//     '../assets/images/mokepons_mokepon_capipepo_attack.webp',
+//     'Mokepon Capipepo',
+//     '../assets/images/capipepo_head.png',
+//     ['🌱', '🌱', '🌱', '🔥', '💧']
+//   ),
+//   new Mokepon(
+//     'Ratigueya',
+//     'ratigueya',
+//     '🔥',
+//     '../assets/images/mokepons_mokepon_ratigueya_attack.webp',
+//     'Mokepon Ratigueya',
+//     '../assets/images/ratigueya_head.png',
+//     ['🔥', '🔥', '🔥', '💧', '🌱']
+//   ),
+//   // TODO: Create map images for the following pets
+//   new Mokepon(
+//     'Pydos',
+//     'pydos',
+//     '💧',
+//     '../assets/images/mokepons_mokepon_pydos_attack.webp',
+//     'Mokepon Pydos',
+//     '../assets/images/mokepons_mokepon_pydos_attack.webp',
+//     ['💧', '💧', '💧', '🌱', '🔥']
+//   ),
+//   new Mokepon(
+//     'Tucapalma',
+//     'tucapalma',
+//     '🌱',
+//     '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
+//     'Mokepon Tucapalma',
+//     '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
+//     ['🌱', '🌱', '🌱', '💧', '🔥']
+//   ),
+//   new Mokepon(
+//     'Langostelvis',
+//     'langostelvis',
+//     '🔥',
+//     '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
+//     'Mokepon Langostelvis',
+//     '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
+//     ['🔥', '🔥', '🔥', '🌱', '💧']
+//   )
+// ]
 
 const combatRules = {
   '🔥': '🌱', // Left beats right
@@ -195,11 +215,11 @@ let playerId = ''
 let selectedPlayerPet = ''
 let selectedEnemyPet = ''
 let playerPetAttack = ''
-let enemyPetAttack = ''
+// let enemyPetAttack = ''
 const playerPetAvailableAttacks = []
-const enemyPetAvailableAttacks = [] // To save enemy's attacks to select one randomly
+// const enemyPetAvailableAttacks = [] // To save enemy's attacks to select one randomly
 let playerPetLives = 3
-let enemyPetLives = 3
+// let enemyPetLives = 3
 
 function initializeGameUI() {
   playerPets.forEach(pet => {
@@ -277,10 +297,16 @@ function selectPlayerPet() {
   if (selectedPlayerPet) {
     // Post mokepon info to the server
     postMokeponInfo(selectedPlayerPet)
+
+    // Prepare mokepon info to display in the attack section
     playerPetImage.classList.add('mokepon-image')
     playerPetInfoContainer.appendChild(playerPetImage)
     playerPetNameSpan.textContent = selectedPlayerPet.name
-    selectEnemyPet()
+
+    // selectEnemyPet()
+
+    showMap()
+
     extractPlayerAttacks()
     checkAndBoostStrongerPet()
     setupPlayerAttackButtons()
@@ -310,7 +336,7 @@ async function postMokeponInfo(mokepon) {
   }
 }
 
-function selectEnemyPet() {
+/* function selectEnemyPet() {
   const randomIndex = getRandomNumber(0, enemyPets.length - 1)
   selectedEnemyPet = enemyPets[randomIndex]
 
@@ -330,7 +356,7 @@ function selectEnemyPet() {
   // selectAttackSection.classList.remove('hidden')
   selectPetSection.classList.add('hidden')
   footer.classList.add('hidden')
-}
+} */
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -354,12 +380,15 @@ function showMap() {
     0,
     map.height - selectedPlayerPet.height
   )
-  selectedEnemyPet.x = getRandomNumber(0, map.width - selectedEnemyPet.width)
-  selectedEnemyPet.y = getRandomNumber(0, map.height - selectedEnemyPet.height)
+  /* selectedEnemyPet.x = getRandomNumber(0, map.width - selectedEnemyPet.width)
+  selectedEnemyPet.y = getRandomNumber(0, map.height - selectedEnemyPet.height) */
 
   renderMapInterval = setInterval(renderCanvas, 30)
   setUpPetMovementEvents()
+
   mapSection.classList.remove('hidden')
+  selectPetSection.classList.add('hidden')
+  footer.classList.add('hidden')
 }
 
 function resizeCanvas() {
@@ -384,15 +413,15 @@ function resizeCanvas() {
 function resizePets(scaleFactor) {
   selectedPlayerPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
   selectedPlayerPet.height = Mokepon.DEFAULT_SIZE * scaleFactor
-  selectedEnemyPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
-  selectedEnemyPet.height = Mokepon.DEFAULT_SIZE * scaleFactor
+  /* selectedEnemyPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
+  selectedEnemyPet.height = Mokepon.DEFAULT_SIZE * scaleFactor */
 }
 
 function resizePetPositions(positionScaleFactor) {
   selectedPlayerPet.x *= positionScaleFactor
   selectedPlayerPet.y *= positionScaleFactor
-  selectedEnemyPet.x *= positionScaleFactor
-  selectedEnemyPet.y *= positionScaleFactor
+  /* selectedEnemyPet.x *= positionScaleFactor
+  selectedEnemyPet.y *= positionScaleFactor */
 }
 
 function adjustPetSpeed(scaleFactor) {
@@ -413,13 +442,53 @@ function renderCanvas() {
   // Draw the map background and the pets
   canvas.drawImage(mapBackground, 0, 0, map.width, map.height)
   selectedPlayerPet.renderPet()
-  selectedEnemyPet.renderPet()
+  // selectedEnemyPet.renderPet()
 
   // Sent mokepon position to the server
   sendMokeponPosition()
 
   if (selectedPlayerPet.speedX !== 0 || selectedPlayerPet.speedY !== 0)
     checkCollision()
+}
+
+async function sendMokeponPosition() {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/mokepon/${playerId}/position`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          x: selectedPlayerPet.x,
+          y: selectedPlayerPet.y
+        })
+      }
+    )
+
+    const { enemies } = await response.json()
+
+    enemies.forEach(enemy => {
+      const mokeponName = enemy.mokepon.name || ''
+
+      selectedEnemyPet = playerPets
+        .find(pet => pet.name === mokeponName)
+        .clone()
+
+      selectedEnemyPet.x = enemy.x
+      selectedEnemyPet.y = enemy.y
+      selectedEnemyPet.renderPet()
+    })
+
+    console.log(enemies)
+
+    if (!response.ok) {
+      throw new Error('Failed to send mokepon position!😢')
+    }
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
 }
 
 function checkCollision() {
@@ -448,30 +517,6 @@ function checkCollision() {
   clearInterval(renderMapInterval)
   selectAttackSection.classList.remove('hidden')
   mapSection.classList.add('hidden')
-}
-
-async function sendMokeponPosition() {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/mokepon/${playerId}/position`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          x: selectedPlayerPet.x,
-          y: selectedPlayerPet.y
-        })
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error('Failed to send mokepon position!😢')
-    }
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
-  }
 }
 
 function setUpPetMovementEvents() {
@@ -551,11 +596,12 @@ function checkAndBoostStrongerPet() {
     playerPetAvailableAttacks.push(
       selectedPlayerPet.attacks[selectedPlayerPet.attacks.length - 1]
     )
-  } else if (combatRules[selectedEnemyPet.type] === selectedPlayerPet.type) {
+  }
+  /* else if (combatRules[selectedEnemyPet.type] === selectedPlayerPet.type) {
     enemyPetAvailableAttacks.push(
       selectedEnemyPet.attacks[selectedEnemyPet.attacks.length - 1]
     )
-  }
+  } */
 }
 
 function setupPlayerAttackButtons() {
