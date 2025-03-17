@@ -215,7 +215,7 @@ const combatRules = {
 let roundNumber = 1
 let playerId = ''
 let selectedPlayerPet = ''
-let selectedEnemyPet = ''
+// let selectedEnemyPet = ''
 let playerPetAttack = ''
 // let enemyPetAttack = ''
 const playerPetAvailableAttacks = []
@@ -450,11 +450,11 @@ function renderCanvas() {
   sendMokeponPosition()
 
   enemyPets.forEach(enemy => {
-    if (enemy) enemy.renderPet()
+    if (enemy) {
+      enemy.renderPet()
+      checkCollision(enemy)
+    }
   })
-
-  if (selectedPlayerPet.speedX !== 0 || selectedPlayerPet.speedY !== 0)
-    checkCollision()
 }
 
 async function sendMokeponPosition() {
@@ -476,7 +476,10 @@ async function sendMokeponPosition() {
     const { enemies } = await response.json()
 
     enemyPets = enemies.map(enemy => {
+      let selectedEnemyPet = null
+
       if (enemy.mokepon) {
+
         const mokeponName = enemy.mokepon.name || ''
 
         selectedEnemyPet = playerPets
@@ -500,16 +503,16 @@ async function sendMokeponPosition() {
   }
 }
 
-function checkCollision() {
+function checkCollision(enemyPet) {
   const playerPetDownSide = selectedPlayerPet.y + selectedPlayerPet.height
   const playerPetUpSide = selectedPlayerPet.y
   const playerPetRightSide = selectedPlayerPet.x + selectedPlayerPet.width
   const playerPetLeftSide = selectedPlayerPet.x
 
-  const enemyPetDownSide = selectedEnemyPet.y + selectedEnemyPet.height
-  const enemyPetUpSide = selectedEnemyPet.y
-  const enemyPetRightSide = selectedEnemyPet.x + selectedEnemyPet.width
-  const enemyPetLeftSide = selectedEnemyPet.x
+  const enemyPetDownSide = enemyPet.y + enemyPet.height
+  const enemyPetUpSide = enemyPet.y
+  const enemyPetRightSide = enemyPet.x + enemyPet.width
+  const enemyPetLeftSide = enemyPet.x
 
   if (
     playerPetDownSide < enemyPetUpSide ||
