@@ -475,19 +475,33 @@ async function sendMokeponPosition() {
 
     const { enemies } = await response.json()
 
+    // Track which enemies are new to avoid checking collisions with them when they are first rendered
+    const previousEnemyIds = enemyPets.map(enemy => enemy?.id).filter(Boolean)
+
     enemyPets = enemies.map(enemy => {
       let selectedEnemyPet = null
 
       if (enemy.mokepon) {
-
         const mokeponName = enemy.mokepon.name || ''
 
         selectedEnemyPet = playerPets
           .find(pet => pet.name === mokeponName)
-          .clone()
+          ?.clone()
 
-        selectedEnemyPet.x = enemy.x
-        selectedEnemyPet.y = enemy.y
+        if (selectedEnemyPet) {
+          selectedEnemyPet.id = enemy.id
+          selectedEnemyPet.x = enemy.x
+          selectedEnemyPet.y = enemy.y
+
+          // Mark as new if this enemy wasn't in the previous list
+          if (!previousEnemyIds.includes(enemy.id)) {
+            selectedEnemyPet.isNew = true
+            // Clear the "new" status after 1 second
+            setTimeout(() => {
+              selectedEnemyPet.isNew = false
+            }, 1000)
+          }
+        }
       }
 
       return selectedEnemyPet
@@ -504,6 +518,11 @@ async function sendMokeponPosition() {
 }
 
 function checkCollision(enemyPet) {
+  // Skip collision check for newly added enemies
+  if (enemyPet.isNew) {
+    return
+  }
+
   const playerPetDownSide = selectedPlayerPet.y + selectedPlayerPet.height
   const playerPetUpSide = selectedPlayerPet.y
   const playerPetRightSide = selectedPlayerPet.x + selectedPlayerPet.width
