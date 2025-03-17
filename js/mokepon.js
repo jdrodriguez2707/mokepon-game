@@ -450,7 +450,7 @@ function renderCanvas() {
   sendMokeponPosition()
 
   enemyPets.forEach(enemy => {
-    enemy.renderPet()
+    if (enemy) enemy.renderPet()
   })
 
   if (selectedPlayerPet.speedX !== 0 || selectedPlayerPet.speedY !== 0)
@@ -476,14 +476,16 @@ async function sendMokeponPosition() {
     const { enemies } = await response.json()
 
     enemyPets = enemies.map(enemy => {
-      const mokeponName = enemy.mokepon.name || ''
+      if (enemy.mokepon) {
+        const mokeponName = enemy.mokepon.name || ''
 
-      selectedEnemyPet = playerPets
-        .find(pet => pet.name === mokeponName)
-        .clone()
+        selectedEnemyPet = playerPets
+          .find(pet => pet.name === mokeponName)
+          .clone()
 
-      selectedEnemyPet.x = enemy.x
-      selectedEnemyPet.y = enemy.y
+        selectedEnemyPet.x = enemy.x
+        selectedEnemyPet.y = enemy.y
+      }
 
       return selectedEnemyPet
     })
