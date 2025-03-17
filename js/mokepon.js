@@ -146,6 +146,8 @@ const playerPets = [
   )
 ]
 
+let enemyPets = []
+
 // const enemyPets = [
 //   new Mokepon(
 //     'Hipodoge',
@@ -447,6 +449,10 @@ function renderCanvas() {
   // Sent mokepon position to the server
   sendMokeponPosition()
 
+  enemyPets.forEach(enemy => {
+    enemy.renderPet()
+  })
+
   if (selectedPlayerPet.speedX !== 0 || selectedPlayerPet.speedY !== 0)
     checkCollision()
 }
@@ -469,7 +475,7 @@ async function sendMokeponPosition() {
 
     const { enemies } = await response.json()
 
-    enemies.forEach(enemy => {
+    enemyPets = enemies.map(enemy => {
       const mokeponName = enemy.mokepon.name || ''
 
       selectedEnemyPet = playerPets
@@ -478,7 +484,8 @@ async function sendMokeponPosition() {
 
       selectedEnemyPet.x = enemy.x
       selectedEnemyPet.y = enemy.y
-      selectedEnemyPet.renderPet()
+
+      return selectedEnemyPet
     })
 
     console.log(enemies)
