@@ -75,9 +75,18 @@ app.post('/mokepon/:playerId/attacks', (req, res) => {
     players[playerIndex].assignAttacks(attacks)
   }
 
-  console.log(players)
-
   res.end()
+})
+
+app.get('/mokepon/:playerId/attacks', (req, res) => {
+  const playerId = req.params.playerId || ''
+  const player = players.find(player => player.id === playerId)
+
+  if (player) {
+    res.send({
+      attacks: player.attacks || []
+    })
+  }
 })
 
 app.listen(port, () => {

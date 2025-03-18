@@ -214,14 +214,19 @@ const combatRules = {
 
 let roundNumber = 1
 let playerId = ''
+let enemyId = ''
 let selectedPlayerPet = ''
 // let selectedEnemyPet = ''
 let playerPetAttack = ''
-// let enemyPetAttack = ''
+let enemyPetAttack = ''
 const playerPetAvailableAttacks = []
 const enemyPetAvailableAttacks = []
+let getAttackInterval
+let playerAttacks = [] // The attacks that the player has selected to attack the enemy
+let enemyAttacks = [] // The attacks that the enemy has selected to attack the player
+let attackButtons = []
 let playerPetLives = 3
-// let enemyPetLives = 3
+let enemyPetLives = 3
 
 function initializeGameUI() {
   playerPets.forEach(pet => {
@@ -266,7 +271,7 @@ async function joinGame() {
       throw new Error('Failed to join the game!😢')
     }
     const data = await response.json()
-    console.log(data)
+    // console.log(data)
     playerId = data.id
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error)
@@ -507,7 +512,7 @@ async function sendMokeponPosition() {
       return selectedEnemyPet
     })
 
-    console.log(enemies)
+    // console.log(enemies)
 
     if (!response.ok) {
       throw new Error('Failed to send mokepon position!😢')
@@ -549,8 +554,8 @@ function checkCollision(enemyPet) {
   showEnemyPetInfo(enemyPet)
   extractPlayerAttacks()
   checkAndBoostStrongerPet(enemyPet)
+  enemyId = enemyPet.id // Save the enemy ID to send the right attack to the server
   setupPlayerAttackButtons()
-  sendMokeponAttacks()
   selectAttackSection.classList.remove('hidden')
   mapSection.classList.add('hidden')
 }
@@ -644,7 +649,7 @@ function checkAndBoostStrongerPet(enemyPet) {
     )
   }
 
-  console.log(playerPetAvailableAttacks)
+  // console.log(playerPetAvailableAttacks)
   /* else if (combatRules[selectedEnemyPet.type] === selectedPlayerPet.type) {
     enemyPetAvailableAttacks.push(
       selectedEnemyPet.attacks[selectedEnemyPet.attacks.length - 1]
@@ -660,9 +665,9 @@ function setupPlayerAttackButtons() {
 
     attackButton.addEventListener('click', () => {
       attackButton.disabled = true
-      attackButton.classList.add('disabled')
-      playerPetAttack = attack
-      // selectEnemyPetAttack()
+      attackButton.classList.add('clicked')
+      playerAttacks.push(attack)
+      sendMokeponAttacks()
     })
 
     attackButtonContainer.appendChild(attackButton)
@@ -670,16 +675,59 @@ function setupPlayerAttackButtons() {
 }
 
 function sendMokeponAttacks() {
-  try {
-    fetch(`http://localhost:3000/mokepon/${playerId}/attacks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        attacks: playerPetAvailableAttacks
-      })
+  // Deactivate the attack buttons after the player has selected an attack before sending the attacks to the server and before the enemy selects its attack
+  attackButtons = document.querySelectorAll('.attack-button')
+  attackButtons.forEach(attackButton => {
+    attackButton.disabled = true
+    attackButton.classList.add('disabled')
+  })
+
+  fetch(`http://localhost:3000/mokepon/${playerId}/attacks`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      attacks: playerAttacks
     })
+  })
+    .then(() => {
+      // Set interval to get enemy attack if it doesn't exist
+      if (!getAttackInterval) {
+        console.log('Waiting for enemy attack...')
+        getAttackInterval = setInterval(getEnemyAttacks, 50)
+      }
+    })
+    .catch(error => {
+      console.error('There was a problem to send the attack: ', error)
+    })
+}
+
+async function getEnemyAttacks() {
+  // Clear the previous interval if it exists
+  clearInterval(getAttackInterval)
+  getAttackInterval = null
+
+  try {
+    const response = await fetch(
+      `http://localhost:3000/mokepon/${enemyId}/attacks`
+    )
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error('Failed to get enemy attacks!😢')
+    }
+
+    enemyAttacks = data.attacks
+
+    // Check if both players have selected their attacks
+    if (enemyAttacks.length === playerAttacks.length) {
+      console.log('Both players have selected their attacks!')
+      combat()
+    } else {
+      // Set the interval again if needed
+      getAttackInterval = setInterval(getEnemyAttacks, 50)
+    }
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error)
   }
@@ -693,6 +741,9 @@ function sendMokeponAttacks() {
 } */
 
 function combat() {
+  playerPetAttack = playerAttacks[playerAttacks.length - 1]
+  enemyPetAttack = enemyAttacks[enemyAttacks.length - 1]
+
   if (playerPetAttack === enemyPetAttack) {
     createCombatMessages("It's a tie!🫱🏼‍🫲🏼")
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
@@ -704,6 +755,14 @@ function combat() {
     playerPetLives--
     updatePetLives()
   }
+
+  // Activate the attack buttons again
+  attackButtons.forEach(attackButton => {
+    if (!attackButton.classList.contains('clicked')) {
+      attackButton.disabled = false
+      attackButton.classList.remove('disabled')
+    }
+  })
 
   checkLives()
 }
@@ -732,14 +791,13 @@ function updatePetLives() {
 }
 
 function checkLives() {
-  // Save all attack buttons to check if the round is over and enable them again for the next round if there are lives left
-  const attackButtons = document.querySelectorAll('.attack-button')
-
   if (playerPetLives === 0) {
     createFinalMessage('You lost the game☹️')
   } else if (enemyPetLives === 0) {
     createFinalMessage('You won the game!🎉')
-  } else if (isRoundOver(attackButtons)) {
+  }
+  // Check if the round is over and enable attack buttons again for the next round if there are lives left
+  else if (isRoundOver(attackButtons)) {
     // Disable the attack button left before preparing the next round
     const attackButtonLeft = Array.from(attackButtons).find(
       attackButton => attackButton.disabled === false
@@ -755,11 +813,10 @@ function checkLives() {
       for (const attackButton of attackButtons) {
         attackButton.disabled = false
         attackButton.classList.remove('disabled')
+        attackButton.classList.remove('clicked')
       }
 
-      enemyPetAvailableAttacks.length = 0
-      enemyPetAvailableAttacks.push(...selectedEnemyPet.attacks)
-
+      enemyAttacks.length = 0
       roundNumberSpan.textContent = ++roundNumber
       combatResultParagraph.textContent = 'Good luck! 😎'
     }, 1000)
@@ -771,7 +828,9 @@ function checkLives() {
 function isRoundOver(attackButtons) {
   return (
     Array.from(attackButtons).every(attackButton => attackButton.disabled) ||
-    enemyPetAvailableAttacks.length === 0
+    enemyAttacks.length == 5 ||
+    enemyAttacks.length == 10 ||
+    enemyAttacks.length == 15
   )
 }
 
@@ -792,7 +851,7 @@ function endGame() {
 function restartGame() {
   roundNumber = 1
   selectedPlayerPet = ''
-  selectedEnemyPet = ''
+  // selectedEnemyPet = ''
   playerPetAttack = ''
   enemyPetAttack = ''
   playerPetLives = 3
