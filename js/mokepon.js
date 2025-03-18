@@ -219,7 +219,7 @@ let selectedPlayerPet = ''
 let playerPetAttack = ''
 // let enemyPetAttack = ''
 const playerPetAvailableAttacks = []
-// const enemyPetAvailableAttacks = [] // To save enemy's attacks to select one randomly
+const enemyPetAvailableAttacks = []
 let playerPetLives = 3
 // let enemyPetLives = 3
 
@@ -309,9 +309,9 @@ function selectPlayerPet() {
 
     showMap()
 
-    extractPlayerAttacks()
-    checkAndBoostStrongerPet()
-    setupPlayerAttackButtons()
+    // extractPlayerAttacks()
+    // checkAndBoostStrongerPet()
+    // setupPlayerAttackButtons()
   } else {
     errorMessage.textContent = 'Please select a pet to start the game!🐾'
     errorMessageModal.classList.remove('hidden')
@@ -546,6 +546,11 @@ function checkCollision(enemyPet) {
   // Collision detected!
   stopMovement()
   clearInterval(renderMapInterval)
+  showEnemyPetInfo(enemyPet)
+  extractPlayerAttacks()
+  checkAndBoostStrongerPet(enemyPet)
+  setupPlayerAttackButtons()
+  sendMokeponAttacks()
   selectAttackSection.classList.remove('hidden')
   mapSection.classList.add('hidden')
 }
@@ -618,16 +623,28 @@ function stopMovement() {
   // selectedPlayerPet.speedY = 0;
 }
 
+function showEnemyPetInfo(enemyPet) {
+  const enemyPetImage = document.createElement('img')
+  enemyPetImage.src = enemyPet.imageSrc
+  enemyPetImage.alt = enemyPet.imageAlt
+  enemyPetImage.classList.add('mokepon-image')
+
+  enemyPetInfoContainer.appendChild(enemyPetImage)
+  enemyPetNameSpan.textContent = enemyPet.name
+}
+
 function extractPlayerAttacks() {
   playerPetAvailableAttacks.push(...selectedPlayerPet.attacks)
 }
 
-function checkAndBoostStrongerPet() {
-  if (combatRules[selectedPlayerPet.type] === selectedEnemyPet.type) {
+function checkAndBoostStrongerPet(enemyPet) {
+  if (combatRules[selectedPlayerPet.type] === enemyPet.type) {
     playerPetAvailableAttacks.push(
       selectedPlayerPet.attacks[selectedPlayerPet.attacks.length - 1]
     )
   }
+
+  console.log(playerPetAvailableAttacks)
   /* else if (combatRules[selectedEnemyPet.type] === selectedPlayerPet.type) {
     enemyPetAvailableAttacks.push(
       selectedEnemyPet.attacks[selectedEnemyPet.attacks.length - 1]
@@ -645,19 +662,35 @@ function setupPlayerAttackButtons() {
       attackButton.disabled = true
       attackButton.classList.add('disabled')
       playerPetAttack = attack
-      selectEnemyPetAttack()
+      // selectEnemyPetAttack()
     })
 
     attackButtonContainer.appendChild(attackButton)
   }
 }
 
-function selectEnemyPetAttack() {
+function sendMokeponAttacks() {
+  try {
+    fetch(`http://localhost:3000/mokepon/${playerId}/attacks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        attacks: playerPetAvailableAttacks
+      })
+    })
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
+/* function selectEnemyPetAttack() {
   const randomIndex = getRandomNumber(0, enemyPetAvailableAttacks.length - 1)
   // Remove the selected attack from the available attacks to avoid selecting it again
   enemyPetAttack = enemyPetAvailableAttacks.splice(randomIndex, 1).join('')
   combat()
-}
+} */
 
 function combat() {
   if (playerPetAttack === enemyPetAttack) {
