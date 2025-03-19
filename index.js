@@ -58,6 +58,7 @@ app.get('/join', (req, res) => {
   const id = `${Math.random()}`
   const player = new Player(id)
   players.push(player)
+  console.log(`A new player ${id} has joined. Total: ${players.length}`)
   res.send({ id })
 })
 
@@ -73,6 +74,42 @@ app.post('/mokepon/:playerId', (req, res) => {
 
   res.end()
 })
+
+// Modify the DELETE endpoint to also work with GET requests (for beacon API)
+app.get('/player/:playerId', (req, res) => {
+  handlePlayerRemoval(req.params.playerId, res)
+})
+
+// DELETE endpoint for intentional player removal (manual restart or reload)
+app.delete('/player/:playerId', (req, res) => {
+  handlePlayerRemoval(req.params.playerId, res)
+})
+
+// Helper function for player removal logic
+function handlePlayerRemoval(playerId, res) {
+  if (!playerId) {
+    res.status(400).send({ success: false, message: 'Invalid player ID' })
+    return
+  }
+
+  const playerIndex = players.findIndex(player => player.id === playerId)
+
+  if (playerIndex >= 0) {
+    console.log(`Removing player ${playerId}`)
+    players.splice(playerIndex, 1)
+
+    // Only send a response if the connection is still alive
+    if (res && !res.headersSent) {
+      res
+        .status(200)
+        .send({ success: true, message: 'Player removed successfully' })
+    }
+  } else {
+    if (res && !res.headersSent) {
+      res.status(404).send({ success: false, message: 'Player not found' })
+    }
+  }
+}
 
 app.get('/mokepon/:playerId/safePosition', (req, res) => {
   const playerId = req.params.playerId || ''
@@ -127,7 +164,14 @@ app.post('/mokepon/:playerId/position', (req, res) => {
 
   if (playerIndex >= 0) players[playerIndex].updateMokeponPosition(x, y)
 
-  const enemies = players.filter(player => player.id !== playerId)
+  // Filter out players that are not mokepons or don't have coordinates
+  const enemies = players.filter(
+    player =>
+      player.id !== playerId &&
+      player.mokepon &&
+      player.x !== undefined &&
+      player.y !== undefined
+  )
 
   res.send({ enemies })
 })
@@ -152,6 +196,8 @@ app.get('/mokepon/:playerId/attacks', (req, res) => {
     res.send({
       attacks: player.attacks || []
     })
+  } else {
+    res.send({ attacks: [] })
   }
 })
 

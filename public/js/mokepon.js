@@ -262,8 +262,49 @@ function initializeGameUI() {
     errorMessageModal.classList.add('hidden')
   })
 
+  // Replace page reload detection with a more reliable method
+  setupPageUnloadHandler()
+
   // Connect to the server to join the game
   joinGame()
+}
+
+// Function to handle page unload/reload events
+function setupPageUnloadHandler() {
+  // Using 'pagehide' which is more reliable for detecting page unloads
+  window.addEventListener('pagehide', () => {
+    if (playerId) {
+      // Use Navigator.sendBeacon for reliable delivery during page unload
+      try {
+        const url = `${SERVER_URL}player/${playerId}`
+        navigator.sendBeacon(url)
+        console.log('Player removal request sent via Beacon API')
+      } catch (e) {
+        console.error('Error sending beacon:', e)
+      }
+    }
+  })
+
+  // Also use 'beforeunload' as a backup
+  window.addEventListener('beforeunload', () => {
+    if (playerId) {
+      try {
+        // Use fetch with keepalive flag which helps the request survive page unload
+        fetch(`${SERVER_URL}player/${playerId}`, {
+          method: 'DELETE',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).catch(e =>
+          console.log('Expected error during unload, can be ignored')
+        )
+      } catch (e) {
+        // We expect this might fail during unload, but it's a backup attempt
+        console.log('Expected error during unload:', e)
+      }
+    }
+  })
 }
 
 async function joinGame() {
@@ -273,10 +314,11 @@ async function joinGame() {
       throw new Error('Failed to join the game!😢')
     }
     const data = await response.json()
-    // console.log(data)
     playerId = data.id
+    return data
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error)
+    return null
   }
 }
 
@@ -526,6 +568,7 @@ async function sendMokeponPosition() {
 
       // If it exists, update its properties
       if (existingEnemyIndex >= 0) {
+        // console.log('Updating existing enemy pet:', mokeponName)
         enemyPet = previousEnemies[existingEnemyIndex]
         enemyPet.x = enemy.x
         enemyPet.y = enemy.y
@@ -996,6 +1039,9 @@ function createFinalMessage(finalMessage) {
 
 function endGame() {
   const btnRestartGame = document.querySelector('#btn-restart-game')
+
+  // Remove any previous event listeners to avoid multiple triggers
+  btnRestartGame.removeEventListener('click', restartGame)
   btnRestartGame.addEventListener('click', restartGame)
 
   // Show the restart section
@@ -1003,17 +1049,44 @@ function endGame() {
 }
 
 function restartGame() {
+  fetch(`${SERVER_URL}player/${playerId}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Player removed from the server:', data.message)
+
+      // Restart UI and game variables
+      resetGameState()
+
+      // Rejoin the game to get a new player ID
+      joinGame().then(() => {
+        console.log('New player ID:', playerId)
+      })
+    })
+    .catch(error => {
+      console.error('Error deleting player:', error)
+      // Continue with the game even if the player couldn't be deleted
+      resetGameState()
+      joinGame()
+    })
+}
+
+function resetGameState() {
   roundNumber = 1
   selectedPlayerPet = ''
-  // selectedEnemyPet = ''
   playerPetAttack = ''
   enemyPetAttack = ''
   playerPetLives = 3
   enemyPetLives = 3
 
   roundNumberSpan.textContent = roundNumber
-  playerPetInfoContainer.lastChild.remove()
-  enemyPetInfoContainer.lastChild.remove()
+  if (playerPetInfoContainer.lastChild) {
+    playerPetInfoContainer.lastChild.remove()
+  }
+  if (enemyPetInfoContainer.lastChild) {
+    enemyPetInfoContainer.lastChild.remove()
+  }
   playerPetNameSpan.textContent = ''
   enemyPetNameSpan.textContent = ''
   playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
@@ -1025,11 +1098,28 @@ function restartGame() {
   enemyAttackSection.textContent = ''
   playerPetAvailableAttacks.length = 0
   enemyPetAvailableAttacks.length = 0
+  playerAttacks = []
+  enemyAttacks = []
+  enemyPets = []
+
+  // Clean up any pending intervals
+  if (getAttackInterval) {
+    clearInterval(getAttackInterval)
+    getAttackInterval = null
+  }
+  if (renderMapInterval) {
+    clearInterval(renderMapInterval)
+    renderMapInterval = null
+  }
 
   selectPetSection.classList.remove('hidden')
   footer.classList.remove('hidden')
   selectAttackSection.classList.add('hidden')
-  gameResultContainer.lastChild.remove()
+  mapSection.classList.add('hidden')
+
+  if (gameResultContainer.lastChild) {
+    gameResultContainer.lastChild.remove()
+  }
   resultModal.classList.add('hidden')
 }
 
