@@ -456,6 +456,8 @@ function renderCanvas() {
   // Sent mokepon position to the server
   sendMokeponPosition()
 
+  checkMapBoundaries()
+
   enemyPets.forEach(enemy => {
     if (enemy) {
       enemy.renderPet()
@@ -518,6 +520,34 @@ async function sendMokeponPosition() {
     }
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
+function checkMapBoundaries() {
+  // Map limits
+  const upMap = 0
+  const downMap = map.height - selectedPlayerPet.height
+  const leftMap = 0
+  const rightMap = map.width - selectedPlayerPet.width
+
+  // Player edges
+  const upPlayer = selectedPlayerPet.y
+  const leftPlayer = selectedPlayerPet.x
+
+  if (upPlayer < upMap) {
+    selectedPlayerPet.y = upMap
+  }
+
+  if (upPlayer > downMap) {
+    selectedPlayerPet.y = downMap
+  }
+
+  if (leftPlayer < leftMap) {
+    selectedPlayerPet.x = leftMap
+  }
+
+  if (leftPlayer > rightMap) {
+    selectedPlayerPet.x = rightMap
   }
 }
 
