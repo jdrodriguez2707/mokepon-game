@@ -371,7 +371,7 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function showMap() {
+async function showMap() {
   // Resize map for responsiveness
   resizeCanvas()
 
@@ -383,14 +383,40 @@ function showMap() {
     }
   })
 
-  // Set the initial position of the pets on the map randomly
-  selectedPlayerPet.x = getRandomNumber(0, map.width - selectedPlayerPet.width)
-  selectedPlayerPet.y = getRandomNumber(
-    0,
-    map.height - selectedPlayerPet.height
-  )
-  /* selectedEnemyPet.x = getRandomNumber(0, map.width - selectedEnemyPet.width)
-  selectedEnemyPet.y = getRandomNumber(0, map.height - selectedEnemyPet.height) */
+  // Get a safe position from the server
+  try {
+    const response = await fetch(
+      `${SERVER_URL}mokepon/${playerId}/safePosition?width=${selectedPlayerPet.width}&height=${selectedPlayerPet.height}&mapWidth=${map.width}&mapHeight=${map.height}`
+    )
+    const data = await response.json()
+
+    if (data.safe) {
+      // Use the safe position provided by the server
+      selectedPlayerPet.x = data.x
+      selectedPlayerPet.y = data.y
+    } else {
+      // Use a random position if the server doesn't provide a safe one
+      selectedPlayerPet.x = getRandomNumber(
+        0,
+        map.width - selectedPlayerPet.width
+      )
+      selectedPlayerPet.y = getRandomNumber(
+        0,
+        map.height - selectedPlayerPet.height
+      )
+    }
+  } catch (error) {
+    console.error('Error to get a safe position:', error)
+    // Use random position as fallback
+    selectedPlayerPet.x = getRandomNumber(
+      0,
+      map.width - selectedPlayerPet.width
+    )
+    selectedPlayerPet.y = getRandomNumber(
+      0,
+      map.height - selectedPlayerPet.height
+    )
+  }
 
   renderMapInterval = setInterval(renderCanvas, 30)
   setUpPetMovementEvents()
@@ -481,39 +507,53 @@ async function sendMokeponPosition() {
 
     const { enemies } = await response.json()
 
-    // Track which enemies are new to avoid checking collisions with them when they are first rendered
-    const previousEnemyIds = enemyPets.map(enemy => enemy?.id).filter(Boolean)
+    // Keep track of current enemies
+    const previousEnemies = [...enemyPets].filter(Boolean)
+    const previousEnemyIds = previousEnemies.map(enemy => enemy.id)
 
-    enemyPets = enemies.map(enemy => {
-      let selectedEnemyPet = null
+    // To update the current enemies or create new ones
+    const updatedEnemies = []
 
-      if (enemy.mokepon) {
-        const mokeponName = enemy.mokepon.name || ''
+    enemies.forEach(enemy => {
+      if (!enemy.mokepon) return
 
-        selectedEnemyPet = playerPets
-          .find(pet => pet.name === mokeponName)
-          ?.clone()
+      const mokeponName = enemy.mokepon.name || ''
+      const existingEnemyIndex = previousEnemies.findIndex(
+        prev => prev.id === enemy.id
+      )
 
-        if (selectedEnemyPet) {
-          selectedEnemyPet.id = enemy.id
-          selectedEnemyPet.x = enemy.x
-          selectedEnemyPet.y = enemy.y
+      let enemyPet
 
-          // Mark as new if this enemy wasn't in the previous list
-          if (!previousEnemyIds.includes(enemy.id)) {
-            selectedEnemyPet.isNew = true
-            // Clear the "new" status after 1 second
-            setTimeout(() => {
-              selectedEnemyPet.isNew = false
-            }, 1000)
-          }
+      // If it exists, update its properties
+      if (existingEnemyIndex >= 0) {
+        enemyPet = previousEnemies[existingEnemyIndex]
+        enemyPet.x = enemy.x
+        enemyPet.y = enemy.y
+        enemyPet.isNew = false // It's not new anymore
+      } else {
+        // If it's new, create a new instance
+        enemyPet = playerPets.find(pet => pet.name === mokeponName)?.clone()
+
+        if (enemyPet) {
+          enemyPet.id = enemy.id
+          enemyPet.x = enemy.x
+          enemyPet.y = enemy.y
+          enemyPet.isNew = true
+
+          // Clear the state after 1 second
+          setTimeout(() => {
+            if (enemyPet && enemyPets.includes(enemyPet)) {
+              enemyPet.isNew = false
+            }
+          }, 1000)
         }
       }
 
-      return selectedEnemyPet
+      if (enemyPet) updatedEnemies.push(enemyPet)
     })
 
-    // console.log(enemies)
+    // Update the enemy list
+    enemyPets = updatedEnemies
 
     if (!response.ok) {
       throw new Error('Failed to send mokepon position!😢')

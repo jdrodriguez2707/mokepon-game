@@ -13,6 +13,10 @@ const players = []
 class Player {
   constructor(id) {
     this.id = id
+    this.x = undefined
+    this.y = undefined
+    this.mokepon = null
+    this.attacks = []
   }
 
   assignMokepon(mokepon) {
@@ -26,6 +30,21 @@ class Player {
 
   assignAttacks(attacks) {
     this.attacks = attacks
+  }
+
+  // Check if the player is too close to another player
+  isTooCloseToPlayer(otherPlayer, safeDistance) {
+    if (!this.x || !this.y || !otherPlayer.x || !otherPlayer.y) {
+      return false
+    }
+
+    // Calculate the distance between the two players
+    // Using the Euclidean distance formula
+    const distance = Math.sqrt(
+      Math.pow(this.x - otherPlayer.x, 2) + Math.pow(this.y - otherPlayer.y, 2)
+    )
+
+    return distance < safeDistance
   }
 }
 
@@ -53,6 +72,52 @@ app.post('/mokepon/:playerId', (req, res) => {
   }
 
   res.end()
+})
+
+app.get('/mokepon/:playerId/safePosition', (req, res) => {
+  const playerId = req.params.playerId || ''
+  const { width, height, mapWidth, mapHeight } = req.query
+
+  const petWidth = parseInt(width) || 80
+  const petHeight = parseInt(height) || 80
+  const maxX = parseInt(mapWidth) || 700
+  const maxY = parseInt(mapHeight) || 500
+
+  // Safe distance is the sum of the width and height of the pet plus a margin
+  const safeDistance = petWidth + petHeight + 20
+
+  // Try to find a safe position for the player (20 attempts max)
+  let safePosition = false
+  let attempts = 0
+  let x, y
+
+  while (!safePosition && attempts < 20) {
+    // Generate random coordinates
+    x = Math.floor(Math.random() * (maxX - petWidth))
+    y = Math.floor(Math.random() * (maxY - petHeight))
+
+    // Check if the position is safe
+    safePosition = true
+    for (const player of players) {
+      if (
+        player.id !== playerId &&
+        player.x !== undefined &&
+        player.y !== undefined
+      ) {
+        const thisPlayer = new Player(playerId)
+        thisPlayer.x = x
+        thisPlayer.y = y
+
+        if (thisPlayer.isTooCloseToPlayer(player, safeDistance)) {
+          safePosition = false
+          break
+        }
+      }
+    }
+    attempts++
+  }
+
+  res.send({ x, y, safe: safePosition })
 })
 
 app.post('/mokepon/:playerId/position', (req, res) => {
