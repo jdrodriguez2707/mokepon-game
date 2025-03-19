@@ -1,5 +1,7 @@
 'use strict'
 
+const SERVER_URL = 'http://localhost:3000/'
+
 // Cached DOM elements
 const selectPetSection = document.querySelector('#select-pet')
 const petCardContainer = document.querySelector('#pet-card-container')
@@ -266,7 +268,7 @@ function initializeGameUI() {
 
 async function joinGame() {
   try {
-    const response = await fetch('http://localhost:3000/join')
+    const response = await fetch(`${SERVER_URL}join`)
     if (!response.ok) {
       throw new Error('Failed to join the game!😢')
     }
@@ -325,7 +327,7 @@ function selectPlayerPet() {
 
 async function postMokeponInfo(mokepon) {
   try {
-    const response = await fetch(`http://localhost:3000/mokepon/${playerId}`, {
+    const response = await fetch(`${SERVER_URL}mokepon/${playerId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -464,19 +466,16 @@ function renderCanvas() {
 
 async function sendMokeponPosition() {
   try {
-    const response = await fetch(
-      `http://localhost:3000/mokepon/${playerId}/position`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          x: selectedPlayerPet.x,
-          y: selectedPlayerPet.y
-        })
-      }
-    )
+    const response = await fetch(`${SERVER_URL}mokepon/${playerId}/position`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        x: selectedPlayerPet.x,
+        y: selectedPlayerPet.y
+      })
+    })
 
     const { enemies } = await response.json()
 
@@ -563,36 +562,123 @@ function checkCollision(enemyPet) {
 function setUpPetMovementEvents() {
   const movementButtons = document.querySelectorAll('.movement-btn')
 
+  // Object to track which buttons are pressed
+  const keysPressed = {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+  }
+
+  // Interval to move the pet continuously
+  let movementInterval = null
+
+  // Function to process movement based on pressed keys
+  function processMovement() {
+    if (keysPressed.up) movePet('up')
+    if (keysPressed.down) movePet('down')
+    if (keysPressed.left) movePet('left')
+    if (keysPressed.right) movePet('right')
+  }
+
+  // Start continuous movement
+  function startContinuousMovement() {
+    if (!movementInterval) {
+      movementInterval = setInterval(processMovement, 30)
+    }
+  }
+
+  // Stop movement if no keys are pressed
+  function checkStopMovement() {
+    if (
+      !keysPressed.up &&
+      !keysPressed.down &&
+      !keysPressed.left &&
+      !keysPressed.right
+    ) {
+      clearInterval(movementInterval)
+      movementInterval = null
+      stopMovement()
+    }
+  }
+
+  // Configure touch events for the buttons
   for (const button of movementButtons) {
-    // Mouse events to move the pet
+    // Get the direction from the button's class name
+    const direction = button.className.match(/movement-btn--(\w+)/)[1]
+
+    // Start movement when the button is pressed
+    button.addEventListener('touchstart', e => {
+      e.preventDefault() // Prevent default touch behavior
+      keysPressed[direction] = true
+      startContinuousMovement()
+    })
+
+    // Stop movement when the button is released
+    button.addEventListener('touchend', () => {
+      keysPressed[direction] = false
+      checkStopMovement()
+    })
+
+    // Stop movement when the touch is canceled
+    button.addEventListener('touchcancel', () => {
+      keysPressed[direction] = false
+      checkStopMovement()
+    })
+
+    // Mouse events for desktop users
     button.addEventListener('mousedown', () => {
-      movePet(button.id)
+      keysPressed[direction] = true
+      startContinuousMovement()
     })
 
     button.addEventListener('mouseup', () => {
-      stopMovement() // Stop the pet when the button is released
+      keysPressed[direction] = false
+      checkStopMovement()
     })
 
     button.addEventListener('mouseleave', () => {
-      stopMovement() // Stop the pet when the mouse leaves the button
-    })
-
-    // Touch events to move the pet
-    button.addEventListener('touchstart', () => {
-      movePet(button.id)
-    })
-
-    button.addEventListener('touchend', () => {
-      stopMovement()
+      keysPressed[direction] = false
+      checkStopMovement()
     })
   }
 
-  // Keyboard events to move the pet
+  // Keyboard events for desktop users
   window.addEventListener('keydown', event => {
-    movePet(event.key)
+    switch (event.key) {
+      case 'ArrowUp':
+        keysPressed.up = true
+        break
+      case 'ArrowDown':
+        keysPressed.down = true
+        break
+      case 'ArrowLeft':
+        keysPressed.left = true
+        break
+      case 'ArrowRight':
+        keysPressed.right = true
+        break
+    }
+    startContinuousMovement()
   })
 
-  window.addEventListener('keyup', stopMovement)
+  window.addEventListener('keyup', event => {
+    switch (event.key) {
+      case 'ArrowUp':
+        keysPressed.up = false
+        break
+      case 'ArrowDown':
+        keysPressed.down = false
+        break
+      case 'ArrowLeft':
+        keysPressed.left = false
+        break
+      case 'ArrowRight':
+        keysPressed.right = false
+        break
+    }
+    checkStopMovement()
+  })
 }
 
 function movePet(direction) {
@@ -682,7 +768,7 @@ function sendMokeponAttacks() {
     attackButton.classList.add('disabled')
   })
 
-  fetch(`http://localhost:3000/mokepon/${playerId}/attacks`, {
+  fetch(`${SERVER_URL}mokepon/${playerId}/attacks`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -709,9 +795,7 @@ async function getEnemyAttacks() {
   getAttackInterval = null
 
   try {
-    const response = await fetch(
-      `http://localhost:3000/mokepon/${enemyId}/attacks`
-    )
+    const response = await fetch(`${SERVER_URL}mokepon/${enemyId}/attacks`)
     const data = await response.json()
 
     if (!response.ok) {
