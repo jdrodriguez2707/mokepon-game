@@ -53,6 +53,26 @@ body {
   max-height: 372px;
 }
 
+.pet-card-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pet-card-container::-webkit-scrollbar-track {
+  background: #119da43b;
+  border-radius: 12px;
+}
+
+.pet-card-container::-webkit-scrollbar-thumb {
+  background: var(--tertiary-color);
+  border-radius: 12px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .pet-card-container {
+    scrollbar-color: var(--tertiary-color) #119da43b;
+  }
+}
+
 .pet-card {
   display: flex;
   justify-content: center;
@@ -336,7 +356,7 @@ input[type='radio']:checked + .pet-card {
     justify-content: center;
     flex-wrap: wrap;
     width: inherit;
-    max-width: 1200px;
+    max-width: 1024px;
   }
 
   .mokepon-image {
