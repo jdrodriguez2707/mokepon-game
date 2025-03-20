@@ -50,7 +50,7 @@ body {
 
 .pet-card-container {
   overflow: auto;
-  max-height: 430px;
+  max-height: 372px;
 }
 
 .pet-card {
@@ -390,6 +390,12 @@ input[type='radio']:checked + .pet-card {
     position: absolute;
     top: 78px;
     left: -60px;
+  }
+}
+
+@media (height >= 840px) {
+  .pet-card-container {
+    max-height: 512px;
   }
 }
 
