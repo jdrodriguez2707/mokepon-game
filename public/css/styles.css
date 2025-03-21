@@ -290,6 +290,7 @@ input[type='radio']:checked + .pet-card {
 }
 
 .attack-messages-section {
+  margin-top: 8px;
   text-align: center;
 }
 
@@ -394,29 +395,26 @@ input[type='radio']:checked + .pet-card {
   }
 
   .player-info {
-    position: relative;
-    flex-direction: row;
+    flex-direction: row-reverse;
     gap: 20px;
 
     &:last-child {
-      flex-direction: row-reverse;
+      flex-direction: row;
     }
+  }
+
+  .player-stats,
+  .enemy-stats {
+    position: relative;
+  }
+
+  .attack-messages-section {
+    position: absolute;
+    width: 100%;
   }
 
   .mokepon-image {
     max-width: 300px;
-  }
-
-  .player-stats {
-    position: absolute;
-    right: -60px;
-    top: 78px;
-  }
-
-  .enemy-stats {
-    position: absolute;
-    top: 78px;
-    left: -60px;
   }
 }
 
