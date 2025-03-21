@@ -143,7 +143,7 @@ const playerPets = [
     '🔥',
     '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
     'Mokepon Langostelvis',
-    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
+    '../assets/images/langostelvis_head.webp',
     ['🔥', '🔥', '🔥', '🌱', '💧']
   )
 ]
