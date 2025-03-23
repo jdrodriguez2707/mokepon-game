@@ -1,72 +1,72 @@
-'use strict'
+"use strict";
 
-const SERVER_URL = 'http://localhost:3000/'
+const SERVER_URL = "http://localhost:3000/";
 
 // Cached DOM elements
-const selectPetSection = document.querySelector('#select-pet')
-const petCardContainer = document.querySelector('#pet-card-container')
+const selectPetSection = document.querySelector("#select-pet");
+const petCardContainer = document.querySelector("#pet-card-container");
 
-const errorMessageModal = document.querySelector('#error-modal')
-const errorMessage = document.querySelector('#error-message')
-const btnCloseErrorModal = document.querySelector('#close-error-modal-btn')
+const errorMessageModal = document.querySelector("#error-modal");
+const errorMessage = document.querySelector("#error-message");
+const btnCloseErrorModal = document.querySelector("#close-error-modal-btn");
 
-const mapSection = document.querySelector('#map-section')
-const map = document.querySelector('#map')
-const canvas = map.getContext('2d')
-const mapBackground = new Image()
-mapBackground.src = '../assets/images/mokemap.png'
-let renderMapInterval
+const mapSection = document.querySelector("#map-section");
+const map = document.querySelector("#map");
+const canvas = map.getContext("2d");
+const mapBackground = new Image();
+mapBackground.src = "../assets/images/mokemap.png";
+let renderMapInterval;
 
-const selectAttackSection = document.querySelector('#select-attack')
-const roundNumberSpan = document.querySelector('#round-number')
-const playerPetNameSpan = document.querySelector('#player-pet-name') // span to display player's pet name
-const enemyPetNameSpan = document.querySelector('#enemy-pet-name') // span to display enemy's pet name
-const playerPetLivesSpan = document.querySelector('#player-pet-lives')
-const enemyPetLivesSpan = document.querySelector('#enemy-pet-lives')
-const playerPetInfoContainer = document.querySelector('#player-pet-info')
-const enemyPetInfoContainer = document.querySelector('#enemy-pet-info')
+const selectAttackSection = document.querySelector("#select-attack");
+const roundNumberSpan = document.querySelector("#round-number");
+const playerPetNameSpan = document.querySelector("#player-pet-name"); // span to display player's pet name
+const enemyPetNameSpan = document.querySelector("#enemy-pet-name"); // span to display enemy's pet name
+const playerPetLivesSpan = document.querySelector("#player-pet-lives");
+const enemyPetLivesSpan = document.querySelector("#enemy-pet-lives");
+const playerPetInfoContainer = document.querySelector("#player-pet-info");
+const enemyPetInfoContainer = document.querySelector("#enemy-pet-info");
 const attackButtonContainer = document.querySelector(
-  '#attack-buttons-container'
-)
-const playerAttackSection = document.querySelector('#player-attacks')
-const enemyAttackSection = document.querySelector('#enemy-attacks')
-const combatResultParagraph = document.querySelector('#combat-result')
+  "#attack-buttons-container"
+);
+const playerAttackSection = document.querySelector("#player-attacks");
+const enemyAttackSection = document.querySelector("#enemy-attacks");
+const combatResultParagraph = document.querySelector("#combat-result");
 
-const resultModal = document.querySelector('#result-modal')
-const gameResultContainer = document.querySelector('#game-result-container')
+const resultModal = document.querySelector("#result-modal");
+const gameResultContainer = document.querySelector("#game-result-container");
 
-const footer = document.querySelector('footer')
+const footer = document.querySelector("footer");
 
 class Mokepon {
   // Default size for the pets
   static get DEFAULT_SIZE() {
-    return 80
+    return 80;
   }
 
   // Base speed for the pets to move on the map
   static get BASE_SPEED() {
-    return 7
+    return 7;
   }
 
   constructor(name, inputId, type, imageSrc, imageAlt, mapImage, attacks) {
-    this.name = name
-    this.inputId = inputId
-    this.type = type
-    this.imageSrc = imageSrc
-    this.imageAlt = imageAlt
-    this.mapImage = new Image()
-    this.mapImage.src = mapImage
-    this.width = Mokepon.DEFAULT_SIZE
-    this.height = Mokepon.DEFAULT_SIZE
-    this.x = 0
-    this.y = 0
-    this.speedX = 0
-    this.speedY = 0
-    this.attacks = attacks
+    this.name = name;
+    this.inputId = inputId;
+    this.type = type;
+    this.imageSrc = imageSrc;
+    this.imageAlt = imageAlt;
+    this.mapImage = new Image();
+    this.mapImage.src = mapImage;
+    this.width = Mokepon.DEFAULT_SIZE;
+    this.height = Mokepon.DEFAULT_SIZE;
+    this.x = 0;
+    this.y = 0;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.attacks = attacks;
   }
 
   renderPet() {
-    canvas.drawImage(this.mapImage, this.x, this.y, this.width, this.height)
+    canvas.drawImage(this.mapImage, this.x, this.y, this.width, this.height);
   }
 
   // Method to clone an instance
@@ -79,76 +79,76 @@ class Mokepon {
       this.imageAlt,
       this.mapImage.src,
       [...this.attacks]
-    )
+    );
 
-    clone.x = this.x
-    clone.y = this.y
-    clone.speedX = this.speedX
-    clone.speedY = this.speedY
+    clone.x = this.x;
+    clone.y = this.y;
+    clone.speedX = this.speedX;
+    clone.speedY = this.speedY;
 
-    return clone
+    return clone;
   }
 }
 
 const playerPets = [
   new Mokepon(
-    'Hipodoge',
-    'hipodoge',
-    '💧',
-    '../assets/images/mokepons_mokepon_hipodoge_attack.webp',
-    'Mokepon Hipodoge',
-    '../assets/images/hipodoge_head.png',
-    ['💧', '💧', '💧', '🔥', '🌱']
+    "Hipodoge",
+    "hipodoge",
+    "💧",
+    "../assets/images/mokepons_mokepon_hipodoge_attack.webp",
+    "Mokepon Hipodoge",
+    "../assets/images/hipodoge_head.png",
+    ["💧", "💧", "💧", "🔥", "🌱"]
   ),
   new Mokepon(
-    'Capipepo',
-    'capipepo',
-    '🌱',
-    '../assets/images/mokepons_mokepon_capipepo_attack.webp',
-    'Mokepon Capipepo',
-    '../assets/images/capipepo_head.png',
-    ['🌱', '🌱', '🌱', '🔥', '💧']
+    "Capipepo",
+    "capipepo",
+    "🌱",
+    "../assets/images/mokepons_mokepon_capipepo_attack.webp",
+    "Mokepon Capipepo",
+    "../assets/images/capipepo_head.png",
+    ["🌱", "🌱", "🌱", "🔥", "💧"]
   ),
   new Mokepon(
-    'Ratigueya',
-    'ratigueya',
-    '🔥',
-    '../assets/images/mokepons_mokepon_ratigueya_attack.webp',
-    'Mokepon Ratigueya',
-    '../assets/images/ratigueya_head.png',
-    ['🔥', '🔥', '🔥', '💧', '🌱']
+    "Ratigueya",
+    "ratigueya",
+    "🔥",
+    "../assets/images/mokepons_mokepon_ratigueya_attack.webp",
+    "Mokepon Ratigueya",
+    "../assets/images/ratigueya_head.png",
+    ["🔥", "🔥", "🔥", "💧", "🌱"]
   ),
   // TODO: Create map images for the following pets
   new Mokepon(
-    'Pydos',
-    'pydos',
-    '💧',
-    '../assets/images/mokepons_mokepon_pydos_attack.webp',
-    'Mokepon Pydos',
-    '../assets/images/mokepons_mokepon_pydos_attack.webp',
-    ['💧', '💧', '💧', '🌱', '🔥']
+    "Pydos",
+    "pydos",
+    "💧",
+    "../assets/images/mokepons_mokepon_pydos_attack.webp",
+    "Mokepon Pydos",
+    "../assets/images/mokepons_mokepon_pydos_attack.webp",
+    ["💧", "💧", "💧", "🌱", "🔥"]
   ),
   new Mokepon(
-    'Tucapalma',
-    'tucapalma',
-    '🌱',
-    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
-    'Mokepon Tucapalma',
-    '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
-    ['🌱', '🌱', '🌱', '💧', '🔥']
+    "Tucapalma",
+    "tucapalma",
+    "🌱",
+    "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
+    "Mokepon Tucapalma",
+    "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
+    ["🌱", "🌱", "🌱", "💧", "🔥"]
   ),
   new Mokepon(
-    'Langostelvis',
-    'langostelvis',
-    '🔥',
-    '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
-    'Mokepon Langostelvis',
-    '../assets/images/langostelvis_head.webp',
-    ['🔥', '🔥', '🔥', '🌱', '💧']
-  )
-]
+    "Langostelvis",
+    "langostelvis",
+    "🔥",
+    "../assets/images/mokepons_mokepon_langostelvis_attack.webp",
+    "Mokepon Langostelvis",
+    "../assets/images/langostelvis_head.webp",
+    ["🔥", "🔥", "🔥", "🌱", "💧"]
+  ),
+];
 
-let enemyPets = []
+let enemyPets = [];
 
 // const enemyPets = [
 //   new Mokepon(
@@ -209,181 +209,181 @@ let enemyPets = []
 // ]
 
 const combatRules = {
-  '🔥': '🌱', // Left beats right
-  '💧': '🔥',
-  '🌱': '💧'
-}
+  "🔥": "🌱", // Left beats right
+  "💧": "🔥",
+  "🌱": "💧",
+};
 
-let roundNumber = 1
-let playerId = ''
-let enemyId = ''
-let selectedPlayerPet = ''
+let roundNumber = 1;
+let playerId = "";
+let enemyId = "";
+let selectedPlayerPet = "";
 // let selectedEnemyPet = ''
-let playerPetAttack = ''
-let enemyPetAttack = ''
-const playerPetAvailableAttacks = []
-const enemyPetAvailableAttacks = []
-let getAttackInterval
-let playerAttacks = [] // The attacks that the player has selected to attack the enemy
-let enemyAttacks = [] // The attacks that the enemy has selected to attack the player
-let attackButtons = []
-let playerPetLives = 3
-let enemyPetLives = 3
+let playerPetAttack = "";
+let enemyPetAttack = "";
+const playerPetAvailableAttacks = [];
+const enemyPetAvailableAttacks = [];
+let getAttackInterval;
+let playerAttacks = []; // The attacks that the player has selected to attack the enemy
+let enemyAttacks = []; // The attacks that the enemy has selected to attack the player
+let attackButtons = [];
+let playerPetLives = 3;
+let enemyPetLives = 3;
 
 function initializeGameUI() {
-  playerPets.forEach(pet => {
-    const input = document.createElement('input')
-    input.classList.add('hidden')
-    input.type = 'radio'
-    input.id = pet.inputId
-    input.name = 'pet'
+  playerPets.forEach((pet) => {
+    const input = document.createElement("input");
+    input.classList.add("hidden");
+    input.type = "radio";
+    input.id = pet.inputId;
+    input.name = "pet";
 
-    const label = document.createElement('label')
-    label.classList.add('pet-card')
-    label.setAttribute('for', pet.inputId)
+    const label = document.createElement("label");
+    label.classList.add("pet-card");
+    label.setAttribute("for", pet.inputId);
 
-    const img = document.createElement('img')
-    img.src = pet.imageSrc
-    img.alt = pet.imageAlt
+    const img = document.createElement("img");
+    img.src = pet.imageSrc;
+    img.alt = pet.imageAlt;
 
-    label.textContent = pet.name
-    label.appendChild(img)
+    label.textContent = pet.name;
+    label.appendChild(img);
 
-    petCardContainer.appendChild(input)
-    petCardContainer.appendChild(label)
-  })
+    petCardContainer.appendChild(input);
+    petCardContainer.appendChild(label);
+  });
 
-  const btnSelectPlayerPet = document.querySelector('#btn-select-pet')
-  btnSelectPlayerPet.addEventListener('click', selectPlayerPet)
+  const btnSelectPlayerPet = document.querySelector("#btn-select-pet");
+  btnSelectPlayerPet.addEventListener("click", selectPlayerPet);
 
   // To close the error modal that appears when the player doesn't select a pet
-  btnCloseErrorModal.addEventListener('click', () => {
-    errorMessage.textContent = ''
-    errorMessageModal.classList.add('hidden')
-  })
+  btnCloseErrorModal.addEventListener("click", () => {
+    errorMessage.textContent = "";
+    errorMessageModal.classList.add("hidden");
+  });
 
   // Replace page reload detection with a more reliable method
-  setupPageUnloadHandler()
+  setupPageUnloadHandler();
 
   // Connect to the server to join the game
-  joinGame()
+  joinGame();
 }
 
 // Function to handle page unload/reload events
 function setupPageUnloadHandler() {
   // Using 'pagehide' which is more reliable for detecting page unloads
-  window.addEventListener('pagehide', () => {
+  window.addEventListener("pagehide", () => {
     if (playerId) {
       // Use Navigator.sendBeacon for reliable delivery during page unload
       try {
-        const url = `${SERVER_URL}player/${playerId}`
-        navigator.sendBeacon(url)
-        console.log('Player removal request sent via Beacon API')
+        const url = `${SERVER_URL}player/${playerId}`;
+        navigator.sendBeacon(url);
+        console.log("Player removal request sent via Beacon API");
       } catch (e) {
-        console.error('Error sending beacon:', e)
+        console.error("Error sending beacon:", e);
       }
     }
-  })
+  });
 
   // Also use 'beforeunload' as a backup
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener("beforeunload", () => {
     if (playerId) {
       try {
         // Use fetch with keepalive flag which helps the request survive page unload
         fetch(`${SERVER_URL}player/${playerId}`, {
-          method: 'DELETE',
+          method: "DELETE",
           keepalive: true,
           headers: {
-            'Content-Type': 'application/json'
-          }
-        }).catch(e =>
-          console.log('Expected error during unload, can be ignored')
-        )
+            "Content-Type": "application/json",
+          },
+        }).catch((e) =>
+          console.log("Expected error during unload, can be ignored")
+        );
       } catch (e) {
         // We expect this might fail during unload, but it's a backup attempt
-        console.log('Expected error during unload:', e)
+        console.log("Expected error during unload:", e);
       }
     }
-  })
+  });
 }
 
 async function joinGame() {
   try {
-    const response = await fetch(`${SERVER_URL}join`)
+    const response = await fetch(`${SERVER_URL}join`);
     if (!response.ok) {
-      throw new Error('Failed to join the game!😢')
+      throw new Error("Failed to join the game!😢");
     }
-    const data = await response.json()
-    playerId = data.id
-    return data
+    const data = await response.json();
+    playerId = data.id;
+    return data;
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
-    return null
+    console.error("There was a problem with the fetch operation:", error);
+    return null;
   }
 }
 
 function selectPlayerPet() {
-  const petOptions = document.querySelectorAll('input[name="pet"]')
+  const petOptions = document.querySelectorAll('input[name="pet"]');
 
-  let playerPetImage = null
+  let playerPetImage = null;
 
   for (const pet of petOptions) {
     if (pet.checked) {
       // get the label associated with the selected pet
-      const petLabel = document.querySelector(`label[for="${pet.id}"]`)
+      const petLabel = document.querySelector(`label[for="${pet.id}"]`);
       // selectedPlayerPet = petLabel.textContent.trim()
       selectedPlayerPet = playerPets.find(
-        pet => pet.name === petLabel.textContent.trim()
-      )
+        (pet) => pet.name === petLabel.textContent.trim()
+      );
 
       // remove the checked attribute to avoid selecting the same pet again
-      pet.checked = false
+      pet.checked = false;
 
       // get the image associated with the selected pet to display it in the attack section
-      playerPetImage = petLabel.querySelector('img').cloneNode(true)
-      break
+      playerPetImage = petLabel.querySelector("img").cloneNode(true);
+      break;
     }
   }
 
   if (selectedPlayerPet) {
     // Post mokepon info to the server
-    postMokeponInfo(selectedPlayerPet)
+    postMokeponInfo(selectedPlayerPet);
 
     // Prepare mokepon info to display in the attack section
-    playerPetImage.classList.add('mokepon-image')
-    playerPetInfoContainer.appendChild(playerPetImage)
-    playerPetNameSpan.textContent = selectedPlayerPet.name
+    playerPetImage.classList.add("mokepon-image");
+    playerPetInfoContainer.appendChild(playerPetImage);
+    playerPetNameSpan.textContent = selectedPlayerPet.name;
 
     // selectEnemyPet()
 
-    showMap()
+    showMap();
 
     // extractPlayerAttacks()
     // checkAndBoostStrongerPet()
     // setupPlayerAttackButtons()
   } else {
-    errorMessage.textContent = 'Please select a pet to start the game!🐾'
-    errorMessageModal.classList.remove('hidden')
+    errorMessage.textContent = "Please select a pet to start the game!🐾";
+    errorMessageModal.classList.remove("hidden");
   }
 }
 
 async function postMokeponInfo(mokepon) {
   try {
     const response = await fetch(`${SERVER_URL}mokepon/${playerId}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        mokeponName: mokepon.name
-      })
-    })
+        mokeponName: mokepon.name,
+      }),
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to post mokepon info!😢')
+      throw new Error("Failed to post mokepon info!😢");
     }
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
+    console.error("There was a problem with the fetch operation:", error);
   }
 }
 
@@ -410,245 +410,245 @@ async function postMokeponInfo(mokepon) {
 } */
 
 function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 async function showMap() {
   // Resize map for responsiveness
-  resizeCanvas()
+  resizeCanvas();
 
   // Resize map when the window is resized
-  window.addEventListener('resize', () => {
-    if (!mapSection.classList.contains('hidden')) {
-      resizeCanvas()
-      renderCanvas()
+  window.addEventListener("resize", () => {
+    if (!mapSection.classList.contains("hidden")) {
+      resizeCanvas();
+      renderCanvas();
     }
-  })
+  });
 
   // Get a safe position from the server
   try {
     const response = await fetch(
       `${SERVER_URL}mokepon/${playerId}/safePosition?width=${selectedPlayerPet.width}&height=${selectedPlayerPet.height}&mapWidth=${map.width}&mapHeight=${map.height}`
-    )
-    const data = await response.json()
+    );
+    const data = await response.json();
 
     if (data.safe) {
       // Use the safe position provided by the server
-      selectedPlayerPet.x = data.x
-      selectedPlayerPet.y = data.y
+      selectedPlayerPet.x = data.x;
+      selectedPlayerPet.y = data.y;
     } else {
       // Use a random position if the server doesn't provide a safe one
       selectedPlayerPet.x = getRandomNumber(
         0,
         map.width - selectedPlayerPet.width
-      )
+      );
       selectedPlayerPet.y = getRandomNumber(
         0,
         map.height - selectedPlayerPet.height
-      )
+      );
     }
   } catch (error) {
-    console.error('Error to get a safe position:', error)
+    console.error("Error to get a safe position:", error);
     // Use random position as fallback
     selectedPlayerPet.x = getRandomNumber(
       0,
       map.width - selectedPlayerPet.width
-    )
+    );
     selectedPlayerPet.y = getRandomNumber(
       0,
       map.height - selectedPlayerPet.height
-    )
+    );
   }
 
-  renderMapInterval = setInterval(renderCanvas, 30)
-  setUpPetMovementEvents()
+  renderMapInterval = setInterval(renderCanvas, 30);
+  setUpPetMovementEvents();
 
-  mapSection.classList.remove('hidden')
-  selectPetSection.classList.add('hidden')
-  footer.classList.add('hidden')
+  mapSection.classList.remove("hidden");
+  selectPetSection.classList.add("hidden");
+  footer.classList.add("hidden");
 }
 
 function resizeCanvas() {
-  const aspectRatio = mapBackground.width / mapBackground.height
-  const maxWidth = 700 // Set the maximum width for the canvas
-  const previousWidth = map.width
-  map.width = Math.min(window.innerWidth * 0.8, maxWidth)
-  map.height = map.width / aspectRatio
+  const aspectRatio = mapBackground.width / mapBackground.height;
+  const maxWidth = 700; // Set the maximum width for the canvas
+  const previousWidth = map.width;
+  map.width = Math.min(window.innerWidth * 0.8, maxWidth);
+  map.height = map.width / aspectRatio;
 
   // Adjust pet sizes based on the new canvas size
-  const scaleFactor = map.width / maxWidth
-  resizePets(scaleFactor)
+  const scaleFactor = map.width / maxWidth;
+  resizePets(scaleFactor);
 
   // Adjust pet positions based on the new canvas size
-  const positionScaleFactor = map.width / previousWidth
-  resizePetPositions(positionScaleFactor)
+  const positionScaleFactor = map.width / previousWidth;
+  resizePetPositions(positionScaleFactor);
 
   // Adjust pet speeds based on the new canvas size
-  adjustPetSpeed(scaleFactor)
+  adjustPetSpeed(scaleFactor);
 }
 
 function resizePets(scaleFactor) {
-  selectedPlayerPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
-  selectedPlayerPet.height = Mokepon.DEFAULT_SIZE * scaleFactor
+  selectedPlayerPet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
+  selectedPlayerPet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
   /* selectedEnemyPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
   selectedEnemyPet.height = Mokepon.DEFAULT_SIZE * scaleFactor */
 }
 
 function resizePetPositions(positionScaleFactor) {
-  selectedPlayerPet.x *= positionScaleFactor
-  selectedPlayerPet.y *= positionScaleFactor
+  selectedPlayerPet.x *= positionScaleFactor;
+  selectedPlayerPet.y *= positionScaleFactor;
   /* selectedEnemyPet.x *= positionScaleFactor
   selectedEnemyPet.y *= positionScaleFactor */
 }
 
 function adjustPetSpeed(scaleFactor) {
-  selectedPlayerPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor
-  selectedPlayerPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor
+  selectedPlayerPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
+  selectedPlayerPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
   // selectedEnemyPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
   // selectedEnemyPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
 }
 
 function renderCanvas() {
   // Update the pet's position on the map based on the speed
-  selectedPlayerPet.x += selectedPlayerPet.speedX
-  selectedPlayerPet.y += selectedPlayerPet.speedY
+  selectedPlayerPet.x += selectedPlayerPet.speedX;
+  selectedPlayerPet.y += selectedPlayerPet.speedY;
 
   // Clear the canvas before drawing the pet to avoid leaving a trail
-  canvas.clearRect(0, 0, map.width, map.height)
+  canvas.clearRect(0, 0, map.width, map.height);
 
   // Draw the map background and the pets
-  canvas.drawImage(mapBackground, 0, 0, map.width, map.height)
-  selectedPlayerPet.renderPet()
+  canvas.drawImage(mapBackground, 0, 0, map.width, map.height);
+  selectedPlayerPet.renderPet();
   // selectedEnemyPet.renderPet()
 
   // Sent mokepon position to the server
-  sendMokeponPosition()
+  sendMokeponPosition();
 
-  checkMapBoundaries()
+  checkMapBoundaries();
 
-  enemyPets.forEach(enemy => {
+  enemyPets.forEach((enemy) => {
     if (enemy) {
-      enemy.renderPet()
-      checkCollision(enemy)
+      enemy.renderPet();
+      checkCollision(enemy);
     }
-  })
+  });
 }
 
 async function sendMokeponPosition() {
   try {
     const response = await fetch(`${SERVER_URL}mokepon/${playerId}/position`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         x: selectedPlayerPet.x,
-        y: selectedPlayerPet.y
-      })
-    })
+        y: selectedPlayerPet.y,
+      }),
+    });
 
-    const { enemies } = await response.json()
+    const { enemies } = await response.json();
 
     // Keep track of current enemies
-    const previousEnemies = [...enemyPets].filter(Boolean)
-    const previousEnemyIds = previousEnemies.map(enemy => enemy.id)
+    const previousEnemies = [...enemyPets].filter(Boolean);
+    const previousEnemyIds = previousEnemies.map((enemy) => enemy.id);
 
     // To update the current enemies or create new ones
-    const updatedEnemies = []
+    const updatedEnemies = [];
 
-    enemies.forEach(enemy => {
-      if (!enemy.mokepon) return
+    enemies.forEach((enemy) => {
+      if (!enemy.mokepon) return;
 
-      const mokeponName = enemy.mokepon.name || ''
+      const mokeponName = enemy.mokepon.name || "";
       const existingEnemyIndex = previousEnemies.findIndex(
-        prev => prev.id === enemy.id
-      )
+        (prev) => prev.id === enemy.id
+      );
 
-      let enemyPet
+      let enemyPet;
 
       // If it exists, update its properties
       if (existingEnemyIndex >= 0) {
         // console.log('Updating existing enemy pet:', mokeponName)
-        enemyPet = previousEnemies[existingEnemyIndex]
-        enemyPet.x = enemy.x
-        enemyPet.y = enemy.y
-        enemyPet.isNew = false // It's not new anymore
+        enemyPet = previousEnemies[existingEnemyIndex];
+        enemyPet.x = enemy.x;
+        enemyPet.y = enemy.y;
+        enemyPet.isNew = false; // It's not new anymore
       } else {
         // If it's new, create a new instance
-        enemyPet = playerPets.find(pet => pet.name === mokeponName)?.clone()
+        enemyPet = playerPets.find((pet) => pet.name === mokeponName)?.clone();
 
         if (enemyPet) {
-          enemyPet.id = enemy.id
-          enemyPet.x = enemy.x
-          enemyPet.y = enemy.y
-          enemyPet.isNew = true
+          enemyPet.id = enemy.id;
+          enemyPet.x = enemy.x;
+          enemyPet.y = enemy.y;
+          enemyPet.isNew = true;
 
           // Clear the state after 1 second
           setTimeout(() => {
             if (enemyPet && enemyPets.includes(enemyPet)) {
-              enemyPet.isNew = false
+              enemyPet.isNew = false;
             }
-          }, 1000)
+          }, 1000);
         }
       }
 
-      if (enemyPet) updatedEnemies.push(enemyPet)
-    })
+      if (enemyPet) updatedEnemies.push(enemyPet);
+    });
 
     // Update the enemy list
-    enemyPets = updatedEnemies
+    enemyPets = updatedEnemies;
 
     if (!response.ok) {
-      throw new Error('Failed to send mokepon position!😢')
+      throw new Error("Failed to send mokepon position!😢");
     }
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
+    console.error("There was a problem with the fetch operation:", error);
   }
 }
 
 function checkMapBoundaries() {
   // Map limits
-  const upMap = 0
-  const downMap = map.height - selectedPlayerPet.height
-  const leftMap = 0
-  const rightMap = map.width - selectedPlayerPet.width
+  const upMap = 0;
+  const downMap = map.height - selectedPlayerPet.height;
+  const leftMap = 0;
+  const rightMap = map.width - selectedPlayerPet.width;
 
   // Player edges
-  const upPlayer = selectedPlayerPet.y
-  const leftPlayer = selectedPlayerPet.x
+  const upPlayer = selectedPlayerPet.y;
+  const leftPlayer = selectedPlayerPet.x;
 
   if (upPlayer < upMap) {
-    selectedPlayerPet.y = upMap
+    selectedPlayerPet.y = upMap;
   }
 
   if (upPlayer > downMap) {
-    selectedPlayerPet.y = downMap
+    selectedPlayerPet.y = downMap;
   }
 
   if (leftPlayer < leftMap) {
-    selectedPlayerPet.x = leftMap
+    selectedPlayerPet.x = leftMap;
   }
 
   if (leftPlayer > rightMap) {
-    selectedPlayerPet.x = rightMap
+    selectedPlayerPet.x = rightMap;
   }
 }
 
 function checkCollision(enemyPet) {
   // Skip collision check for newly added enemies
   if (enemyPet.isNew) {
-    return
+    return;
   }
 
-  const playerPetDownSide = selectedPlayerPet.y + selectedPlayerPet.height
-  const playerPetUpSide = selectedPlayerPet.y
-  const playerPetRightSide = selectedPlayerPet.x + selectedPlayerPet.width
-  const playerPetLeftSide = selectedPlayerPet.x
+  const playerPetDownSide = selectedPlayerPet.y + selectedPlayerPet.height;
+  const playerPetUpSide = selectedPlayerPet.y;
+  const playerPetRightSide = selectedPlayerPet.x + selectedPlayerPet.width;
+  const playerPetLeftSide = selectedPlayerPet.x;
 
-  const enemyPetDownSide = enemyPet.y + enemyPet.height
-  const enemyPetUpSide = enemyPet.y
-  const enemyPetRightSide = enemyPet.x + enemyPet.width
-  const enemyPetLeftSide = enemyPet.x
+  const enemyPetDownSide = enemyPet.y + enemyPet.height;
+  const enemyPetUpSide = enemyPet.y;
+  const enemyPetRightSide = enemyPet.x + enemyPet.width;
+  const enemyPetLeftSide = enemyPet.x;
 
   if (
     playerPetDownSide < enemyPetUpSide ||
@@ -657,47 +657,47 @@ function checkCollision(enemyPet) {
     playerPetLeftSide > enemyPetRightSide
   ) {
     // No collision detected!
-    return
+    return;
   }
 
   // Collision detected!
-  stopMovement()
-  clearInterval(renderMapInterval)
-  showEnemyPetInfo(enemyPet)
-  extractPlayerAttacks()
-  checkAndBoostStrongerPet(enemyPet)
-  enemyId = enemyPet.id // Save the enemy ID to send the right attack to the server
-  setupPlayerAttackButtons()
-  selectAttackSection.classList.remove('hidden')
-  mapSection.classList.add('hidden')
+  stopMovement();
+  clearInterval(renderMapInterval);
+  showEnemyPetInfo(enemyPet);
+  extractPlayerAttacks();
+  checkAndBoostStrongerPet(enemyPet);
+  enemyId = enemyPet.id; // Save the enemy ID to send the right attack to the server
+  setupPlayerAttackButtons();
+  selectAttackSection.classList.remove("hidden");
+  mapSection.classList.add("hidden");
 }
 
 function setUpPetMovementEvents() {
-  const movementButtons = document.querySelectorAll('.movement-btn')
+  const movementButtons = document.querySelectorAll(".movement-btn");
 
   // Object to track which buttons are pressed
   const keysPressed = {
     up: false,
     down: false,
     left: false,
-    right: false
-  }
+    right: false,
+  };
 
   // Interval to move the pet continuously
-  let movementInterval = null
+  let movementInterval = null;
 
   // Function to process movement based on pressed keys
   function processMovement() {
-    if (keysPressed.up) movePet('up')
-    if (keysPressed.down) movePet('down')
-    if (keysPressed.left) movePet('left')
-    if (keysPressed.right) movePet('right')
+    if (keysPressed.up) movePet("up");
+    if (keysPressed.down) movePet("down");
+    if (keysPressed.left) movePet("left");
+    if (keysPressed.right) movePet("right");
   }
 
   // Start continuous movement
   function startContinuousMovement() {
     if (!movementInterval) {
-      movementInterval = setInterval(processMovement, 30)
+      movementInterval = setInterval(processMovement, 30);
     }
   }
 
@@ -709,143 +709,143 @@ function setUpPetMovementEvents() {
       !keysPressed.left &&
       !keysPressed.right
     ) {
-      clearInterval(movementInterval)
-      movementInterval = null
-      stopMovement()
+      clearInterval(movementInterval);
+      movementInterval = null;
+      stopMovement();
     }
   }
 
   // Configure touch events for the buttons
   for (const button of movementButtons) {
     // Get the direction from the button's class name
-    const direction = button.className.match(/movement-btn--(\w+)/)[1]
+    const direction = button.className.match(/movement-btn--(\w+)/)[1];
 
     // Start movement when the button is pressed
-    button.addEventListener('touchstart', e => {
-      e.preventDefault() // Prevent default touch behavior
-      keysPressed[direction] = true
-      startContinuousMovement()
-    })
+    button.addEventListener("touchstart", (e) => {
+      e.preventDefault(); // Prevent default touch behavior
+      keysPressed[direction] = true;
+      startContinuousMovement();
+    });
 
     // Stop movement when the button is released
-    button.addEventListener('touchend', () => {
-      keysPressed[direction] = false
-      checkStopMovement()
-    })
+    button.addEventListener("touchend", () => {
+      keysPressed[direction] = false;
+      checkStopMovement();
+    });
 
     // Stop movement when the touch is canceled
-    button.addEventListener('touchcancel', () => {
-      keysPressed[direction] = false
-      checkStopMovement()
-    })
+    button.addEventListener("touchcancel", () => {
+      keysPressed[direction] = false;
+      checkStopMovement();
+    });
 
     // Mouse events for desktop users
-    button.addEventListener('mousedown', () => {
-      keysPressed[direction] = true
-      startContinuousMovement()
-    })
+    button.addEventListener("mousedown", () => {
+      keysPressed[direction] = true;
+      startContinuousMovement();
+    });
 
-    button.addEventListener('mouseup', () => {
-      keysPressed[direction] = false
-      checkStopMovement()
-    })
+    button.addEventListener("mouseup", () => {
+      keysPressed[direction] = false;
+      checkStopMovement();
+    });
 
-    button.addEventListener('mouseleave', () => {
-      keysPressed[direction] = false
-      checkStopMovement()
-    })
+    button.addEventListener("mouseleave", () => {
+      keysPressed[direction] = false;
+      checkStopMovement();
+    });
   }
 
   // Keyboard events for desktop users
-  window.addEventListener('keydown', event => {
+  window.addEventListener("keydown", (event) => {
     switch (event.key) {
-      case 'ArrowUp':
-        keysPressed.up = true
-        break
-      case 'ArrowDown':
-        keysPressed.down = true
-        break
-      case 'ArrowLeft':
-        keysPressed.left = true
-        break
-      case 'ArrowRight':
-        keysPressed.right = true
-        break
+      case "ArrowUp":
+        keysPressed.up = true;
+        break;
+      case "ArrowDown":
+        keysPressed.down = true;
+        break;
+      case "ArrowLeft":
+        keysPressed.left = true;
+        break;
+      case "ArrowRight":
+        keysPressed.right = true;
+        break;
     }
-    startContinuousMovement()
-  })
+    startContinuousMovement();
+  });
 
-  window.addEventListener('keyup', event => {
+  window.addEventListener("keyup", (event) => {
     switch (event.key) {
-      case 'ArrowUp':
-        keysPressed.up = false
-        break
-      case 'ArrowDown':
-        keysPressed.down = false
-        break
-      case 'ArrowLeft':
-        keysPressed.left = false
-        break
-      case 'ArrowRight':
-        keysPressed.right = false
-        break
+      case "ArrowUp":
+        keysPressed.up = false;
+        break;
+      case "ArrowDown":
+        keysPressed.down = false;
+        break;
+      case "ArrowLeft":
+        keysPressed.left = false;
+        break;
+      case "ArrowRight":
+        keysPressed.right = false;
+        break;
     }
-    checkStopMovement()
-  })
+    checkStopMovement();
+  });
 }
 
 function movePet(direction) {
   // Use the adjusted speed
-  const speedX = selectedPlayerPet.adjustedSpeedX
-  const speedY = selectedPlayerPet.adjustedSpeedY
+  const speedX = selectedPlayerPet.adjustedSpeedX;
+  const speedY = selectedPlayerPet.adjustedSpeedY;
   switch (direction) {
-    case 'up':
-    case 'ArrowUp':
-      selectedPlayerPet.speedY = -speedY
-      break
-    case 'down':
-    case 'ArrowDown':
-      selectedPlayerPet.speedY = speedY
-      break
-    case 'left':
-    case 'ArrowLeft':
-      selectedPlayerPet.speedX = -speedX
-      break
-    case 'right':
-    case 'ArrowRight':
-      selectedPlayerPet.speedX = speedX
-      break
+    case "up":
+    case "ArrowUp":
+      selectedPlayerPet.speedY = -speedY;
+      break;
+    case "down":
+    case "ArrowDown":
+      selectedPlayerPet.speedY = speedY;
+      break;
+    case "left":
+    case "ArrowLeft":
+      selectedPlayerPet.speedX = -speedX;
+      break;
+    case "right":
+    case "ArrowRight":
+      selectedPlayerPet.speedX = speedX;
+      break;
   }
 }
 
 function stopMovement() {
   if (selectedPlayerPet) {
-    selectedPlayerPet.speedX = 0
-    selectedPlayerPet.speedY = 0
+    selectedPlayerPet.speedX = 0;
+    selectedPlayerPet.speedY = 0;
   }
   // selectedPlayerPet.speedX = 0;
   // selectedPlayerPet.speedY = 0;
 }
 
 function showEnemyPetInfo(enemyPet) {
-  const enemyPetImage = document.createElement('img')
-  enemyPetImage.src = enemyPet.imageSrc
-  enemyPetImage.alt = enemyPet.imageAlt
-  enemyPetImage.classList.add('mokepon-image')
+  const enemyPetImage = document.createElement("img");
+  enemyPetImage.src = enemyPet.imageSrc;
+  enemyPetImage.alt = enemyPet.imageAlt;
+  enemyPetImage.classList.add("mokepon-image");
 
-  enemyPetInfoContainer.appendChild(enemyPetImage)
-  enemyPetNameSpan.textContent = enemyPet.name
+  enemyPetInfoContainer.appendChild(enemyPetImage);
+  enemyPetNameSpan.textContent = enemyPet.name;
 }
 
 function extractPlayerAttacks() {
-  playerPetAvailableAttacks.push(...selectedPlayerPet.attacks)
+  playerPetAvailableAttacks.push(...selectedPlayerPet.attacks);
 }
 
 function checkAndBoostStrongerPet(enemyPet) {
   if (combatRules[selectedPlayerPet.type] === enemyPet.type) {
     playerPetAvailableAttacks.push(
       selectedPlayerPet.attacks[selectedPlayerPet.attacks.length - 1]
-    )
+    );
   }
 
   // console.log(playerPetAvailableAttacks)
@@ -858,75 +858,75 @@ function checkAndBoostStrongerPet(enemyPet) {
 
 function setupPlayerAttackButtons() {
   for (const attack of playerPetAvailableAttacks) {
-    const attackButton = document.createElement('button')
-    attackButton.classList.add('attack-button')
-    attackButton.textContent = attack
+    const attackButton = document.createElement("button");
+    attackButton.classList.add("attack-button");
+    attackButton.textContent = attack;
 
-    attackButton.addEventListener('click', () => {
-      attackButton.disabled = true
-      attackButton.classList.add('clicked')
-      playerAttacks.push(attack)
-      sendMokeponAttacks()
-    })
+    attackButton.addEventListener("click", () => {
+      attackButton.disabled = true;
+      attackButton.classList.add("clicked");
+      playerAttacks.push(attack);
+      sendMokeponAttacks();
+    });
 
-    attackButtonContainer.appendChild(attackButton)
+    attackButtonContainer.appendChild(attackButton);
   }
 }
 
 function sendMokeponAttacks() {
   // Deactivate the attack buttons after the player has selected an attack before sending the attacks to the server and before the enemy selects its attack
-  attackButtons = document.querySelectorAll('.attack-button')
-  attackButtons.forEach(attackButton => {
-    attackButton.disabled = true
-    attackButton.classList.add('disabled')
-  })
+  attackButtons = document.querySelectorAll(".attack-button");
+  attackButtons.forEach((attackButton) => {
+    attackButton.disabled = true;
+    attackButton.classList.add("disabled");
+  });
 
   fetch(`${SERVER_URL}mokepon/${playerId}/attacks`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      attacks: playerAttacks
-    })
+      attacks: playerAttacks,
+    }),
   })
     .then(() => {
       // Set interval to get enemy attack if it doesn't exist
       if (!getAttackInterval) {
-        console.log('Waiting for enemy attack...')
-        getAttackInterval = setInterval(getEnemyAttacks, 50)
+        console.log("Waiting for enemy attack...");
+        getAttackInterval = setInterval(getEnemyAttacks, 50);
       }
     })
-    .catch(error => {
-      console.error('There was a problem to send the attack: ', error)
-    })
+    .catch((error) => {
+      console.error("There was a problem to send the attack: ", error);
+    });
 }
 
 async function getEnemyAttacks() {
   // Clear the previous interval if it exists
-  clearInterval(getAttackInterval)
-  getAttackInterval = null
+  clearInterval(getAttackInterval);
+  getAttackInterval = null;
 
   try {
-    const response = await fetch(`${SERVER_URL}mokepon/${enemyId}/attacks`)
-    const data = await response.json()
+    const response = await fetch(`${SERVER_URL}mokepon/${enemyId}/attacks`);
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error('Failed to get enemy attacks!😢')
+      throw new Error("Failed to get enemy attacks!😢");
     }
 
-    enemyAttacks = data.attacks
+    enemyAttacks = data.attacks;
 
     // Check if both players have selected their attacks
     if (enemyAttacks.length === playerAttacks.length) {
-      console.log('Both players have selected their attacks!')
-      combat()
+      console.log("Both players have selected their attacks!");
+      combat();
     } else {
       // Set the interval again if needed
-      getAttackInterval = setInterval(getEnemyAttacks, 50)
+      getAttackInterval = setInterval(getEnemyAttacks, 50);
     }
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
+    console.error("There was a problem with the fetch operation:", error);
   }
 }
 
@@ -938,189 +938,189 @@ async function getEnemyAttacks() {
 } */
 
 function combat() {
-  playerPetAttack = playerAttacks[playerAttacks.length - 1]
-  enemyPetAttack = enemyAttacks[enemyAttacks.length - 1]
+  playerPetAttack = playerAttacks[playerAttacks.length - 1];
+  enemyPetAttack = enemyAttacks[enemyAttacks.length - 1];
 
   if (playerPetAttack === enemyPetAttack) {
-    createCombatMessages("It's a tie!🫱🏼‍🫲🏼")
+    createCombatMessages("It's a tie!🫱🏼‍🫲🏼");
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
-    createCombatMessages('You win!🏆')
-    enemyPetLives--
-    updatePetLives()
+    createCombatMessages("You win!🏆");
+    enemyPetLives--;
+    updatePetLives();
   } else {
-    createCombatMessages('You lose!☹️')
-    playerPetLives--
-    updatePetLives()
+    createCombatMessages("You lose!☹️");
+    playerPetLives--;
+    updatePetLives();
   }
 
   // Activate the attack buttons again
-  attackButtons.forEach(attackButton => {
-    if (!attackButton.classList.contains('clicked')) {
-      attackButton.disabled = false
-      attackButton.classList.remove('disabled')
+  attackButtons.forEach((attackButton) => {
+    if (!attackButton.classList.contains("clicked")) {
+      attackButton.disabled = false;
+      attackButton.classList.remove("disabled");
     }
-  })
+  });
 
-  checkLives()
+  checkLives();
 }
 
 function createCombatMessages(combatResult) {
-  combatResultParagraph.textContent = combatResult
+  combatResultParagraph.textContent = combatResult;
 
-  const playerAttackMessage = document.createElement('p')
-  playerAttackMessage.textContent = playerPetAttack
-  playerAttackSection.appendChild(playerAttackMessage)
+  const playerAttackMessage = document.createElement("p");
+  playerAttackMessage.textContent = playerPetAttack;
+  playerAttackSection.appendChild(playerAttackMessage);
 
-  const enemyAttackMessage = document.createElement('p')
-  enemyAttackMessage.textContent = enemyPetAttack
-  enemyAttackSection.appendChild(enemyAttackMessage)
+  const enemyAttackMessage = document.createElement("p");
+  enemyAttackMessage.textContent = enemyPetAttack;
+  enemyAttackSection.appendChild(enemyAttackMessage);
 }
 
 function updatePetLives() {
-  playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
-  enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
+  playerPetLivesSpan.textContent = "❤️".repeat(playerPetLives);
+  enemyPetLivesSpan.textContent = "❤️".repeat(enemyPetLives);
 
   if (playerPetLives === 0) {
-    playerPetLivesSpan.textContent = '😢'
+    playerPetLivesSpan.textContent = "😢";
   } else if (enemyPetLives === 0) {
-    enemyPetLivesSpan.textContent = '😢'
+    enemyPetLivesSpan.textContent = "😢";
   }
 }
 
 function checkLives() {
   if (playerPetLives === 0) {
-    createFinalMessage('You lost the game☹️')
+    createFinalMessage("You lost the game☹️");
   } else if (enemyPetLives === 0) {
-    createFinalMessage('You won the game!🎉')
+    createFinalMessage("You won the game!🎉");
   }
   // Check if the round is over and enable attack buttons again for the next round if there are lives left
   else if (isRoundOver(attackButtons)) {
     // Disable the attack button left before preparing the next round
     const attackButtonLeft = Array.from(attackButtons).find(
-      attackButton => attackButton.disabled === false
-    )
+      (attackButton) => attackButton.disabled === false
+    );
 
     if (attackButtonLeft) {
-      attackButtonLeft.disabled = true
-      attackButtonLeft.classList.add('disabled')
+      attackButtonLeft.disabled = true;
+      attackButtonLeft.classList.add("disabled");
     }
 
     // Prepare next round
     setTimeout(() => {
       for (const attackButton of attackButtons) {
-        attackButton.disabled = false
-        attackButton.classList.remove('disabled')
-        attackButton.classList.remove('clicked')
+        attackButton.disabled = false;
+        attackButton.classList.remove("disabled");
+        attackButton.classList.remove("clicked");
       }
 
-      enemyAttacks.length = 0
-      roundNumberSpan.textContent = ++roundNumber
-      combatResultParagraph.textContent = 'Good luck! 😎'
-    }, 1000)
+      enemyAttacks.length = 0;
+      roundNumberSpan.textContent = ++roundNumber;
+      combatResultParagraph.textContent = "Good luck! 😎";
+    }, 1000);
   }
 
-  if (playerPetLives === 0 || enemyPetLives === 0) endGame()
+  if (playerPetLives === 0 || enemyPetLives === 0) endGame();
 }
 
 function isRoundOver(attackButtons) {
   return (
-    Array.from(attackButtons).every(attackButton => attackButton.disabled) ||
+    Array.from(attackButtons).every((attackButton) => attackButton.disabled) ||
     enemyAttacks.length == 5 ||
     enemyAttacks.length == 10 ||
     enemyAttacks.length == 15
-  )
+  );
 }
 
 function createFinalMessage(finalMessage) {
-  const resultMessage = document.createElement('p')
-  resultMessage.textContent = finalMessage
-  gameResultContainer.appendChild(resultMessage)
+  const resultMessage = document.createElement("p");
+  resultMessage.textContent = finalMessage;
+  gameResultContainer.appendChild(resultMessage);
 }
 
 function endGame() {
-  const btnRestartGame = document.querySelector('#btn-restart-game')
+  const btnRestartGame = document.querySelector("#btn-restart-game");
 
   // Remove any previous event listeners to avoid multiple triggers
-  btnRestartGame.removeEventListener('click', restartGame)
-  btnRestartGame.addEventListener('click', restartGame)
+  btnRestartGame.removeEventListener("click", restartGame);
+  btnRestartGame.addEventListener("click", restartGame);
 
   // Show the restart section
-  resultModal.classList.remove('hidden')
+  resultModal.classList.remove("hidden");
 }
 
 function restartGame() {
   fetch(`${SERVER_URL}player/${playerId}`, {
-    method: 'DELETE'
+    method: "DELETE",
   })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Player removed from the server:', data.message)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Player removed from the server:", data.message);
 
       // Restart UI and game variables
-      resetGameState()
+      resetGameState();
 
       // Rejoin the game to get a new player ID
       joinGame().then(() => {
-        console.log('New player ID:', playerId)
-      })
+        console.log("New player ID:", playerId);
+      });
     })
-    .catch(error => {
-      console.error('Error deleting player:', error)
+    .catch((error) => {
+      console.error("Error deleting player:", error);
       // Continue with the game even if the player couldn't be deleted
-      resetGameState()
-      joinGame()
-    })
+      resetGameState();
+      joinGame();
+    });
 }
 
 function resetGameState() {
-  roundNumber = 1
-  selectedPlayerPet = ''
-  playerPetAttack = ''
-  enemyPetAttack = ''
-  playerPetLives = 3
-  enemyPetLives = 3
+  roundNumber = 1;
+  selectedPlayerPet = "";
+  playerPetAttack = "";
+  enemyPetAttack = "";
+  playerPetLives = 3;
+  enemyPetLives = 3;
 
-  roundNumberSpan.textContent = roundNumber
+  roundNumberSpan.textContent = roundNumber;
   if (playerPetInfoContainer.lastChild) {
-    playerPetInfoContainer.lastChild.remove()
+    playerPetInfoContainer.lastChild.remove();
   }
   if (enemyPetInfoContainer.lastChild) {
-    enemyPetInfoContainer.lastChild.remove()
+    enemyPetInfoContainer.lastChild.remove();
   }
-  playerPetNameSpan.textContent = ''
-  enemyPetNameSpan.textContent = ''
-  playerPetLivesSpan.textContent = '❤️'.repeat(playerPetLives)
-  enemyPetLivesSpan.textContent = '❤️'.repeat(enemyPetLives)
-  combatResultParagraph.textContent = 'Good luck! 😎'
+  playerPetNameSpan.textContent = "";
+  enemyPetNameSpan.textContent = "";
+  playerPetLivesSpan.textContent = "❤️".repeat(playerPetLives);
+  enemyPetLivesSpan.textContent = "❤️".repeat(enemyPetLives);
+  combatResultParagraph.textContent = "Good luck! 😎";
 
-  attackButtonContainer.textContent = ''
-  playerAttackSection.textContent = ''
-  enemyAttackSection.textContent = ''
-  playerPetAvailableAttacks.length = 0
-  enemyPetAvailableAttacks.length = 0
-  playerAttacks = []
-  enemyAttacks = []
-  enemyPets = []
+  attackButtonContainer.textContent = "";
+  playerAttackSection.textContent = "";
+  enemyAttackSection.textContent = "";
+  playerPetAvailableAttacks.length = 0;
+  enemyPetAvailableAttacks.length = 0;
+  playerAttacks = [];
+  enemyAttacks = [];
+  enemyPets = [];
 
   // Clean up any pending intervals
   if (getAttackInterval) {
-    clearInterval(getAttackInterval)
-    getAttackInterval = null
+    clearInterval(getAttackInterval);
+    getAttackInterval = null;
   }
   if (renderMapInterval) {
-    clearInterval(renderMapInterval)
-    renderMapInterval = null
+    clearInterval(renderMapInterval);
+    renderMapInterval = null;
   }
 
-  selectPetSection.classList.remove('hidden')
-  footer.classList.remove('hidden')
-  selectAttackSection.classList.add('hidden')
-  mapSection.classList.add('hidden')
+  selectPetSection.classList.remove("hidden");
+  footer.classList.remove("hidden");
+  selectAttackSection.classList.add("hidden");
+  mapSection.classList.add("hidden");
 
   if (gameResultContainer.lastChild) {
-    gameResultContainer.lastChild.remove()
+    gameResultContainer.lastChild.remove();
   }
-  resultModal.classList.add('hidden')
+  resultModal.classList.add("hidden");
 }
 
-initializeGameUI()
+initializeGameUI();
