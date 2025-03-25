@@ -477,7 +477,7 @@ function resizeCanvas() {
 
   // Adjust pet sizes based on the new canvas size
   const scaleFactor = map.width / maxWidth;
-  resizePets(scaleFactor);
+  resizePets(selectedPlayerPet, scaleFactor);
 
   // Adjust pet positions based on the new canvas size
   const positionScaleFactor = map.width / previousWidth;
@@ -487,9 +487,9 @@ function resizeCanvas() {
   adjustPetSpeed(scaleFactor);
 }
 
-function resizePets(scaleFactor) {
-  selectedPlayerPet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
-  selectedPlayerPet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
+function resizePets(pet, scaleFactor) {
+  pet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
+  pet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
   /* selectedEnemyPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
   selectedEnemyPet.height = Mokepon.DEFAULT_SIZE * scaleFactor */
 }
@@ -528,6 +528,8 @@ function renderCanvas() {
 
   enemyPets.forEach((enemy) => {
     if (enemy) {
+      // Resize enemy pet based on the canvas size
+      resizePets(enemy, map.width / 700);
       enemy.renderPet();
       checkCollision(enemy);
     }
