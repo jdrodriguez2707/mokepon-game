@@ -63,10 +63,37 @@ class Mokepon {
     this.speedX = 0;
     this.speedY = 0;
     this.attacks = attacks;
+    this.isCPU = false; // Newly added property to identify CPU Mokepons
   }
 
   renderPet() {
+    // Draw the Mokepon image
     canvas.drawImage(this.mapImage, this.x, this.y, this.width, this.height);
+
+    // If this is a CPU Mokepon, add a label above it
+    if (this.isCPU) {
+      // Set text style for the CPU label
+      canvas.font = `${Math.max(12, this.width / 6)}px Arial`; // Scale font based on Mokepon size
+      canvas.fillStyle = "red";
+      canvas.textAlign = "center";
+
+      // Draw a background for better readability
+      const text = "CPU";
+      const textWidth = canvas.measureText(text).width;
+      const padding = 4;
+
+      canvas.fillStyle = "rgba(0, 0, 0, 0.6)";
+      canvas.fillRect(
+        this.x + this.width / 2 - textWidth / 2 - padding,
+        this.y - 20,
+        textWidth + padding * 2,
+        20
+      );
+
+      // Draw the "CPU" text
+      canvas.fillStyle = "white";
+      canvas.fillText(text, this.x + this.width / 2, this.y - 5);
+    }
   }
 
   // Method to clone an instance
@@ -679,7 +706,7 @@ async function sendMokeponPosition() {
         if (enemyPet) {
           enemyPet.id = enemy.id;
 
-          // Store CPU status
+          // Store CPU status and set the isCPU property on the Mokepon
           enemyPet.isCPU = enemy.isCPU;
 
           // Store normalized position

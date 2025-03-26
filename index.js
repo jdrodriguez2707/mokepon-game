@@ -288,13 +288,25 @@ app.post("/mokepon/:playerId/position", (req, res) => {
   }
 
   // Filter to include both human and CPU players as enemies
-  const enemies = players.filter(
-    (player) =>
-      player.id !== playerId &&
-      player.mokepon &&
-      player.xPercent !== undefined &&
-      player.yPercent !== undefined
-  );
+  const enemies = players
+    .filter(
+      (player) =>
+        player.id !== playerId &&
+        player.mokepon &&
+        player.xPercent !== undefined &&
+        player.yPercent !== undefined
+    )
+    .map((player) => {
+      // Include the isCPU property in the response so the client knows which
+      // enemies are CPUs and which are human players
+      return {
+        id: player.id,
+        xPercent: player.xPercent,
+        yPercent: player.yPercent,
+        mokepon: player.mokepon,
+        isCPU: player.isCPU,
+      };
+    });
 
   res.send({ enemies });
 });
