@@ -9,6 +9,8 @@ app.use(cors());
 app.use(express.json());
 
 const players = [];
+let cpuMokepons = []; // Array to store CPU Mokepons
+const CPU_COUNT = 3; // Number of CPU Mokepons to create
 
 class Player {
   constructor(id) {
@@ -18,6 +20,7 @@ class Player {
     this.yPercent = undefined;
     this.mokepon = null;
     this.attacks = [];
+    this.isCPU = false; // Flag to identify CPU players
   }
 
   assignMokepon(mokepon) {
@@ -58,6 +61,114 @@ class Player {
 class Mokepon {
   constructor(name) {
     this.name = name;
+    this.type = getMokeponType(name); // Add type to CPU mokepons
+  }
+}
+
+// Helper function to get mokepon type based on name
+function getMokeponType(name) {
+  switch (name) {
+    case "Hipodoge":
+    case "Pydos":
+      return "💧";
+    case "Capipepo":
+    case "Tucapalma":
+      return "🌱";
+    case "Ratigueya":
+    case "Langostelvis":
+      return "🔥";
+    default:
+      return "💧";
+  }
+}
+
+// Function to generate CPU Mokepons
+function generateCPUMokepons() {
+  // Clear existing CPU players
+  cpuMokepons = [];
+
+  // Available mokepon names
+  const mokeponNames = [
+    "Hipodoge",
+    "Capipepo",
+    "Ratigueya",
+    "Pydos",
+    "Tucapalma",
+    "Langostelvis",
+  ];
+
+  // Shuffle the array to pick random mokepons
+  const shuffled = [...mokeponNames].sort(() => 0.5 - Math.random());
+  const selectedNames = shuffled.slice(0, CPU_COUNT);
+
+  // Create CPU players with selected mokepons
+  for (let i = 0; i < CPU_COUNT; i++) {
+    const cpuId = `cpu-${i}-${Date.now()}`;
+    const cpuPlayer = new Player(cpuId);
+
+    // Mark as CPU
+    cpuPlayer.isCPU = true;
+
+    // Assign a mokepon
+    const mokepon = new Mokepon(selectedNames[i]);
+    cpuPlayer.assignMokepon(mokepon);
+
+    // Set position (evenly distributed across the map)
+    // We divide the map into segments to ensure they're separated
+    const segment = 100 / (CPU_COUNT + 1);
+    cpuPlayer.xPercent = 20 + segment * i + (Math.random() * 10 - 5); // Add some randomness within segment
+    cpuPlayer.yPercent = 30 + Math.random() * 40; // Random Y between 30% and 70%
+
+    // Store attacks (standard set plus an extra attack of the same type)
+    const attacks = [];
+    for (let j = 0; j < 3; j++) {
+      attacks.push(mokepon.type);
+    }
+
+    // Add two different attacks based on type
+    if (mokepon.type === "💧") {
+      attacks.push("🔥", "🌱");
+    } else if (mokepon.type === "🔥") {
+      attacks.push("💧", "🌱");
+    } else {
+      attacks.push("💧", "🔥");
+    }
+
+    cpuPlayer.assignAttacks(attacks);
+
+    // Initialize availableAttacks with a copy of all attacks
+    cpuPlayer.availableAttacks = [...attacks];
+
+    // Flag to track if extra attack was added for type advantage
+    cpuPlayer.extraAttackAdded = false;
+
+    // Add to arrays
+    cpuMokepons.push(cpuPlayer);
+    players.push(cpuPlayer);
+    console.log(cpuMokepons);
+  }
+}
+
+// Generate initial CPU Mokepons
+generateCPUMokepons();
+
+// Function to check if there are any human players
+function areHumanPlayersActive() {
+  return players.some((player) => !player.isCPU);
+}
+
+// Check and regenerate CPU Mokepons if needed
+function checkAndRegenerateCPUs() {
+  if (!areHumanPlayersActive() && cpuMokepons.length > 0) {
+    console.log("No human players left. Regenerating CPU Mokepons.");
+
+    // Remove existing CPU players from players array
+    const humanPlayers = players.filter((player) => !player.isCPU);
+    players.length = 0;
+    players.push(...humanPlayers);
+
+    // Generate new CPU Mokepons
+    generateCPUMokepons();
   }
 }
 
@@ -66,6 +177,12 @@ app.get("/join", (req, res) => {
   const player = new Player(id);
   players.push(player);
   console.log(`A new player ${id} has joined. Total: ${players.length}`);
+
+  // If there are no CPU Mokepons, generate them
+  if (cpuMokepons.length === 0) {
+    generateCPUMokepons();
+  }
+
   res.send({ id });
 });
 
@@ -104,6 +221,9 @@ function handlePlayerRemoval(playerId, res) {
   if (playerIndex >= 0) {
     console.log(`Removing player ${playerId}`);
     players.splice(playerIndex, 1);
+
+    // Check if we need to regenerate CPU Mokepons
+    checkAndRegenerateCPUs();
 
     // Only send a response if the connection is still alive
     if (res && !res.headersSent) {
@@ -167,7 +287,7 @@ app.post("/mokepon/:playerId/position", (req, res) => {
     players[playerIndex].updateMokeponPosition(xPercent, yPercent);
   }
 
-  // Filter out players that are not mokepons or don't have coordinates
+  // Filter to include both human and CPU players as enemies
   const enemies = players.filter(
     (player) =>
       player.id !== playerId &&
@@ -196,13 +316,147 @@ app.get("/mokepon/:playerId/attacks", (req, res) => {
   const player = players.find((player) => player.id === playerId);
 
   if (player) {
-    res.send({
-      attacks: player.attacks || [],
-    });
+    const responseData = {
+      attacks: player.isCPU ? player.attackList || [] : player.attacks || [],
+      isCPU: player.isCPU || false,
+    };
+    res.send(responseData);
   } else {
-    res.send({ attacks: [] });
+    res.send({ attacks: [], isCPU: false });
   }
 });
+
+// Add endpoint for CPU to select a random attack
+app.get("/mokepon/:playerId/cpu-attack", (req, res) => {
+  const playerId = req.params.playerId || "";
+  const cpuPlayer = players.find(
+    (player) => player.id === playerId && player.isCPU
+  );
+
+  if (cpuPlayer && cpuPlayer.attacks && cpuPlayer.attacks.length > 0) {
+    // Initialize available attacks for this round if needed
+    if (
+      !cpuPlayer.availableAttacks ||
+      cpuPlayer.availableAttacks.length === 0
+    ) {
+      // Create a copy of the attacks array to avoid modifying the original
+      cpuPlayer.availableAttacks = [...cpuPlayer.attacks];
+      console.log(
+        `Resetting available attacks for CPU ${playerId}:`,
+        cpuPlayer.availableAttacks
+      );
+    }
+
+    // If no attack list exists, create it
+    if (!cpuPlayer.attackList) {
+      cpuPlayer.attackList = [];
+    }
+
+    // Pick a random attack from available attacks
+    const randomIndex = Math.floor(
+      Math.random() * cpuPlayer.availableAttacks.length
+    );
+    const attack = cpuPlayer.availableAttacks[randomIndex];
+
+    // Remove the selected attack from available attacks for this round
+    cpuPlayer.availableAttacks.splice(randomIndex, 1);
+    console.log(
+      `CPU ${playerId} using attack ${attack}. Remaining attacks:`,
+      cpuPlayer.availableAttacks
+    );
+
+    // Add to CPU's attack list
+    cpuPlayer.attackList.push(attack);
+
+    res.send({
+      attack,
+      allAttacks: cpuPlayer.attackList,
+      remainingAttacks: cpuPlayer.availableAttacks,
+    });
+  } else {
+    res.status(404).send({ error: "CPU player not found or has no attacks" });
+  }
+});
+
+// Add new endpoint to reset CPU's available attacks for a new round
+app.post("/mokepon/:playerId/reset-attacks", (req, res) => {
+  const playerId = req.params.playerId || "";
+  const cpuPlayer = players.find(
+    (player) => player.id === playerId && player.isCPU
+  );
+
+  if (cpuPlayer) {
+    // Reset available attacks to full list including extra attack if it was added
+    cpuPlayer.availableAttacks = [...cpuPlayer.attacks];
+    console.log(
+      `Reset available attacks for CPU ${playerId}:`,
+      cpuPlayer.availableAttacks
+    );
+
+    // Clear the attack list for the new round
+    cpuPlayer.attackList = [];
+
+    res.status(200).send({
+      success: true,
+      message: "CPU attacks reset successfully",
+      availableAttacks: cpuPlayer.availableAttacks,
+    });
+  } else {
+    res.status(404).send({
+      success: false,
+      error: "CPU player not found",
+    });
+  }
+});
+
+// Add endpoint for checking CPU advantage and adding extra attack if needed
+app.post("/mokepon/:playerId/check-advantage", (req, res) => {
+  const playerId = req.params.playerId || "";
+  const { playerMokeponType } = req.body || {};
+  const cpuPlayer = players.find(
+    (player) => player.id === playerId && player.isCPU
+  );
+
+  if (cpuPlayer && cpuPlayer.mokepon && playerMokeponType) {
+    // Check if CPU has advantage over player
+    const cpuType = cpuPlayer.mokepon.type;
+    const hasAdvantage = combatRules[cpuType] === playerMokeponType;
+
+    if (hasAdvantage) {
+      console.log(
+        `CPU ${playerId} has advantage! Adding extra attack of type ${cpuType}`
+      );
+
+      // Add an extra attack of the same type as the CPU mokepon
+      if (!cpuPlayer.extraAttackAdded) {
+        cpuPlayer.attacks.push(cpuType);
+        cpuPlayer.availableAttacks.push(cpuType);
+        cpuPlayer.extraAttackAdded = true;
+      }
+
+      res.send({
+        success: true,
+        hasAdvantage: true,
+        attacks: cpuPlayer.attacks,
+        availableAttacks: cpuPlayer.availableAttacks,
+      });
+    } else {
+      res.send({ success: true, hasAdvantage: false });
+    }
+  } else {
+    res.status(404).send({
+      success: false,
+      error: "CPU player not found or missing mokepon/player type",
+    });
+  }
+});
+
+// Helper function to determine combat advantage
+const combatRules = {
+  "💧": "🔥", // Water beats fire
+  "🔥": "🌱", // Fire beats plant
+  "🌱": "💧", // Plant beats water
+};
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

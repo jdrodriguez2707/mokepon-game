@@ -609,7 +609,11 @@ function renderCanvas() {
     if (enemy) {
       // Make sure enemy is properly sized for this client's canvas
       resizePets(enemy, map.width / 700);
+
+      // CPU Mokepons don't move, so we don't need to update their positions
       enemy.renderPet();
+
+      // Only check for collisions if the enemy isn't new (to avoid immediate collisions)
       checkCollision(enemy);
     }
   });
@@ -664,6 +668,9 @@ async function sendMokeponPosition() {
         enemyPet.x = pixelCoords.x;
         enemyPet.y = pixelCoords.y;
 
+        // Store CPU status
+        enemyPet.isCPU = enemy.isCPU;
+
         enemyPet.isNew = false; // It's not new anymore
       } else {
         // If it's new, create a new instance
@@ -671,6 +678,9 @@ async function sendMokeponPosition() {
 
         if (enemyPet) {
           enemyPet.id = enemy.id;
+
+          // Store CPU status
+          enemyPet.isCPU = enemy.isCPU;
 
           // Store normalized position
           enemyPet.xPercent = enemy.xPercent;
@@ -785,11 +795,50 @@ function checkCollision(enemyPet) {
   clearInterval(renderMapInterval);
   showEnemyPetInfo(enemyPet);
   extractPlayerAttacks();
+
+  // Check and boost stronger pet - this works for both human players
   checkAndBoostStrongerPet(enemyPet);
+
   enemyId = enemyPet.id; // Save the enemy ID to send the right attack to the server
+
+  // Check if enemy is CPU (ID starts with 'cpu-')
+  if (enemyId.startsWith("cpu-")) {
+    console.log("Fighting a CPU Mokepon!");
+
+    // Check if CPU has type advantage to give them an extra attack
+    checkCPUAdvantage(enemyPet);
+  }
+
   setupPlayerAttackButtons();
   selectAttackSection.classList.remove("hidden");
   mapSection.classList.add("hidden");
+}
+
+// Function to check if CPU has type advantage and give extra attack
+async function checkCPUAdvantage(enemyPet) {
+  try {
+    // Send request to check advantage and potentially add extra attack
+    const response = await fetch(
+      `${SERVER_URL}mokepon/${enemyId}/check-advantage`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          playerMokeponType: selectedPlayerPet.type,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.hasAdvantage) {
+      console.log("CPU has type advantage! Extra attack added:", data);
+    }
+  } catch (error) {
+    console.error("Error checking CPU advantage:", error);
+  }
 }
 
 function setUpPetMovementEvents() {
@@ -1035,7 +1084,26 @@ async function getEnemyAttacks() {
       throw new Error("Failed to get enemy attacks!😢");
     }
 
+    // Check if this is a CPU enemy
+    const isCPU = data.isCPU || false;
     enemyAttacks = data.attacks;
+
+    // If it's a CPU and it hasn't selected an attack for this round yet
+    if (isCPU && enemyAttacks.length < playerAttacks.length) {
+      // Request a new CPU attack
+      const cpuResponse = await fetch(
+        `${SERVER_URL}mokepon/${enemyId}/cpu-attack`
+      );
+      const cpuData = await cpuResponse.json();
+
+      if (cpuResponse.ok) {
+        // Update our local copy of CPU attacks
+        enemyAttacks = cpuData.allAttacks;
+        console.log("CPU selected attack:", cpuData.attack);
+        console.log("CPU attacks used:", enemyAttacks);
+        console.log("CPU attacks remaining:", cpuData.remainingAttacks);
+      }
+    }
 
     // Check if both players have selected their attacks
     if (enemyAttacks.length === playerAttacks.length) {
@@ -1115,25 +1183,39 @@ function checkLives() {
   }
   // Check if the round is over and enable attack buttons again for the next round if there are lives left
   else if (isRoundOver(attackButtons)) {
-    // Disable the attack button left before preparing the next round
-    const attackButtonLeft = Array.from(attackButtons).find(
-      (attackButton) => attackButton.disabled === false
+    // Disable any remaining attack button before preparing the next round
+    const enabledButtons = Array.from(attackButtons).filter(
+      (attackButton) => !attackButton.disabled
     );
 
-    if (attackButtonLeft) {
-      attackButtonLeft.disabled = true;
-      attackButtonLeft.classList.add("disabled");
-    }
+    enabledButtons.forEach((button) => {
+      button.disabled = true;
+      button.classList.add("disabled");
+    });
 
     // Prepare next round
     setTimeout(() => {
+      // Reset all buttons for the next round
       for (const attackButton of attackButtons) {
         attackButton.disabled = false;
         attackButton.classList.remove("disabled");
         attackButton.classList.remove("clicked");
       }
 
+      // Reset attacks for new round
       enemyAttacks.length = 0;
+      playerAttacks.length = 0;
+
+      // For CPU enemies, we need to explicitly reset their available attacks
+      if (enemyId.startsWith("cpu-")) {
+        // Tell the server to reset the CPU's attacks for the next round
+        fetch(`${SERVER_URL}mokepon/${enemyId}/reset-attacks`, {
+          method: "POST",
+        }).catch((error) => {
+          console.error("Error resetting CPU attacks:", error);
+        });
+      }
+
       roundNumberSpan.textContent = ++roundNumber;
       combatResultParagraph.textContent = "Good luck! 😎";
     }, 1000);
@@ -1143,8 +1225,19 @@ function checkLives() {
 }
 
 function isRoundOver(attackButtons) {
+  // New condition: If all player attack buttons are disabled (player used all attacks)
+  const allPlayerButtonsDisabled = Array.from(attackButtons).every(
+    (attackButton) => attackButton.disabled
+  );
+
+  // If the player has used all their attacks, the round is over
+  // This happens regardless of whether the CPU has remaining attacks or not
+  if (allPlayerButtonsDisabled) {
+    return true;
+  }
+
+  // The other conditions remain the same
   return (
-    Array.from(attackButtons).every((attackButton) => attackButton.disabled) ||
     enemyAttacks.length == 5 ||
     enemyAttacks.length == 10 ||
     enemyAttacks.length == 15
