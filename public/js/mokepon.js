@@ -413,6 +413,21 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+// Add utility functions for coordinate conversion
+function pixelToPercent(pixelX, pixelY, mapWidth, mapHeight) {
+  return {
+    xPercent: (pixelX / mapWidth) * 100,
+    yPercent: (pixelY / mapHeight) * 100,
+  };
+}
+
+function percentToPixel(xPercent, yPercent, mapWidth, mapHeight) {
+  return {
+    x: (xPercent * mapWidth) / 100,
+    y: (yPercent * mapHeight) / 100,
+  };
+}
+
 async function showMap() {
   // Resize map for responsiveness
   resizeCanvas();
@@ -425,17 +440,27 @@ async function showMap() {
     }
   });
 
-  // Get a safe position from the server
+  // Get a safe position from the server (now in percentages)
   try {
     const response = await fetch(
-      `${SERVER_URL}mokepon/${playerId}/safePosition?width=${selectedPlayerPet.width}&height=${selectedPlayerPet.height}&mapWidth=${map.width}&mapHeight=${map.height}`
+      `${SERVER_URL}mokepon/${playerId}/safePosition`
     );
     const data = await response.json();
 
     if (data.safe) {
-      // Use the safe position provided by the server
-      selectedPlayerPet.x = data.x;
-      selectedPlayerPet.y = data.y;
+      // Convert from percentage to pixel coordinates
+      const pixelCoords = percentToPixel(
+        data.xPercent,
+        data.yPercent,
+        map.width,
+        map.height
+      );
+      selectedPlayerPet.x = pixelCoords.x;
+      selectedPlayerPet.y = pixelCoords.y;
+
+      // Store the percentage values for reference
+      selectedPlayerPet.xPercent = data.xPercent;
+      selectedPlayerPet.yPercent = data.yPercent;
     } else {
       // Use a random position if the server doesn't provide a safe one
       selectedPlayerPet.x = getRandomNumber(
@@ -446,6 +471,16 @@ async function showMap() {
         0,
         map.height - selectedPlayerPet.height
       );
+
+      // Calculate and store percentage values
+      const percentCoords = pixelToPercent(
+        selectedPlayerPet.x,
+        selectedPlayerPet.y,
+        map.width,
+        map.height
+      );
+      selectedPlayerPet.xPercent = percentCoords.xPercent;
+      selectedPlayerPet.yPercent = percentCoords.yPercent;
     }
   } catch (error) {
     console.error("Error to get a safe position:", error);
@@ -458,6 +493,16 @@ async function showMap() {
       0,
       map.height - selectedPlayerPet.height
     );
+
+    // Calculate and store percentage values
+    const percentCoords = pixelToPercent(
+      selectedPlayerPet.x,
+      selectedPlayerPet.y,
+      map.width,
+      map.height
+    );
+    selectedPlayerPet.xPercent = percentCoords.xPercent;
+    selectedPlayerPet.yPercent = percentCoords.yPercent;
   }
 
   renderMapInterval = setInterval(renderCanvas, 30);
@@ -471,17 +516,43 @@ async function showMap() {
 function resizeCanvas() {
   const aspectRatio = mapBackground.width / mapBackground.height;
   const maxWidth = 700; // Set the maximum width for the canvas
-  const previousWidth = map.width;
   map.width = Math.min(window.innerWidth * 0.8, maxWidth);
   map.height = map.width / aspectRatio;
 
+  // When resizing, we need to maintain the percentage position
+  if (selectedPlayerPet && selectedPlayerPet.xPercent !== undefined) {
+    const pixelCoords = percentToPixel(
+      selectedPlayerPet.xPercent,
+      selectedPlayerPet.yPercent,
+      map.width,
+      map.height
+    );
+    selectedPlayerPet.x = pixelCoords.x;
+    selectedPlayerPet.y = pixelCoords.y;
+  }
+
   // Adjust pet sizes based on the new canvas size
   const scaleFactor = map.width / maxWidth;
-  resizePets(selectedPlayerPet, scaleFactor);
 
-  // Adjust pet positions based on the new canvas size
-  const positionScaleFactor = map.width / previousWidth;
-  resizePetPositions(positionScaleFactor);
+  if (selectedPlayerPet) {
+    resizePets(selectedPlayerPet, scaleFactor);
+  }
+
+  // Also resize enemy pets
+  enemyPets.forEach((enemy) => {
+    if (enemy && enemy.xPercent !== undefined) {
+      const pixelCoords = percentToPixel(
+        enemy.xPercent,
+        enemy.yPercent,
+        map.width,
+        map.height
+      );
+      enemy.x = pixelCoords.x;
+      enemy.y = pixelCoords.y;
+
+      resizePets(enemy, scaleFactor);
+    }
+  });
 
   // Adjust pet speeds based on the new canvas size
   adjustPetSpeed(scaleFactor);
@@ -513,22 +584,31 @@ function renderCanvas() {
   selectedPlayerPet.x += selectedPlayerPet.speedX;
   selectedPlayerPet.y += selectedPlayerPet.speedY;
 
+  // Update percentage position
+  const percentCoords = pixelToPercent(
+    selectedPlayerPet.x,
+    selectedPlayerPet.y,
+    map.width,
+    map.height
+  );
+  selectedPlayerPet.xPercent = percentCoords.xPercent;
+  selectedPlayerPet.yPercent = percentCoords.yPercent;
+
   // Clear the canvas before drawing the pet to avoid leaving a trail
   canvas.clearRect(0, 0, map.width, map.height);
 
   // Draw the map background and the pets
   canvas.drawImage(mapBackground, 0, 0, map.width, map.height);
   selectedPlayerPet.renderPet();
-  // selectedEnemyPet.renderPet()
 
-  // Sent mokepon position to the server
+  // Send mokepon position to the server (now in percentages)
   sendMokeponPosition();
 
   checkMapBoundaries();
 
   enemyPets.forEach((enemy) => {
     if (enemy) {
-      // Resize enemy pet based on the canvas size
+      // Make sure enemy is properly sized for this client's canvas
       resizePets(enemy, map.width / 700);
       enemy.renderPet();
       checkCollision(enemy);
@@ -544,8 +624,8 @@ async function sendMokeponPosition() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        x: selectedPlayerPet.x,
-        y: selectedPlayerPet.y,
+        xPercent: selectedPlayerPet.xPercent,
+        yPercent: selectedPlayerPet.yPercent,
       }),
     });
 
@@ -553,7 +633,6 @@ async function sendMokeponPosition() {
 
     // Keep track of current enemies
     const previousEnemies = [...enemyPets].filter(Boolean);
-    const previousEnemyIds = previousEnemies.map((enemy) => enemy.id);
 
     // To update the current enemies or create new ones
     const updatedEnemies = [];
@@ -570,10 +649,22 @@ async function sendMokeponPosition() {
 
       // If it exists, update its properties
       if (existingEnemyIndex >= 0) {
-        // console.log('Updating existing enemy pet:', mokeponName)
         enemyPet = previousEnemies[existingEnemyIndex];
-        enemyPet.x = enemy.x;
-        enemyPet.y = enemy.y;
+
+        // Store normalized position
+        enemyPet.xPercent = enemy.xPercent;
+        enemyPet.yPercent = enemy.yPercent;
+
+        // Convert to pixels for this client's canvas
+        const pixelCoords = percentToPixel(
+          enemy.xPercent,
+          enemy.yPercent,
+          map.width,
+          map.height
+        );
+        enemyPet.x = pixelCoords.x;
+        enemyPet.y = pixelCoords.y;
+
         enemyPet.isNew = false; // It's not new anymore
       } else {
         // If it's new, create a new instance
@@ -581,8 +672,21 @@ async function sendMokeponPosition() {
 
         if (enemyPet) {
           enemyPet.id = enemy.id;
-          enemyPet.x = enemy.x;
-          enemyPet.y = enemy.y;
+
+          // Store normalized position
+          enemyPet.xPercent = enemy.xPercent;
+          enemyPet.yPercent = enemy.yPercent;
+
+          // Convert to pixels for this client's canvas
+          const pixelCoords = percentToPixel(
+            enemy.xPercent,
+            enemy.yPercent,
+            map.width,
+            map.height
+          );
+          enemyPet.x = pixelCoords.x;
+          enemyPet.y = pixelCoords.y;
+
           enemyPet.isNew = true;
 
           // Clear the state after 1 second
@@ -594,7 +698,11 @@ async function sendMokeponPosition() {
         }
       }
 
-      if (enemyPet) updatedEnemies.push(enemyPet);
+      if (enemyPet) {
+        // Ensure proper size for this client's canvas
+        resizePets(enemyPet, map.width / 700);
+        updatedEnemies.push(enemyPet);
+      }
     });
 
     // Update the enemy list
@@ -609,16 +717,17 @@ async function sendMokeponPosition() {
 }
 
 function checkMapBoundaries() {
-  // Map limits
+  // Map limits (in pixels)
   const upMap = 0;
   const downMap = map.height - selectedPlayerPet.height;
   const leftMap = 0;
   const rightMap = map.width - selectedPlayerPet.width;
 
-  // Player edges
+  // Player edges (in pixels)
   const upPlayer = selectedPlayerPet.y;
   const leftPlayer = selectedPlayerPet.x;
 
+  // Apply boundaries
   if (upPlayer < upMap) {
     selectedPlayerPet.y = upMap;
   }
@@ -634,6 +743,16 @@ function checkMapBoundaries() {
   if (leftPlayer > rightMap) {
     selectedPlayerPet.x = rightMap;
   }
+
+  // Update percentage position after boundary check
+  const percentCoords = pixelToPercent(
+    selectedPlayerPet.x,
+    selectedPlayerPet.y,
+    map.width,
+    map.height
+  );
+  selectedPlayerPet.xPercent = percentCoords.xPercent;
+  selectedPlayerPet.yPercent = percentCoords.yPercent;
 }
 
 function checkCollision(enemyPet) {

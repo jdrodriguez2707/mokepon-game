@@ -13,8 +13,9 @@ const players = [];
 class Player {
   constructor(id) {
     this.id = id;
-    this.x = undefined;
-    this.y = undefined;
+    // Store positions as normalized values (percentages of the map size)
+    this.xPercent = undefined;
+    this.yPercent = undefined;
     this.mokepon = null;
     this.attacks = [];
   }
@@ -23,28 +24,34 @@ class Player {
     this.mokepon = mokepon;
   }
 
-  updateMokeponPosition(x, y) {
-    this.x = x;
-    this.y = y;
+  // Update to store normalized position
+  updateMokeponPosition(xPercent, yPercent) {
+    this.xPercent = xPercent;
+    this.yPercent = yPercent;
   }
 
   assignAttacks(attacks) {
     this.attacks = attacks;
   }
 
-  // Check if the player is too close to another player
-  isTooCloseToPlayer(otherPlayer, safeDistance) {
-    if (!this.x || !this.y || !otherPlayer.x || !otherPlayer.y) {
+  // Modified to work with percentage-based positions
+  isTooCloseToPlayer(otherPlayer, safeDistancePercent) {
+    if (
+      this.xPercent === undefined ||
+      this.yPercent === undefined ||
+      otherPlayer.xPercent === undefined ||
+      otherPlayer.yPercent === undefined
+    ) {
       return false;
     }
 
-    // Calculate the distance between the two players
-    // Using the Euclidean distance formula
+    // Calculate distance using percentage values
     const distance = Math.sqrt(
-      Math.pow(this.x - otherPlayer.x, 2) + Math.pow(this.y - otherPlayer.y, 2)
+      Math.pow(this.xPercent - otherPlayer.xPercent, 2) +
+        Math.pow(this.yPercent - otherPlayer.yPercent, 2)
     );
 
-    return distance < safeDistance;
+    return distance < safeDistancePercent;
   }
 }
 
@@ -113,39 +120,33 @@ function handlePlayerRemoval(playerId, res) {
 
 app.get("/mokepon/:playerId/safePosition", (req, res) => {
   const playerId = req.params.playerId || "";
-  const { width, height, mapWidth, mapHeight } = req.query;
 
-  const petWidth = parseInt(width) || 80;
-  const petHeight = parseInt(height) || 80;
-  const maxX = parseInt(mapWidth) || 700;
-  const maxY = parseInt(mapHeight) || 500;
-
-  // Safe distance is the sum of the width and height of the pet plus a margin
-  const safeDistance = petWidth + petHeight + 20;
+  // Safe distance as a percentage of the map
+  const safeDistancePercent = 10; // 10% of the map
 
   // Try to find a safe position for the player (20 attempts max)
   let safePosition = false;
   let attempts = 0;
-  let x, y;
+  let xPercent, yPercent;
 
   while (!safePosition && attempts < 20) {
-    // Generate random coordinates
-    x = Math.floor(Math.random() * (maxX - petWidth));
-    y = Math.floor(Math.random() * (maxY - petHeight));
+    // Generate random normalized coordinates (0-95% to leave room at edges)
+    xPercent = Math.random() * 95;
+    yPercent = Math.random() * 95;
 
     // Check if the position is safe
     safePosition = true;
     for (const player of players) {
       if (
         player.id !== playerId &&
-        player.x !== undefined &&
-        player.y !== undefined
+        player.xPercent !== undefined &&
+        player.yPercent !== undefined
       ) {
         const thisPlayer = new Player(playerId);
-        thisPlayer.x = x;
-        thisPlayer.y = y;
+        thisPlayer.xPercent = xPercent;
+        thisPlayer.yPercent = yPercent;
 
-        if (thisPlayer.isTooCloseToPlayer(player, safeDistance)) {
+        if (thisPlayer.isTooCloseToPlayer(player, safeDistancePercent)) {
           safePosition = false;
           break;
         }
@@ -154,23 +155,25 @@ app.get("/mokepon/:playerId/safePosition", (req, res) => {
     attempts++;
   }
 
-  res.send({ x, y, safe: safePosition });
+  res.send({ xPercent, yPercent, safe: safePosition });
 });
 
 app.post("/mokepon/:playerId/position", (req, res) => {
   const playerId = req.params.playerId || "";
-  const { x, y } = req.body || {};
+  const { xPercent, yPercent } = req.body || {};
   const playerIndex = players.findIndex((player) => player.id === playerId);
 
-  if (playerIndex >= 0) players[playerIndex].updateMokeponPosition(x, y);
+  if (playerIndex >= 0) {
+    players[playerIndex].updateMokeponPosition(xPercent, yPercent);
+  }
 
   // Filter out players that are not mokepons or don't have coordinates
   const enemies = players.filter(
     (player) =>
       player.id !== playerId &&
       player.mokepon &&
-      player.x !== undefined &&
-      player.y !== undefined
+      player.xPercent !== undefined &&
+      player.yPercent !== undefined
   );
 
   res.send({ enemies });
