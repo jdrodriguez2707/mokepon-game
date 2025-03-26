@@ -172,31 +172,49 @@ function checkAndRegenerateCPUs() {
   }
 }
 
-app.get("/join", (req, res) => {
-  const id = `${Math.random()}`;
-  const player = new Player(id);
-  players.push(player);
-  console.log(`A new player ${id} has joined. Total: ${players.length}`);
+app.get("/join", (req, res, next) => {
+  try {
+    const id = `${Math.random()}`;
+    const player = new Player(id);
+    players.push(player);
 
-  // If there are no CPU Mokepons, generate them
-  if (cpuMokepons.length === 0) {
-    generateCPUMokepons();
+    // If there are no CPU Mokepons, generate them
+    if (cpuMokepons.length === 0) {
+      generateCPUMokepons();
+    }
+
+    res.json({ success: true, id });
+  } catch (error) {
+    next(error);
   }
-
-  res.send({ id });
 });
 
-app.post("/mokepon/:playerId", (req, res) => {
-  const playerId = req.params.playerId || "";
-  const mokeponName = req.body.mokeponName || "";
-  const playerIndex = players.findIndex((player) => player.id === playerId);
+app.post("/mokepon/:playerId", (req, res, next) => {
+  try {
+    const playerId = req.params.playerId || "";
+    const mokeponName = req.body.mokeponName || "";
 
-  if (playerIndex >= 0) {
+    if (!playerId) {
+      throw createHttpError(400, "Player ID required");
+    }
+
+    if (!mokeponName) {
+      throw createHttpError(400, "Mokepon name required");
+    }
+
+    const playerIndex = players.findIndex((player) => player.id === playerId);
+
+    if (playerIndex < 0) {
+      throw createHttpError(404, "Player not found");
+    }
+
     const mokepon = new Mokepon(mokeponName);
     players[playerIndex].assignMokepon(mokepon);
-  }
 
-  res.end();
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Modify the DELETE endpoint to also work with GET requests (for beacon API)
@@ -422,23 +440,36 @@ app.post("/mokepon/:playerId/reset-attacks", (req, res) => {
 });
 
 // Add endpoint for checking CPU advantage and adding extra attack if needed
-app.post("/mokepon/:playerId/check-advantage", (req, res) => {
-  const playerId = req.params.playerId || "";
-  const { playerMokeponType } = req.body || {};
-  const cpuPlayer = players.find(
-    (player) => player.id === playerId && player.isCPU
-  );
+app.post("/mokepon/:playerId/check-advantage", (req, res, next) => {
+  try {
+    const playerId = req.params.playerId || "";
+    const { playerMokeponType } = req.body || {};
 
-  if (cpuPlayer && cpuPlayer.mokepon && playerMokeponType) {
+    if (!playerId) {
+      throw createHttpError(400, "player ID required");
+    }
+
+    if (!playerMokeponType) {
+      throw createHttpError(400, "Mokepon type required");
+    }
+
+    const cpuPlayer = players.find(
+      (player) => player.id === playerId && player.isCPU
+    );
+
+    if (!cpuPlayer) {
+      throw createHttpError(404, "CPU player not found");
+    }
+
+    if (!cpuPlayer.mokepon) {
+      throw createHttpError(400, "CPU has no mokepon assigned");
+    }
+
     // Check if CPU has advantage over player
     const cpuType = cpuPlayer.mokepon.type;
     const hasAdvantage = combatRules[cpuType] === playerMokeponType;
 
     if (hasAdvantage) {
-      console.log(
-        `CPU ${playerId} has advantage! Adding extra attack of type ${cpuType}`
-      );
-
       // Add an extra attack of the same type as the CPU mokepon
       if (!cpuPlayer.extraAttackAdded) {
         cpuPlayer.attacks.push(cpuType);
@@ -446,20 +477,17 @@ app.post("/mokepon/:playerId/check-advantage", (req, res) => {
         cpuPlayer.extraAttackAdded = true;
       }
 
-      res.send({
+      res.json({
         success: true,
         hasAdvantage: true,
         attacks: cpuPlayer.attacks,
         availableAttacks: cpuPlayer.availableAttacks,
       });
     } else {
-      res.send({ success: true, hasAdvantage: false });
+      res.json({ success: true, hasAdvantage: false });
     }
-  } else {
-    res.status(404).send({
-      success: false,
-      error: "CPU player not found or missing mokepon/player type",
-    });
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -469,6 +497,38 @@ const combatRules = {
   "🔥": "🌱", // Fire beats plant
   "🌱": "💧", // Plant beats water
 };
+
+// Middleware for centralized error handling
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+
+  // Log error on server
+  console.error(`Error ${status}: ${message}`);
+  if (err.stack) console.error(err.stack);
+
+  // Send error response to the client
+  res.status(status).json({
+    success: false,
+    message,
+    error: process.env.NODE_ENV === "production" ? undefined : err.stack,
+  });
+});
+
+// Custom Helper to create HTTP errors
+function createHttpError(status, message) {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+}
+
+// Middleware to handle non-existent routes
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

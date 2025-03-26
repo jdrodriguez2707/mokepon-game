@@ -176,64 +176,6 @@ const playerPets = [
 
 let enemyPets = [];
 
-// const enemyPets = [
-//   new Mokepon(
-//     'Hipodoge',
-//     'hipodoge',
-//     '💧',
-//     '../assets/images/mokepons_mokepon_hipodoge_attack.webp',
-//     'Mokepon Hipodoge',
-//     '../assets/images/hipodoge_head.png',
-//     ['💧', '💧', '💧', '🔥', '🌱']
-//   ),
-//   new Mokepon(
-//     'Capipepo',
-//     'capipepo',
-//     '🌱',
-//     '../assets/images/mokepons_mokepon_capipepo_attack.webp',
-//     'Mokepon Capipepo',
-//     '../assets/images/capipepo_head.png',
-//     ['🌱', '🌱', '🌱', '🔥', '💧']
-//   ),
-//   new Mokepon(
-//     'Ratigueya',
-//     'ratigueya',
-//     '🔥',
-//     '../assets/images/mokepons_mokepon_ratigueya_attack.webp',
-//     'Mokepon Ratigueya',
-//     '../assets/images/ratigueya_head.png',
-//     ['🔥', '🔥', '🔥', '💧', '🌱']
-//   ),
-//
-//   new Mokepon(
-//     'Pydos',
-//     'pydos',
-//     '💧',
-//     '../assets/images/mokepons_mokepon_pydos_attack.webp',
-//     'Mokepon Pydos',
-//     '../assets/images/mokepons_mokepon_pydos_attack.webp',
-//     ['💧', '💧', '💧', '🌱', '🔥']
-//   ),
-//   new Mokepon(
-//     'Tucapalma',
-//     'tucapalma',
-//     '🌱',
-//     '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
-//     'Mokepon Tucapalma',
-//     '../assets/images/mokepons_mokepon_tucapalma_attack.webp',
-//     ['🌱', '🌱', '🌱', '💧', '🔥']
-//   ),
-//   new Mokepon(
-//     'Langostelvis',
-//     'langostelvis',
-//     '🔥',
-//     '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
-//     'Mokepon Langostelvis',
-//     '../assets/images/mokepons_mokepon_langostelvis_attack.webp',
-//     ['🔥', '🔥', '🔥', '🌱', '💧']
-//   )
-// ]
-
 const combatRules = {
   "🔥": "🌱", // Left beats right
   "💧": "🔥",
@@ -380,13 +322,7 @@ function selectPlayerPet() {
     playerPetInfoContainer.appendChild(playerPetImage);
     playerPetNameSpan.textContent = selectedPlayerPet.name;
 
-    // selectEnemyPet()
-
     showMap();
-
-    // extractPlayerAttacks()
-    // checkAndBoostStrongerPet()
-    // setupPlayerAttackButtons()
   } else {
     errorMessage.textContent = "Please select a pet to start the game!🐾";
     errorMessageModal.classList.remove("hidden");
@@ -412,28 +348,6 @@ async function postMokeponInfo(mokepon) {
     console.error("There was a problem with the fetch operation:", error);
   }
 }
-
-/* function selectEnemyPet() {
-  const randomIndex = getRandomNumber(0, enemyPets.length - 1)
-  selectedEnemyPet = enemyPets[randomIndex]
-
-  showMap()
-
-  const enemyPetImage = document.createElement('img')
-  enemyPetImage.src = enemyPets[randomIndex].imageSrc
-  enemyPetImage.alt = enemyPets[randomIndex].imageAlt
-  enemyPetImage.classList.add('mokepon-image')
-
-  enemyPetInfoContainer.appendChild(enemyPetImage)
-  enemyPetNameSpan.textContent = selectedEnemyPet.name
-
-  // Extract attacks from the selected enemy pet
-  enemyPetAvailableAttacks.push(...selectedEnemyPet.attacks)
-
-  // selectAttackSection.classList.remove('hidden')
-  selectPetSection.classList.add('hidden')
-  footer.classList.add('hidden')
-} */
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -587,22 +501,16 @@ function resizeCanvas() {
 function resizePets(pet, scaleFactor) {
   pet.width = Mokepon.DEFAULT_SIZE * scaleFactor;
   pet.height = Mokepon.DEFAULT_SIZE * scaleFactor;
-  /* selectedEnemyPet.width = Mokepon.DEFAULT_SIZE * scaleFactor
-  selectedEnemyPet.height = Mokepon.DEFAULT_SIZE * scaleFactor */
 }
 
 function resizePetPositions(positionScaleFactor) {
   selectedPlayerPet.x *= positionScaleFactor;
   selectedPlayerPet.y *= positionScaleFactor;
-  /* selectedEnemyPet.x *= positionScaleFactor
-  selectedEnemyPet.y *= positionScaleFactor */
 }
 
 function adjustPetSpeed(scaleFactor) {
   selectedPlayerPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
   selectedPlayerPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
-  // selectedEnemyPet.adjustedSpeedX = Mokepon.BASE_SPEED * scaleFactor;
-  // selectedEnemyPet.adjustedSpeedY = Mokepon.BASE_SPEED * scaleFactor;
 }
 
 function renderCanvas() {
@@ -1019,8 +927,6 @@ function stopMovement() {
     selectedPlayerPet.speedX = 0;
     selectedPlayerPet.speedY = 0;
   }
-  // selectedPlayerPet.speedX = 0;
-  // selectedPlayerPet.speedY = 0;
 }
 
 function showEnemyPetInfo(enemyPet) {
@@ -1043,13 +949,6 @@ function checkAndBoostStrongerPet(enemyPet) {
       selectedPlayerPet.attacks[selectedPlayerPet.attacks.length - 1]
     );
   }
-
-  // console.log(playerPetAvailableAttacks)
-  /* else if (combatRules[selectedEnemyPet.type] === selectedPlayerPet.type) {
-    enemyPetAvailableAttacks.push(
-      selectedEnemyPet.attacks[selectedEnemyPet.attacks.length - 1]
-    )
-  } */
 }
 
 function setupPlayerAttackButtons() {
@@ -1144,13 +1043,6 @@ async function getEnemyAttacks() {
     console.error("There was a problem with the fetch operation:", error);
   }
 }
-
-/* function selectEnemyPetAttack() {
-  const randomIndex = getRandomNumber(0, enemyPetAvailableAttacks.length - 1)
-  // Remove the selected attack from the available attacks to avoid selecting it again
-  enemyPetAttack = enemyPetAvailableAttacks.splice(randomIndex, 1).join('')
-  combat()
-} */
 
 function combat() {
   playerPetAttack = playerAttacks[playerAttacks.length - 1];
