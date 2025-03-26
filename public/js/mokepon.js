@@ -118,14 +118,13 @@ const playerPets = [
     "../assets/images/ratigueya_head.png",
     ["🔥", "🔥", "🔥", "💧", "🌱"]
   ),
-  // TODO: Create map images for the following pets
   new Mokepon(
     "Pydos",
     "pydos",
     "💧",
     "../assets/images/mokepons_mokepon_pydos_attack.webp",
     "Mokepon Pydos",
-    "../assets/images/mokepons_mokepon_pydos_attack.webp",
+    "../assets/images/pydos_head.webp",
     ["💧", "💧", "💧", "🌱", "🔥"]
   ),
   new Mokepon(
@@ -178,7 +177,7 @@ let enemyPets = [];
 //     '../assets/images/ratigueya_head.png',
 //     ['🔥', '🔥', '🔥', '💧', '🌱']
 //   ),
-//   // TODO: Create map images for the following pets
+//
 //   new Mokepon(
 //     'Pydos',
 //     'pydos',
