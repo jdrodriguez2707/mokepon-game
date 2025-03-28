@@ -160,7 +160,7 @@ const playerPets = [
     "🌱",
     "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
     "Mokepon Tucapalma",
-    "../assets/images/mokepons_mokepon_tucapalma_attack.webp",
+    "../assets/images/tucapalma_head.webp",
     ["🌱", "🌱", "🌱", "💧", "🔥"]
   ),
   new Mokepon(
