@@ -260,7 +260,7 @@ app.get("/mokepon/:playerId/safePosition", (req, res) => {
   const playerId = req.params.playerId || "";
 
   // Safe distance as a percentage of the map
-  const safeDistancePercent = 10; // 10% of the map
+  const safeDistancePercent = 20; // 10% of the map
 
   // Try to find a safe position for the player (20 attempts max)
   let safePosition = false;
