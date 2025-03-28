@@ -753,8 +753,6 @@ function checkCollision(enemyPet) {
 
   // Check if enemy is CPU (ID starts with 'cpu-')
   if (enemyId.startsWith("cpu-")) {
-    console.log("Fighting a CPU Mokepon!");
-
     // Check if CPU has type advantage to give them an extra attack
     checkCPUAdvantage(enemyPet);
   }
@@ -780,12 +778,6 @@ async function checkCPUAdvantage(enemyPet) {
         }),
       }
     );
-
-    const data = await response.json();
-
-    if (data.hasAdvantage) {
-      console.log("CPU has type advantage! Extra attack added:", data);
-    }
   } catch (error) {
     console.error("Error checking CPU advantage:", error);
   }
@@ -1005,7 +997,6 @@ function sendMokeponAttacks() {
     .then(() => {
       // Set interval to get enemy attack if it doesn't exist
       if (!getAttackInterval) {
-        console.log("Waiting for enemy attack...");
         getAttackInterval = setInterval(getEnemyAttacks, 50);
       }
     })
@@ -1042,15 +1033,11 @@ async function getEnemyAttacks() {
       if (cpuResponse.ok) {
         // Update our local copy of CPU attacks
         enemyAttacks = cpuData.allAttacks;
-        console.log("CPU selected attack:", cpuData.attack);
-        console.log("CPU attacks used:", enemyAttacks);
-        console.log("CPU attacks remaining:", cpuData.remainingAttacks);
       }
     }
 
     // Check if both players have selected their attacks
     if (enemyAttacks.length === playerAttacks.length) {
-      console.log("Both players have selected their attacks!");
       combat();
     } else {
       // Set the interval again if needed
@@ -1241,15 +1228,11 @@ function restartGame() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Player removed from the server:", data.message);
-
       // Restart UI and game variables
       resetGameState();
 
       // Rejoin the game to get a new player ID
-      joinGame().then(() => {
-        console.log("New player ID:", playerId);
-      });
+      joinGame();
     })
     .catch((error) => {
       console.error("Error deleting player:", error);
