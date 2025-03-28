@@ -327,7 +327,8 @@ function selectPlayerPet() {
 
     showMap();
   } else {
-    errorMessage.textContent = "Please select a pet to start the game!🐾";
+    errorMessage.textContent =
+      "Por favor elige un mokepon para iniciar el juego 🐾";
     errorMessageModal.classList.remove("hidden");
   }
 }
@@ -1061,13 +1062,13 @@ function combat() {
   enemyPetAttack = enemyAttacks[enemyAttacks.length - 1];
 
   if (playerPetAttack === enemyPetAttack) {
-    createCombatMessages("It's a tie!🫱🏼‍🫲🏼");
+    createCombatMessages("¡Es un empate!🫱🏼‍🫲🏼");
   } else if (combatRules[playerPetAttack] === enemyPetAttack) {
-    createCombatMessages("You win!🏆");
+    createCombatMessages("¡Ganaste!🏆");
     enemyPetLives--;
     updatePetLives();
   } else {
-    createCombatMessages("You lose!☹️");
+    createCombatMessages("Perdiste☹️");
     playerPetLives--;
     updatePetLives();
   }
@@ -1108,9 +1109,9 @@ function updatePetLives() {
 
 function checkLives() {
   if (playerPetLives === 0) {
-    createFinalMessage("You lost the game☹️");
+    createFinalMessage("Perdiste ☹️");
   } else if (enemyPetLives === 0) {
-    createFinalMessage("You won the game!🎉");
+    createFinalMessage("¡Ganaste el juego!🎉");
   }
   // Check if the round is over and enable attack buttons again for the next round if there are lives left
   else if (isRoundOver(attackButtons)) {
@@ -1148,7 +1149,7 @@ function checkLives() {
       }
 
       roundNumberSpan.textContent = ++roundNumber;
-      combatResultParagraph.textContent = "Good luck! 😎";
+      combatResultParagraph.textContent = "¡Buena suerte! 😎";
     }, 1000);
   }
 
@@ -1181,7 +1182,7 @@ function createFinalMessage(finalMessage) {
   gameResultContainer.appendChild(resultMessage);
 
   // Show confetti if the player wins
-  if (finalMessage.includes("won")) {
+  if (finalMessage.includes("won") || finalMessage.includes("ganas")) {
     launchConfetti();
   }
 }
@@ -1270,7 +1271,7 @@ function resetGameState() {
   enemyPetNameSpan.textContent = "";
   playerPetLivesSpan.textContent = "❤️".repeat(playerPetLives);
   enemyPetLivesSpan.textContent = "❤️".repeat(enemyPetLives);
-  combatResultParagraph.textContent = "Good luck! 😎";
+  combatResultParagraph.textContent = "¡Buena suerte! 😎";
 
   attackButtonContainer.textContent = "";
   playerAttackSection.textContent = "";

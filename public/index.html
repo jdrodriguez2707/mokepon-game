@@ -22,82 +22,82 @@
 
     <main class="main-container">
       <section class="select-pet-section" id="select-pet">
-        <h2 class="section-subtitle">Select your pet:</h2>
+        <h2 class="section-subtitle">Elige un mokepon:</h2>
 
         <div id="pet-card-container" class="pet-card-container"></div>
 
         <button class="select-pet-button" id="btn-select-pet">
-          Select pet
+          Jugar
         </button>
 
-        <p id="instructions" class="instructions">Instructions</p>
+        <p id="instructions" class="instructions">Instrucciones</p>
         <dialog id="instructions-dialog" class="instructions-dialog hidden">
           <div class="instructions-container">
-            <h2 class="instructions-title">Instructions</h2>
+            <h2 class="instructions-title">Instrucciones</h2>
             <br>
             <p>
-              <strong>1</strong>. Choose your favorite Mokepon. Each Mokepon has strengths and weaknesses.
-            </p>
-            <br>
-            <p>
-              🔥 Fire Mokepons (Ratigueya, Langostelvis): strong against plant mokepons, weak against water mokepons.
-            </p>
-            <p>
-              💧 Water Mokepons (Hipodoge, Pydos): strong against fire mokepons, weak against plant mokepons.
-            </p>
-            <p>
-              🌱 Plant Mokepons (Capipepo, Tucapalma): strong against water mokepons, weak against fire mokepons.
+              <strong>1</strong>. Elige tu Mokepon favorito. Cada Mokepon tiene sus fortalezas y debilidades.
             </p>
             <br>
             <p>
-              <strong>2</strong>. Travel the map with your Mokepon and face other Mokepons.
+              🔥 Mokepones de fuego (Ratigueya, Langostelvis): fuertes contra mokepones de planta, débiles contra mokepones de agua.
             </p>
             <p>
-              You can play against the computer or against another player. (CPU mokepons will have a CPU label on them)
+              💧 Mokepones de agua (Hipodoge, Pydos): fuertes contra mokepones de fuego, débiles contra mokepones de planta.
             </p>
             <p>
-              Every time you collide with another Mokepon, you will enter a battle.
+              🌱 Mokepones de planta (Capipepo, Tucapalma): fuertes contra mokepones de agua, débiles contra mokepones de fuego.
             </p>
             <br>
             <p>
-              <strong>3</strong>. Your mokepon will receive an extra attack if it's stronger than the other mokepon. (According to the strengths and weaknesses mentioned above). On the other hand, if both mokepons are the same type, they will have the same attacks.
+              <strong>2</strong>. Recorre el mapa con tu Mokepon y enfréntate a otros Mokepones.
+            </p>
+            <p>
+              Puedes jugar contra la CPU o contra otro jugador. (Los mokepones CPU tendrán una etiqueta con la palabra CPU).
+            </p>
+            <p>
+              Cada vez que colisiones con otro Mokepon, entrarás en una batalla.
+            </p>
+            <br>
+            <p>
+              <strong>3</strong>. Tu mokepon recibirá un ataque adicional si es más fuerte que el otro (según las fortalezas y debilidades mencionadas anteriormente). Por otro lado, si ambos mokepones son del mismo tipo, tendrán los mismos ataques.
             </p>
             <br>
             <p>
               <strong>4</strong>. Choose your attack and wait for the other player to choose theirs.
             </p>
             <p>
-              You can only choose one attack per turn. Once you choose, you can't change.
+              Elige tu ataque y espera a que el otro jugador elija el suyo.
             </p>
             <br>
             <p>
-              These are the conditions for winning:
+              Estas son las condiciones para ganar:
             </p>
             <ul class="instructions-for-winning-list">
-              <li>🔥 wins against 🌱</li>
-              <li>🌱 wins against 💧</li>
-              <li>💧 wins against 🔥</li>
+              <li>🔥 gana contra 🌱</li>
+              <li>🌱 gana contra 💧</li>
+              <li>💧 gana contra 🔥</li>
             </ul>
             <p>
-              If both players choose the same attack, it's a tie.
+              Si ambos jugadores eligen el mismo ataque, es un empate.
             </p>
             <p>
-              The mokepon who loses the battle will lose one life.
+              El mokepon que pierda la batalla perderá una vida.
             </p>
             <br>
             <p>
-              <strong>5</strong>. The first mokepon to lose all its lives will lose the game.
+              <strong>5</strong>. El primer mokepon que pierda todas sus vidas perderá el juego.
             </p>
             <p>
-              If there's no winner when all the attacks are used, there will be another round. And so on until one of the mokepons wins.
+              Si no hay un ganador al usar todos los ataques, habrá otra ronda. Y así sucesivamente hasta que uno de los mokepones gane.
             </p>
             <br>
             <p>
-              <strong>6</strong>. Once the game is over, you can restart it by clicking the "Restart" button.
+              <strong>6</strong>. Una vez finalizado el juego, puedes reiniciarlo haciendo clic en el botón "Volver a jugar".
             </p>
             <br>
-            <p>Have fun 🎉!</p>
-            <button id="close-instructions" class="close-instructions-btn">Close</button>
+            <p>¡Diviértete 🎉!</p>
+            <button id="close-instructions" class="close-instructions-btn">Cerrar</button>
           </div>
         </dialog>
 
@@ -113,7 +113,7 @@
 
       <section class="map-section hidden" id="map-section">
         <h2 class="section-subtitle">
-          Journey across the map with your Mokepon!
+          ¡Recorre el mapa con tu Mokepon!
         </h2>
         <canvas class="map" id="map"></canvas>
         <div class="movement-buttons">
@@ -133,15 +133,15 @@
       </section>
 
       <section class="select-attack-section hidden" id="select-attack">
-        <h2 class="section-subtitle">Select your attack:</h2>
+        <h2 class="section-subtitle">Elige tu ataque:</h2>
 
         <div
           id="attack-buttons-container"
           class="attack-buttons-container"
         ></div>
 
-        <p class="round-number">Round <span id="round-number">1</span></p>
-        <p id="combat-result" class="combat-result">Good luck! 😎</p>
+        <p class="round-number">Ronda <span id="round-number">1</span></p>
+        <p id="combat-result" class="combat-result">¡Buena suerte! 😎</p>
 
         <div class="player-info-container">
           <div id="player-pet-info" class="player-info">
@@ -165,13 +165,13 @@
 
     <dialog class="result-modal hidden" id="result-modal">
       <div id="game-result-container" class="game-result-container">
-        <button class="restart-button" id="btn-restart-game">Restart</button>
+        <button class="restart-button" id="btn-restart-game">Volver a jugar</button>
       </div>
     </dialog>
 
     <footer id="footer" class="footer">
       <p class="footer-text">
-        Made with ❤️ by
+        Hecho con ❤️ por
         <a
           class="footer-link"
           href="https://jdrodriguez2707.github.io/social-links-profile/"
