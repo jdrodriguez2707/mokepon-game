@@ -2,7 +2,6 @@
   /* Colors */
   --primary-color: #1f2041;
   --secondary-color: #4b3f72;
-  --tertiary-color: #119da4;
 
   /* Fonts */
   --primary-font-family: "Poppins", serif;
@@ -62,18 +61,18 @@ body {
 }
 
 .pet-card-container::-webkit-scrollbar-track {
-  background: #119da43b;
+  background: #ffc7573b;
   border-radius: 12px;
 }
 
 .pet-card-container::-webkit-scrollbar-thumb {
-  background: var(--tertiary-color);
+  background: var(--secondary-font-color);
   border-radius: 12px;
 }
 
 @supports not selector(::-webkit-scrollbar) {
   .pet-card-container {
-    scrollbar-color: var(--tertiary-color) #119da43b;
+    scrollbar-color: var(--secondary-font-color) #ffc7573b;
   }
 }
 
@@ -98,7 +97,7 @@ body {
 
 .pet-card:hover,
 input[type="radio"]:checked + .pet-card {
-  outline: 2px solid var(--tertiary-color);
+  outline: 2px solid var(--secondary-font-color);
 }
 
 .select-pet-button {
@@ -281,7 +280,7 @@ input[type="radio"]:checked + .pet-card {
   cursor: pointer;
 
   &:hover {
-    outline: 2px solid var(--tertiary-color);
+    outline: 2px solid var(--secondary-font-color);
   }
 }
 
@@ -382,6 +381,17 @@ input[type="radio"]:checked + .pet-card {
   }
 }
 
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.github-icon {
+  width: 36px;
+}
+
 .footer-text {
   text-align: center;
   margin: 2rem 0;
@@ -390,7 +400,7 @@ input[type="radio"]:checked + .pet-card {
 }
 
 .footer-link {
-  color: var(--tertiary-color);
+  color: var(--secondary-font-color);
 }
 
 .hidden {
