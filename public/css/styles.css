@@ -117,6 +117,55 @@ input[type="radio"]:checked + .pet-card {
   }
 }
 
+.instructions {
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+  cursor: pointer;
+}
+
+.instructions-dialog {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  padding: 40px;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  font-size: var(--small-font-size);
+  color: var(--primary-font-color);
+  width: 100%;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10;
+}
+
+.instructions-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+
+  & p:last-of-type {
+    padding-bottom: 40px;
+  }
+}
+
+.instructions-title {
+  text-align: center;
+}
+
+.instructions-for-winning-list {
+  margin-left: 20px;
+}
+
+.close-instructions-btn {
+  align-self: center;
+}
+
+.close-instructions-btn {
+  position: fixed;
+  bottom: 20px;
+}
+
 .error-modal {
   position: fixed;
   top: 0;
@@ -145,13 +194,15 @@ input[type="radio"]:checked + .pet-card {
   background-color: rgb(0, 0, 0, 0.8);
 }
 
-.close-error-btn {
+.close-error-btn,
+.close-instructions-btn {
   padding: 4px 16px;
   border: none;
   border-radius: 12px;
   background-color: var(--secondary-font-color);
   color: var(--primary-color);
   cursor: pointer;
+  transition: all 0.2s;
 
   &:hover {
     background-color: var(--primary-color);

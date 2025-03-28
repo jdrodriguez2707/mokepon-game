@@ -30,6 +30,77 @@
           Select pet
         </button>
 
+        <p id="instructions" class="instructions">Instructions</p>
+        <dialog id="instructions-dialog" class="instructions-dialog hidden">
+          <div class="instructions-container">
+            <h2 class="instructions-title">Instructions</h2>
+            <br>
+            <p>
+              <strong>1</strong>. Choose your favorite Mokepon. Each Mokepon has strengths and weaknesses.
+            </p>
+            <br>
+            <p>
+              🔥 Fire Mokepons (Ratigueya, Langostelvis): strong against plant mokepons, weak against water mokepons.
+            </p>
+            <p>
+              💧 Water Mokepons (Hipodoge, Pydos): strong against fire mokepons, weak against plant mokepons.
+            </p>
+            <p>
+              🌱 Plant Mokepons (Capipepo, Tucapalma): strong against water mokepons, weak against fire mokepons.
+            </p>
+            <br>
+            <p>
+              <strong>2</strong>. Travel the map with your Mokepon and face other Mokepons.
+            </p>
+            <p>
+              You can play against the computer or against another player. (CPU mokepons will have a CPU label on them)
+            </p>
+            <p>
+              Every time you collide with another Mokepon, you will enter a battle.
+            </p>
+            <br>
+            <p>
+              <strong>3</strong>. Your mokepon will receive an extra attack if it's stronger than the other mokepon. (According to the strengths and weaknesses mentioned above). On the other hand, if both mokepons are the same type, they will have the same attacks.
+            </p>
+            <br>
+            <p>
+              <strong>4</strong>. Choose your attack and wait for the other player to choose theirs.
+            </p>
+            <p>
+              You can only choose one attack per turn. Once you choose, you can't change.
+            </p>
+            <br>
+            <p>
+              These are the conditions for winning:
+            </p>
+            <ul class="instructions-for-winning-list">
+              <li>🔥 wins against 🌱</li>
+              <li>🌱 wins against 💧</li>
+              <li>💧 wins against 🔥</li>
+            </ul>
+            <p>
+              If both players choose the same attack, it's a tie.
+            </p>
+            <p>
+              The mokepon who loses the battle will lose one life.
+            </p>
+            <br>
+            <p>
+              <strong>5</strong>. The first mokepon to lose all its lives will lose the game.
+            </p>
+            <p>
+              If there's no winner when all the attacks are used, there will be another round. And so on until one of the mokepons wins.
+            </p>
+            <br>
+            <p>
+              <strong>6</strong>. Once the game is over, you can restart it by clicking the "Restart" button.
+            </p>
+            <br>
+            <p>Have fun 🎉!</p>
+            <button id="close-instructions" class="close-instructions-btn">Close</button>
+          </div>
+        </dialog>
+
         <dialog class="error-modal hidden" id="error-modal">
           <div class="error-container">
             <p id="error-message"></p>

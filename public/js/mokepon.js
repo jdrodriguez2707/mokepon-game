@@ -224,6 +224,9 @@ function initializeGameUI() {
   const btnSelectPlayerPet = document.querySelector("#btn-select-pet");
   btnSelectPlayerPet.addEventListener("click", selectPlayerPet);
 
+  const showInstructionsBtn = document.querySelector("#instructions");
+  showInstructionsBtn.addEventListener("click", showInstructions);
+
   // To close the error modal that appears when the player doesn't select a pet
   btnCloseErrorModal.addEventListener("click", () => {
     errorMessage.textContent = "";
@@ -327,6 +330,15 @@ function selectPlayerPet() {
     errorMessage.textContent = "Please select a pet to start the game!🐾";
     errorMessageModal.classList.remove("hidden");
   }
+}
+
+function showInstructions() {
+  const instructionsDialog = document.querySelector("#instructions-dialog");
+  instructionsDialog.classList.remove("hidden");
+  const closeInstructions = document.querySelector("#close-instructions");
+  closeInstructions.addEventListener("click", () => {
+    instructionsDialog.classList.add("hidden");
+  });
 }
 
 async function postMokeponInfo(mokepon) {
