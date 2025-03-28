@@ -15,7 +15,9 @@ const port = process.env.PORT || 3000;
 // Configure CORS safely
 const corsOptions = {
   origin:
-    process.env.NODE_ENV === "production" ? "https://tuapp.herokuapp.com" : "*",
+    process.env.NODE_ENV === "production"
+      ? "https://mokepon-ed1d40aff3a6.herokuapp.com"
+      : "*",
   methods: ["GET", "POST", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
