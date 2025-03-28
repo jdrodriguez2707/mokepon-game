@@ -1,6 +1,8 @@
 "use strict";
 
-const SERVER_URL = "http://localhost:3000/";
+// Define the server URL based on the current window location
+// This allows the code to work in both local and production environments
+const SERVER_URL = window.location.origin + "/";
 
 // Cached DOM elements
 const selectPetSection = document.querySelector("#select-pet");

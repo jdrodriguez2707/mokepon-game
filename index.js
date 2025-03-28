@@ -1,12 +1,44 @@
+// Only load environment variables in development mode
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = await import("dotenv");
+  dotenv.config();
+}
+
 import express from "express";
 import cors from "cors";
+import compression from "compression";
+import helmet from "helmet";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Configure CORS safely
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production" ? "https://tuapp.herokuapp.com" : "*",
+  methods: ["GET", "POST", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
 app.use(express.static("public"));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(compression());
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        connectSrc: ["'self'"],
+        imgSrc: ["'self'", "data:"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      },
+    },
+  })
+);
 
 const players = [];
 let cpuMokepons = []; // Array to store CPU Mokepons
