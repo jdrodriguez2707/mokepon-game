@@ -839,7 +839,9 @@ function setUpPetMovementEvents() {
 
     // Start movement when the button is pressed
     button.addEventListener("touchstart", (e) => {
-      e.preventDefault(); // Prevent default touch behavior
+      if (e.cancelable) {
+        e.preventDefault(); // Prevent default touch behavior
+      }
       keysPressed[direction] = true;
       startContinuousMovement();
     });
