@@ -1186,7 +1186,10 @@ function createFinalMessage(finalMessage) {
   gameResultContainer.appendChild(resultMessage);
 
   // Show confetti if the player wins
-  if (finalMessage.includes("won") || finalMessage.includes("ganas")) {
+  if (
+    finalMessage.includes("won") ||
+    finalMessage.includes("Ganaste el juego")
+  ) {
     launchConfetti();
   }
 }

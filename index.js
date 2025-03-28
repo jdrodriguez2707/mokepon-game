@@ -37,6 +37,8 @@ app.use(
         imgSrc: ["'self'", "data:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        workerSrc: ["'self'", "blob:"],
+        childSrc: ["'self'", "blob:"],
       },
     },
   })
