@@ -1167,6 +1167,41 @@ function createFinalMessage(finalMessage) {
   const resultMessage = document.createElement("p");
   resultMessage.textContent = finalMessage;
   gameResultContainer.appendChild(resultMessage);
+
+  // Show confetti if the player wins
+  if (finalMessage.includes("won")) {
+    launchConfetti();
+  }
+}
+
+function launchConfetti() {
+  const duration = 3 * 1000;
+  const end = Date.now() + duration;
+
+  const colors = ["#ffc857", "#4b3f72", "#119da4", "#ffffff"];
+
+  (function frame() {
+    // Launch confetti on the left side of the screen
+    confetti({
+      particleCount: 5,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors,
+    });
+    // Launch confetti on the right side of the screen
+    confetti({
+      particleCount: 5,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors,
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
 }
 
 function endGame() {
